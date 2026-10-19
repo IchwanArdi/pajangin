@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/seo';
 import './globals.css';
 
 const geistSans = Geist({
@@ -12,10 +13,27 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const TITLE = 'Pajangin — Halaman Bisnis & Analitik Gratis untuk UMKM';
+
 export const metadata: Metadata = {
-  title: 'Pajangin — Halaman Bisnis & Analitik Gratis untuk UMKM',
-  description:
-    'Buat halaman bisnis lokal gratis: layanan, harga, WhatsApp, booking, QR & Link in Bio, plus analitik pengunjung dan klik kontak.',
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: SITE_DESCRIPTION,
+    url: '/',
+    siteName: SITE_NAME,
+    locale: 'id_ID',
+    type: 'website',
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function RootLayout({

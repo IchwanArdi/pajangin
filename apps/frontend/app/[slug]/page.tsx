@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getPublicBusiness, PublicBusinessResponse } from '../../lib/api';
+import { DEFAULT_OG_IMAGE } from '../../lib/seo';
 import BusinessClientView from './BusinessClientView';
 
 export const dynamic = 'force-dynamic';
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? [{ url: business.hero_image_url }]
         : business.logo_url
           ? [{ url: business.logo_url }]
-          : undefined,
+          : DEFAULT_OG_IMAGE,
     },
     twitter: {
       card: 'summary_large_image',
@@ -64,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? [{ url: business.hero_image_url }]
         : business.logo_url
           ? [{ url: business.logo_url }]
-          : undefined,
+          : DEFAULT_OG_IMAGE,
     },
   };
 }

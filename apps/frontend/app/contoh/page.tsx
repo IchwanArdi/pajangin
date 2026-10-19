@@ -7,11 +7,31 @@ import { FinalCta } from '../../components/marketing/FinalCta';
 import { Footer } from '../../components/marketing/Footer';
 import { Container, Eyebrow, MockupFrame, Section, SectionHead } from '../../components/marketing/primitives';
 import { BUSINESS_TEMPLATES } from '../../lib/templates';
+import { DEFAULT_OG_IMAGE, SITE_NAME } from '../../lib/seo';
+
+const TITLE = 'Contoh tampilan — Pajangin';
+const DESCRIPTION =
+  'Galeri template per kategori usaha dan anatomi halaman publik Pajangin: layanan, galeri, testimoni, booking, dan tombol WhatsApp.';
 
 export const metadata: Metadata = {
-  title: 'Contoh tampilan — Pajangin',
-  description:
-    'Galeri template per kategori usaha dan anatomi halaman publik Pajangin: layanan, galeri, testimoni, booking, dan tombol WhatsApp.',
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: '/contoh' },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: '/contoh',
+    siteName: SITE_NAME,
+    locale: 'id_ID',
+    type: 'website',
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 function Anno({ n, className = '' }: { n: number; className?: string }) {

@@ -28,6 +28,7 @@ apps/backend/src/generated/
 # Build outputs
 /dist/
 /build/
+*.tsbuildinfo
 
 # Coverage
 /coverage/

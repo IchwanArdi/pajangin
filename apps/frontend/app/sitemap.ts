@@ -18,10 +18,12 @@ interface SitemapBusiness {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = baseUrl();
 
+  // Halaman statis tanpa lastModified — `new Date()` selalu bernilai "sekarang"
+  // di setiap revalidasi dan membuat sinyal kesegaran palsu di mata Google.
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: base, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    { url: `${base}/pricing`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${base}/contoh`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+    { url: base, changeFrequency: 'weekly', priority: 1 },
+    { url: `${base}/pricing`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/contoh`, changeFrequency: 'monthly', priority: 0.6 },
   ];
 
   let businesses: SitemapBusiness[] = [];
