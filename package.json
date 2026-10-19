@@ -1,0 +1,27 @@
+{
+  "name": "pajangin",
+  "version": "1.0.0",
+  "description": "Pajangin — halaman bisnis & analitik gratis untuk UMKM lokal",
+  "private": true,
+  "scripts": {
+    "dev:backend": "pnpm --filter backend start:dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build:backend": "pnpm --filter backend build",
+    "build:frontend": "pnpm --filter frontend build",
+    "build": "pnpm build:backend && pnpm build:frontend",
+    "start:backend": "node apps/backend/dist/main.js",
+    "start:frontend": "pnpm --filter frontend start"
+  },
+  "keywords": [],
+  "author": "Pajangin",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.9.1",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.9.1",
+  "type": "module"
+}

@@ -1,0 +1,10 @@
+packages:
+  # Semua proyek/aplikasi ada di dalam folder apps/
+  - 'apps/*'
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
+  prisma: true
+  '@prisma/engines': true
+  '@google/genai': set this to true or false
+  protobufjs: set this to true or false

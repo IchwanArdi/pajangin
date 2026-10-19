@@ -1,0 +1,184 @@
+// Pajangin — schema Postgres (Supabase)
+// Nama tabel & kolom di database pakai snake_case (@@map / @map) biar enak di-query dari Supabase SQL Editor.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EventType {
+  page_view
+  service_view
+  whatsapp_click
+  phone_click
+  lead_submit
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+}
+
+// profil pemilik bisnis — id SAMA dengan auth.users.id (Supabase Auth).
+// Password, sesi, verifikasi email, dan OAuth dikelola Supabase Auth, bukan tabel ini.
+model User {
+  id         String     @id @db.Uuid
+  name       String
+  email      String     @unique
+  whatsapp   String?
+  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  businesses Business[]
+
+  @@map("users")
+}
+
+// satu user bisa punya 1+ bisnis (multi-tenant)
+model Business {
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @map("user_id") @db.Uuid
+  slug            String           @unique
+  name            String
+  tagline         String?
+  category        String
+  description     String?
+  address         String
+  city            String
+  phone           String?
+  whatsapp        String
+  openingHours    String?          @map("opening_hours")
+  logoUrl         String?          @map("logo_url")
+  heroImageUrl    String?          @map("hero_image_url")
+  serviceArea     String?          @map("service_area")    // area layanan (kota/region)
+  rating          Float?           @map("rating")            // 1-5 review
+  reviewCount     Int?             @map("review_count")       // jumlah ulasan
+  faq             String?          @map("faq")                 // pertanyaan umum
+  province        String?          @map("province")          // provinsi/kabupaten
+  metaTitle       String?          @map("meta_title")
+  priceRange      String?          @map("price_range")
+  metaDescription String?          @map("meta_description")
+  googleMapsUrl   String?          @map("google_maps_url")
+  instagramUrl    String?          @map("instagram_url")
+  bookingEnabled  Boolean          @default(false) @map("booking_enabled")
+  testimonials    String?          @map("testimonials")
+  template        String           @default("default")   // "restaurant", "workshop", "salon", "retail", "clinic", "education", "default"
+  themeColor      String?          @map("theme_color")    // hex warna aksen pilihan klien, e.g. "#e85d3a"
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services        Service[]
+  events          AnalyticsEvent[]
+  leads           Lead[]
+  images          BusinessImage[]
+  bookings        Booking[]
+
+  @@index([userId])
+  @@map("businesses")
+}
+
+// katalog layanan / produk tiap bisnis
+model Service {
+  id          String   @id @default(uuid()) @db.Uuid
+  businessId  String   @map("business_id") @db.Uuid
+  name        String
+  price       Int?
+  pricePrefix String?  @default("Mulai dari") @map("price_prefix")
+  description String?
+  category    String?
+  imageUrl    String?  @map("image_url")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  orderIndex  Int      @default(0) @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, orderIndex])
+  @@map("services")
+}
+
+// setiap page view / klik WA / telepon dicatat di sini (first-party, tanpa cookie pihak ketiga)
+// target_id sengaja tanpa FK: bisa berisi id layanan, slug halaman, atau 'general_cta'
+model AnalyticsEvent {
+  id            String    @id @default(uuid()) @db.Uuid
+  businessId    String    @map("business_id") @db.Uuid
+  eventType     EventType @map("event_type")
+  targetId      String?   @map("target_id")
+  targetName    String?   @map("target_name")
+  trafficSource String    @map("traffic_source")
+  referrer      String?
+  utmSource     String?   @map("utm_source")
+  utmMedium     String?   @map("utm_medium")
+  utmCampaign   String?   @map("utm_campaign")
+  device        String    @default("mobile")
+  sessionId     String    @map("session_id")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  business      Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, createdAt])
+  @@index([businessId, eventType, createdAt])
+  @@index([businessId, targetId])
+  @@map("analytics_events")
+}
+
+// calon pelanggan yang mengirim form ke bisnis
+model Lead {
+  id          String   @id @default(uuid()) @db.Uuid
+  businessId  String   @map("business_id") @db.Uuid
+  name        String
+  phone       String
+  message     String?
+  serviceId   String?  @map("service_id")
+  serviceName String?  @map("service_name")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, createdAt])
+  @@map("leads")
+}
+
+// galeri foto bisnis (menu, portfolio, fasilitas, before-after, interior, dll)
+model BusinessImage {
+  id          String   @id @default(uuid()) @db.Uuid
+  businessId  String   @map("business_id") @db.Uuid
+  url         String
+  caption     String?
+  category    String?  // "menu", "portfolio", "before-after", "interior", "fasilitas"
+  orderIndex  Int      @default(0) @map("order_index")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, orderIndex])
+  @@map("business_images")
+}
+
+// booking / appointment / reservasi dari pelanggan
+model Booking {
+  id          String        @id @default(uuid()) @db.Uuid
+  businessId  String        @map("business_id") @db.Uuid
+  serviceId   String?       @map("service_id")
+  serviceName String?       @map("service_name")
+  name        String
+  phone       String
+  email       String?
+  date        DateTime      @db.Date
+  timeSlot    String        @map("time_slot")
+  pax         Int?          @default(1)
+  status      BookingStatus @default(pending)
+  notes       String?
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  business    Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, createdAt])
+  @@index([businessId, date])
+  @@index([businessId, status])
+  @@map("bookings")
+}
+
