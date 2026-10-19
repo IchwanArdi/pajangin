@@ -333,6 +333,56 @@ details[open] .acc-panel {
   overflow: hidden;
 }
 
+/* ===== CTA aurora — latar animasi halus (netral, tanpa warna aksen) =====
+ * Tiga blob kabur yang bergeser perlahan. Hanya animasi transform supaya
+ * mulus di GPU, dan nonaktif saat pengguna memilih reduce motion. */
+.cta-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cta-aurora__blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  will-change: transform;
+}
+.cta-aurora__blob--a {
+  top: -12rem;
+  left: -10rem;
+  width: 32rem;
+  height: 32rem;
+  background: var(--color-paper-3);
+  animation: cta-drift-a 24s ease-in-out infinite alternate;
+}
+.cta-aurora__blob--b {
+  right: -8rem;
+  bottom: -14rem;
+  width: 28rem;
+  height: 28rem;
+  background: var(--color-grid);
+  animation: cta-drift-b 28s ease-in-out infinite alternate;
+}
+.cta-aurora__blob--c {
+  top: 24%;
+  left: 52%;
+  width: 20rem;
+  height: 20rem;
+  background: var(--color-rule);
+  opacity: 0.7;
+  animation: cta-drift-c 20s ease-in-out infinite alternate;
+}
+@keyframes cta-drift-a {
+  to { transform: translate3d(6rem, 4rem, 0) scale(1.12); }
+}
+@keyframes cta-drift-b {
+  to { transform: translate3d(-6rem, -3rem, 0) scale(1.08); }
+}
+@keyframes cta-drift-c {
+  to { transform: translate3d(-4rem, 5rem, 0) scale(1.18); }
+}
+
 /* ===== Halaman bisnis (microsite): entrance hero murni CSS =====
  * Sengaja tanpa JS agar konten utama tetap terlihat walau JS belum jalan —
  * penting untuk SEO & kestabilan halaman publik pelanggan. */
@@ -359,6 +409,7 @@ details[open] .acc-panel {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee__track { animation: none; }
+  .cta-aurora__blob { animation: none; }
   .rise { animation: none; }
   .lift,
   .press,

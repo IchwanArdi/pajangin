@@ -3,7 +3,7 @@ import { CATEGORY_MARQUEE } from '../../lib/marketing-content';
 export function CategoryMarquee() {
   const items = [...CATEGORY_MARQUEE, ...CATEGORY_MARQUEE];
   return (
-    <section className="border-b border-rule bg-paper" aria-label="Kategori usaha yang didukung">
+    <section className="border-b border-rule bg-surface" aria-label="Kategori usaha yang didukung">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-8">
         <p className="shrink-0 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink-3">
           Cocok untuk

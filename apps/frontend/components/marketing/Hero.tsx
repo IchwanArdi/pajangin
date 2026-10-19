@@ -17,9 +17,9 @@ const TABS: Array<{ key: TabKey; label: string; short: string }> = [
 ];
 
 const SERVICES = [
-  ['Espresso', 'Rp 18.000'],
-  ['Manual brew', 'Rp 25.000'],
-  ['Roti bakar', 'Rp 15.000'],
+  ['Servis AC mobil', 'Rp 150.000'],
+  ['Ganti oli & filter', 'Rp 85.000'],
+  ['Tune up ringan', 'Rp 250.000'],
 ] as const;
 
 const SOURCES = [
@@ -42,15 +42,15 @@ function PublicMockup() {
       <div className="overflow-hidden rounded-xl border border-rule">
         <div className="relative h-16 bg-accent-soft">
           <span className="absolute left-3 top-3 rounded-full bg-surface px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent">
-            Kedai Kopi &amp; Cafe
+            Bengkel &amp; Otomotif
           </span>
         </div>
         <div className="p-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-xs font-bold text-paper">KP</span>
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-xs font-bold text-paper">BJ</span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-ink">Kopi Pagi</p>
-              <p className="truncate text-xs text-ink-2">Purwokerto · Buka 07.00–22.00</p>
+              <p className="truncate text-sm font-bold text-ink">Bengkel Maju Jaya</p>
+              <p className="truncate text-xs text-ink-2">Purwokerto · Buka 08.00–17.00</p>
             </div>
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent">
               <Star className="h-3 w-3 fill-current" /> 4,9
@@ -96,7 +96,6 @@ function DashboardMockup() {
             <TrendingUp className="h-3 w-3" /> +12%
           </span>
         </div>
-        <p className="mt-1 text-[11px] text-ink-3">contoh tampilan · bukan data nyata</p>
       </div>
 
       <div className="grid grid-cols-3 divide-x divide-rule rounded-xl border border-rule bg-surface">
@@ -192,17 +191,13 @@ export function Hero() {
 
   const label =
     tab === 'public'
-      ? 'Halaman publik · pajangin.web.id/kopi-pagi'
+      ? 'Halaman publik · pajangin.web.id/bengkel-maju-jaya'
       : tab === 'dashboard'
         ? 'Dashboard pemilik · ringkasan'
         : 'Halaman publik · form booking';
 
   return (
-    <section className="relative border-b border-rule">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-console-grid opacity-70 [mask-image:radial-gradient(120%_80%_at_50%_0%,black,transparent_72%)]"
-      />
+    <section className="border-b border-rule">
       <div className="relative mx-auto grid w-full max-w-6xl gap-12 px-5 pb-16 pt-14 sm:px-8 sm:pt-20 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-14 lg:pb-24">
         <motion.div
           initial={reduce ? false : 'hidden'}
@@ -223,7 +218,7 @@ export function Hero() {
             transition={{ duration: 0.55, ease }}
             className="mt-5 text-[2.1rem] font-semibold leading-[1.06] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl lg:text-[3.35rem]"
           >
-            Halaman bisnis yang tampil profesional dan menghasilkan chat WhatsApp.
+            Halaman bisnis gratis yang tampil profesional dan menghasilkan chat WhatsApp.
           </motion.h1>
 
           <motion.p variants={fadeUp} transition={{ duration: 0.5, ease }} className="mt-6 max-w-xl text-base leading-relaxed text-ink-2">
@@ -236,7 +231,7 @@ export function Hero() {
               href={loggedIn ? '/dashboard' : '/register'}
               className="press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink shadow-pop transition hover:opacity-90"
             >
-              {loggedIn ? 'Buka dashboard' : 'Buat halaman bisnis'}
+              {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}
               <ArrowRight className="arrow-nudge h-4 w-4" />
             </Link>
             <Link
@@ -249,7 +244,7 @@ export function Hero() {
           </motion.div>
 
           <motion.ul variants={fadeUp} transition={{ duration: 0.5, ease }} className="mt-8 flex flex-wrap gap-2">
-            {['Tanpa hosting sendiri', 'SEO & Schema.org bawaan', 'Bahasa Indonesia'].map((f) => (
+            {['Gratis selamanya', 'Tanpa hosting sendiri', 'SEO & Schema.org bawaan', 'Bahasa Indonesia'].map((f) => (
               <li key={f}>
                 <Pill>
                   <Check className="h-3.5 w-3.5 text-accent" /> {f}
@@ -290,7 +285,7 @@ export function Hero() {
           </div>
 
           <figure className="overflow-hidden rounded-2xl border border-rule bg-surface shadow-pop">
-            <figcaption className="flex items-center justify-between gap-3 border-b border-rule bg-paper-2/70 px-4 py-2.5">
+            <figcaption className="flex items-center justify-between gap-3 border-b border-rule bg-surface px-4 py-2.5">
               <span className="truncate font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-ink-3">{label}</span>
               <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
                 <Search className="h-3 w-3" /> pratinjau

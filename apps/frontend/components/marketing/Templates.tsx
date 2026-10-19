@@ -7,7 +7,7 @@ import { Section, SectionHead } from './primitives';
 export function TemplateWire({ t }: { t: BusinessTemplate }) {
   const accent = t.accentToken;
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-rule bg-paper p-3">
+    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-rule bg-surface p-3">
       <div className="flex items-center gap-1.5">
         <span className="h-1.5 w-8 rounded-full" style={{ background: accent }} />
         <span className="ml-auto h-1.5 w-5 rounded-full bg-rule" />
@@ -55,7 +55,7 @@ export function Templates() {
   const templates = Object.values(BUSINESS_TEMPLATES);
 
   return (
-    <Section id="template" bordered tone="paper-2">
+    <Section id="template" bordered>
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHead
           eyebrow="Template kategori"

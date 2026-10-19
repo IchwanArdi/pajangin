@@ -57,16 +57,15 @@
 
 ## Audit CRO Landing (kerangka skill `cro`)
 
-**Penilaian umum:** struktur kuat (value prop jelas, CTA primer+sekunder, FAQ menangani keberatan, testimoni jujur berupa placeholder). Yang perlu diperkuat menjelang launch:
+**Penilaian umum:** struktur kuat (value prop jelas, CTA primer+sekunder, FAQ menangani keberatan). ✅ Quick win #1–4 sudah diterapkan (19 Okt 2026).
 
-### Quick Wins
-1. **H1 belum memuat kata "gratis"** — padahal itu diferensiasi terbesar vs jasa website. Opsi headline:
-   - A: "Halaman bisnis gratis yang tampil profesional dan menghasilkan chat WhatsApp."
-   - B: "Buat halaman bisnis online — gratis, tanpa hosting, siap dibagikan hari ini."
-   - C: (pertahankan H1 sekarang; tambah baris kecil di atas CTA: "Gratis selamanya — tanpa kartu kredit.")
-2. **Section testimoni menampilkan 3 slot kosong** ("menunggu testimoni"). Jujur, tapi untuk trafik dingin bisa menurunkan kesan. Opsi: sembunyikan sampai ada 1 testimoni asli, atau ganti isinya menjadi blok "Kenapa gratis?" + batas wajar.
-3. **Tambah pill "100% Gratis"** di baris pill hero (saat ini: Tanpa hosting sendiri / SEO & Schema.org bawaan / Bahasa Indonesia).
-4. **CTA copy test:** "Buat halaman bisnis" vs "Buat halaman gratis" (tambahkan kata gratis di tombol).
+### Quick Wins — ✅ diterapkan 19 Okt 2026
+1. **H1 kini memuat kata "gratis"** (opsi A): "Halaman bisnis gratis yang tampil profesional dan menghasilkan chat WhatsApp."
+2. **Slot testimoni kosong diganti** section "Pengguna pertama" — framing early access yang jujur (onboarding dibantu langsung, masukan menentukan fitur, fokus Purwokerto). Tanpa testimoni karangan.
+3. **Pill "Gratis selamanya"** ditambahkan — baris pill hero kini 4 item.
+4. **CTA copy diganti** "Buat halaman bisnis" → "Buat halaman gratis" (hero + blok CTA akhir).
+
+Sekaligus: landing kini berlatar **putih murni** (section abu-abu + overlay grid hero dihapus), semua mockup memakai **satu narasi bisnis konsisten** ("Bengkel Maju Jaya", bengkel di Purwokerto), label **"pratinjau"** seragam di setiap bingkai mockup, dan blok CTA akhir mendapat **latar aurora netral** (CSS-only, otomatis nonaktif saat `prefers-reduced-motion`).
 
 ### High-Impact
 5. **Message-match per sumber trafik:** siapkan varian sambutan untuk pengunjung dari QR/kegiatan offline (mis. header kecil "Untuk usaha di Purwokerto") — atribusi UTM/sesi sudah siap di analitik.

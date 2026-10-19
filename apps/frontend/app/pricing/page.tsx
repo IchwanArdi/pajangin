@@ -56,11 +56,10 @@ export default function PricingPage() {
   const plan = PRICING_PLANS[0];
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen bg-surface text-ink">
       <MegaNav />
       <main>
         <section className="relative border-b border-rule">
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-console-grid opacity-70 [mask-image:radial-gradient(120%_90%_at_50%_0%,black,transparent_70%)]" />
           <Container className="relative py-16 sm:py-24">
             <Eyebrow>Harga</Eyebrow>
             <h1 className="mt-5 max-w-3xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl">
@@ -73,7 +72,7 @@ export default function PricingPage() {
           </Container>
         </section>
 
-        <Section bordered tone="paper-2">
+        <Section bordered>
           <div className="mx-auto max-w-3xl rounded-3xl border border-accent bg-surface p-6 shadow-sm ring-1 ring-accent/20 sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>

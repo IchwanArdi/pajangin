@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Search } from 'lucide-react';
 
 /* Hallmark · component: marketing primitives · genre: modern-minimal · theme: Clean White
  * Semua warna via token; tanpa nilai mentah. Bentuk: kartu 12–16px, pil 999px, input 10px. */
@@ -12,20 +13,16 @@ export function Section({
   children,
   className = '',
   bordered = false,
-  tone = 'paper',
 }: {
   id?: string;
   children: ReactNode;
   className?: string;
   bordered?: boolean;
-  tone?: 'paper' | 'paper-2';
 }) {
   return (
     <section
       id={id}
-      className={`${id ? 'scroll-mt-24' : ''} ${bordered ? 'border-t border-rule' : ''} ${
-        tone === 'paper-2' ? 'bg-paper-2' : 'bg-paper'
-      } py-16 sm:py-24 ${className}`}
+      className={`${id ? 'scroll-mt-24' : ''} ${bordered ? 'border-t border-rule' : ''} bg-surface py-16 sm:py-24 ${className}`}
     >
       <Container>{children}</Container>
     </section>
@@ -78,16 +75,6 @@ export function Pill({ children, className = '' }: { children: ReactNode; classN
   );
 }
 
-/* Placeholder yang jelas ditandai — dipakai untuk data yang belum nyata. */
-export function PendingBadge({ label = 'menunggu data' }: { label?: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-ink-3/40 bg-surface px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
-      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ink-3/50" />
-      {label}
-    </span>
-  );
-}
-
 /* Rangka pratinjau produk. Tanpa meniru chrome browser/ponsel — hanya bingkai tipis + caption. */
 export function MockupFrame({
   label,
@@ -104,9 +91,12 @@ export function MockupFrame({
 }) {
   return (
     <figure className={`overflow-hidden rounded-2xl border border-rule bg-surface shadow-pop ${className}`}>
-      <figcaption className="flex items-center justify-between gap-3 border-b border-rule bg-paper-2/70 px-4 py-2.5">
+      <figcaption className="flex items-center justify-between gap-3 border-b border-rule bg-surface px-4 py-2.5">
         <span className="truncate font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-ink-3">{label}</span>
-        {meta ? <span className="shrink-0">{meta}</span> : null}
+        <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
+          {meta ?? <Search className="h-3 w-3" />}
+          pratinjau
+        </span>
       </figcaption>
       <div className={bodyClassName}>{children}</div>
     </figure>

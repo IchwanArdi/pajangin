@@ -125,11 +125,10 @@ export default function ContohPage() {
   const templates = Object.values(BUSINESS_TEMPLATES);
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen bg-surface text-ink">
       <MegaNav />
       <main>
         <section className="relative border-b border-rule">
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-console-grid opacity-70 [mask-image:radial-gradient(120%_90%_at_50%_0%,black,transparent_70%)]" />
           <Container className="relative py-16 sm:py-24">
             <Eyebrow>Contoh tampilan</Eyebrow>
             <h1 className="mt-5 max-w-3xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl">
@@ -165,7 +164,7 @@ export default function ContohPage() {
           </div>
         </Section>
 
-        <Section bordered tone="paper-2">
+        <Section bordered>
           <SectionHead
             eyebrow="Galeri template"
             title="Tujuh template untuk tujuh karakter usaha."

@@ -70,7 +70,7 @@ export function MegaNav() {
       <div className="mx-auto w-full max-w-6xl px-3 sm:px-8">
         <div
           className={`flex h-14 items-center justify-between gap-2 rounded-full border border-rule px-2 pl-4 backdrop-blur transition-shadow duration-300 ${
-            scrolled ? 'bg-paper/90 shadow-pop' : 'bg-paper/80 shadow-sm'
+            scrolled ? 'bg-surface/90 shadow-pop' : 'bg-surface/80 shadow-sm'
           }`}
         >
           <Link href="/" className="shrink-0 text-[15px] font-extrabold tracking-tight text-ink">
@@ -155,7 +155,7 @@ export function MegaNav() {
               className="absolute inset-x-0 top-full mx-auto mt-2 hidden w-full max-w-6xl px-3 sm:px-8 lg:block"
               onMouseLeave={() => setOpen(null)}
             >
-              <div className="overflow-hidden rounded-3xl border border-rule bg-paper shadow-pop">
+              <div className="overflow-hidden rounded-3xl border border-rule bg-surface shadow-pop">
                 <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.65fr]">
                   <div>
                     <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink-3">
@@ -218,7 +218,7 @@ export function MegaNav() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={reduce ? { opacity: 1 } : { opacity: 0, height: 0 }}
               transition={{ duration: 0.26, ease }}
-              className="mt-2 overflow-hidden rounded-3xl border border-rule bg-paper shadow-pop lg:hidden"
+              className="mt-2 overflow-hidden rounded-3xl border border-rule bg-surface shadow-pop lg:hidden"
             >
               <div className="space-y-1 p-3">
                 <button

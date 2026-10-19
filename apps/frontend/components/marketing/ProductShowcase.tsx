@@ -57,17 +57,17 @@ function SerpMockup() {
     <MockupFrame label="Hasil pencarian Google" meta={<Search className="h-3 w-3 text-ink-3" />} bodyClassName="p-4 sm:p-5">
       <div className="rounded-xl border border-rule bg-surface p-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-paper-2 text-[10px] font-bold text-ink">KP</span>
+          <span className="grid h-7 w-7 place-items-center rounded-full bg-paper-2 text-[10px] font-bold text-ink">BJ</span>
           <div className="min-w-0">
-            <p className="truncate text-xs text-ink">Kopi Pagi</p>
-            <p className="serp-url truncate text-[11px]">pajangin.web.id/kopi-pagi</p>
+            <p className="truncate text-xs text-ink">Bengkel Maju Jaya</p>
+            <p className="serp-url truncate text-[11px]">pajangin.web.id/bengkel-maju-jaya</p>
           </div>
         </div>
         <p className="serp-link mt-2 text-[15px] font-medium leading-snug">
-          Kopi Pagi — Kedai Kopi &amp; Cafe di Purwokerto
+          Bengkel Maju Jaya — Bengkel &amp; Otomotif di Purwokerto
         </p>
         <p className="mt-1 text-xs leading-relaxed text-ink-2">
-          Espresso, manual brew, dan roti bakar. Buka 07.00–22.00. Hubungi langsung via WhatsApp.
+          Servis AC, ganti oli, dan tune up ringan. Buka 08.00–17.00. Hubungi langsung via WhatsApp.
         </p>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
@@ -157,7 +157,6 @@ function AnalyticsMockup() {
           ))}
         </div>
       </div>
-      <p className="text-[11px] text-ink-3">Angka di atas adalah contoh tampilan antarmuka, bukan data nyata.</p>
     </MockupFrame>
   );
 }
@@ -214,7 +213,7 @@ const MINI_ICONS = {
 
 export function ProductShowcase() {
   return (
-    <Section id="fitur" bordered tone="paper-2">
+    <Section id="fitur" bordered>
       <SectionHead
         eyebrow="Produk"
         title="Tampil profesional, dihubungi, lalu diukur."

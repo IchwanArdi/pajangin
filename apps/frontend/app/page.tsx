@@ -7,7 +7,7 @@ import { ProductShowcase } from '../components/marketing/ProductShowcase';
 import { HowItWorks } from '../components/marketing/HowItWorks';
 import { Templates } from '../components/marketing/Templates';
 import { Comparison } from '../components/marketing/Comparison';
-import { Testimonials } from '../components/marketing/Testimonials';
+import { FirstUsers } from '../components/marketing/FirstUsers';
 import { PricingTeaser } from '../components/marketing/PricingTeaser';
 import { Faq } from '../components/marketing/Faq';
 import { FinalCta } from '../components/marketing/FinalCta';
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen bg-surface text-ink">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd()).replace(/</g, '\\u003c') }}
@@ -34,7 +34,7 @@ export default function HomePage() {
         <HowItWorks />
         <Templates />
         <Comparison />
-        <Testimonials />
+        <FirstUsers />
         <PricingTeaser />
         <Faq />
         <FinalCta />

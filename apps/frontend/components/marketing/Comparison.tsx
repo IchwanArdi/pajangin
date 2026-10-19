@@ -13,7 +13,7 @@ export function Comparison() {
       />
 
       <div className="mt-10 overflow-hidden rounded-2xl border border-rule bg-surface">
-        <div className="hidden grid-cols-[1.15fr_1fr_1fr] gap-5 border-b border-rule bg-paper-2 px-5 py-3 sm:grid">
+        <div className="hidden grid-cols-[1.15fr_1fr_1fr] gap-5 border-b border-rule bg-surface px-5 py-3 sm:grid">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">Aspek</span>
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-3">Tanpa Pajangin</span>
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-accent">Dengan Pajangin</span>

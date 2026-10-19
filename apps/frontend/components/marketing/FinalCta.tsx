@@ -14,10 +14,14 @@ export function FinalCta() {
   const reduce = useReducedMotion();
 
   return (
-    <section className="border-t border-rule bg-paper">
+    <section className="border-t border-rule bg-surface">
       <Container className="py-16 sm:py-24">
-        <div className="relative overflow-hidden rounded-[2rem] border border-rule bg-accent-soft px-6 py-12 sm:px-12 sm:py-16">
-          <div aria-hidden className="pointer-events-none absolute inset-0 bg-console-grid opacity-50" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-rule bg-surface px-6 py-12 sm:px-12 sm:py-16">
+          <div aria-hidden className="cta-aurora">
+            <span className="cta-aurora__blob cta-aurora__blob--a" />
+            <span className="cta-aurora__blob cta-aurora__blob--b" />
+            <span className="cta-aurora__blob cta-aurora__blob--c" />
+          </div>
           <motion.div
             className="relative max-w-2xl"
             initial={reduce ? false : 'hidden'}
@@ -47,7 +51,7 @@ export function FinalCta() {
                 href={loggedIn ? '/dashboard' : '/register'}
                 className="press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink shadow-pop transition hover:opacity-90"
               >
-                {loggedIn ? 'Buka dashboard' : 'Buat halaman bisnis'}
+                {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}
                 <ArrowRight className="arrow-nudge h-4 w-4" />
               </Link>
               <Link

@@ -81,7 +81,7 @@ export function BarGrow({
 export function DrawSparkline({
   lines,
   className,
-  label = 'Tren kunjungan (contoh tampilan)',
+  label = 'Tren kunjungan (pratinjau dashboard)',
 }: {
   lines: Array<{ points: string; stroke: string }>;
   className?: string;

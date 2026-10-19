@@ -6,7 +6,7 @@ import { Eyebrow, Section } from './primitives';
 
 export function Faq() {
   return (
-    <Section id="faq" bordered tone="paper-2">
+    <Section id="faq" bordered>
       <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
         <div className="lg:sticky lg:top-24 lg:self-start">
           <Eyebrow>Pertanyaan umum</Eyebrow>

@@ -4,7 +4,7 @@ import { Container } from './primitives';
 
 export function Footer() {
   return (
-    <footer className="border-t border-rule bg-paper-2">
+    <footer className="border-t border-rule bg-surface">
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="max-w-xs">

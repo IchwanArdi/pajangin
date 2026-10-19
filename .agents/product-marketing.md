@@ -106,7 +106,7 @@
 ## Proof Points
 **Metrics:** belum ada (pre-launch). Target ukur: jumlah bisnis terdaftar, halaman live, share, klik WA pertama, lead.
 **Customers:** belum ada — kandidat pilot 1-2 usaha lokal.
-**Testimonials:** belum ada. Section testimoni di landing saat ini adalah slot placeholder yang jelas ditandai (bukan karangan).
+**Testimonials:** belum ada. Landing tidak lagi memakai testimoni placeholder — diganti section "Pengguna pertama" (framing early access jujur: onboarding dibantu langsung, masukan menentukan fitur, fokus Purwokerto). Bukti sosial ditambahkan begitu ada testimoni asli.
 **Value themes:**
 | Theme | Proof |
 |-------|-------|
