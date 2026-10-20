@@ -88,6 +88,22 @@ Buka browser:
 
 ---
 
+## ✅ Pemeriksaan Kualitas
+
+Jalankan saat dev server dimatikan agar build tidak bentrok dengan folder `.next`:
+
+```bash
+pnpm --filter backend lint
+pnpm --filter backend test
+pnpm --filter frontend lint
+pnpm --filter frontend exec tsc --noEmit
+pnpm build
+```
+
+Build frontend juga memeriksa TypeScript dan seluruh route. Warning ESLint yang sudah ada sebelumnya (mis. `<img>` di komponen upload) tidak menghalangi build.
+
+---
+
 ## 📊 Core Features Walkthrough
 
 ### 1. Dynamic Public Microsite (`/[slug]`)
@@ -116,3 +132,4 @@ Bukan hanya menyajikan grafik mati, engine ini menganalisis:
 - **Inbox masukan**: ide, kritik, dan laporan bug dari pemilik usaha; status bisa ditandai `baru` → `dibaca` → `selesai`.
 - **Akses terbatas**: login Supabase tetap diperlukan, lalu dicek terhadap allowlist `ADMIN_EMAILS` di backend. Data pengguna/bisnis bersifat read-only dari console.
 - **Tanpa notifikasi WhatsApp**: masukan hanya masuk ke inbox admin, tidak dikirim ke WA.
+- **Endpoint admin**: `GET /api/v1/admin/overview`, `GET /api/v1/admin/users`, `GET /api/v1/admin/businesses`, `GET /api/v1/admin/feedback`, dan `PATCH /api/v1/admin/feedback/:id` (khusus allowlist).
