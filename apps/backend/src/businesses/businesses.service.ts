@@ -309,7 +309,28 @@ export class BusinessesService {
       .map((item) => ({ slug: item.slug, updated_at: item.updatedAt.toISOString() }));
   }
 
-  // Generate slug unik yang aman dari collision
+  // Route statis Next.js tidak boleh tertutup slug bisnis (mis. /admin, /pricing).
+  private static readonly RESERVED_SLUGS = new Set([
+    'admin',
+    'dashboard',
+    'onboarding',
+    'login',
+    'register',
+    'forgot-password',
+    'reset-password',
+    'pricing',
+    'contoh',
+    'auth',
+    'api',
+    'sitemap.xml',
+    'robots.txt',
+    'manifest.webmanifest',
+    'opengraph-image',
+    'icon',
+    'apple-icon',
+  ]);
+
+  // Generate slug unik yang aman dari collision route statis & bisnis lain
   private async generateUniqueSlug(baseName: string): Promise<string> {
     const slug =
       baseName
@@ -322,7 +343,10 @@ export class BusinessesService {
 
     let candidate = slug;
     let counter = 1;
-    while (await this.prisma.business.findUnique({ where: { slug: candidate }, select: { id: true } })) {
+    while (
+      BusinessesService.RESERVED_SLUGS.has(candidate) ||
+      (await this.prisma.business.findUnique({ where: { slug: candidate }, select: { id: true } }))
+    ) {
       counter++;
       candidate = `${slug}-${counter}`;
     }

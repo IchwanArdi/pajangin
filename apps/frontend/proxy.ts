@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Halaman yang wajib login
-const PROTECTED = ['/dashboard', '/onboarding', '/reset-password'];
+const PROTECTED = ['/dashboard', '/onboarding', '/reset-password', '/admin'];
 // Halaman tamu — user yang sudah login langsung diarahkan ke dashboard
 const GUEST_ONLY = ['/login', '/register', '/forgot-password'];
 

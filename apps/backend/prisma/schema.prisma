@@ -26,6 +26,25 @@ enum BookingStatus {
   cancelled
 }
 
+// masukan dari pemilik usaha ke tim Pajangin (bukan ulasan publik bisnis)
+enum FeedbackCategory {
+  masukan
+  kritik
+  bug
+  lainnya
+}
+
+enum FeedbackStatus {
+  baru
+  dibaca
+  selesai
+}
+
+enum FeedbackSource {
+  dashboard
+  public
+}
+
 // profil pemilik bisnis — id SAMA dengan auth.users.id (Supabase Auth).
 // Password, sesi, verifikasi email, dan OAuth dikelola Supabase Auth, bukan tabel ini.
 model User {
@@ -156,6 +175,32 @@ model BusinessImage {
 
   @@index([businessId, orderIndex])
   @@map("business_images")
+}
+
+// Masukan produk dari pemilik usaha. Sengaja menyimpan snapshot nama/email/bisnis
+// supaya arsip tetap terbaca walau akun atau bisnis dihapus. Tanpa FK, karena
+// feedback adalah catatan historis dan tidak boleh ikut terhapus.
+model Feedback {
+  id           String           @id @default(uuid()) @db.Uuid
+  userId       String?          @map("user_id") @db.Uuid
+  userName     String?          @map("user_name")
+  userEmail    String?          @map("user_email")
+  userWhatsapp String?          @map("user_whatsapp")
+  businessId   String?          @map("business_id") @db.Uuid
+  businessName String?          @map("business_name")
+  source       FeedbackSource   @default(dashboard)
+  category     FeedbackCategory @default(masukan)
+  rating       Int?
+  message      String           @db.Text
+  status       FeedbackStatus   @default(baru)
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@index([category, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("feedback")
 }
 
 // booking / appointment / reservasi dari pelanggan

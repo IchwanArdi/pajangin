@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { CalendarCheck, ExternalLink, Image as ImageIcon, LayoutDashboard, LogOut, MessageSquare, Package, QrCode, Sparkles, Store, type LucideIcon } from 'lucide-react';
+import { CalendarCheck, ExternalLink, Image as ImageIcon, LayoutDashboard, LogOut, MessageSquare, MessageSquarePlus, Package, QrCode, ShieldCheck, Sparkles, Store, type LucideIcon } from 'lucide-react';
 import { createClient } from '../../lib/supabase/client';
 import { useBusiness } from './BusinessContext';
 import { BusinessSwitcher } from './BusinessSwitcher';
@@ -96,6 +96,25 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="border-t border-rule p-3">
+          {user?.is_admin && (
+            <Link
+              href="/admin"
+              className="mb-1 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
+            >
+              <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
+              Admin console
+            </Link>
+          )}
+          <Link
+            href="/dashboard/masukan"
+            aria-current={isActive('/dashboard/masukan') ? 'page' : undefined}
+            className={`mb-1 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
+              isActive('/dashboard/masukan') ? 'bg-paper-2 text-ink' : 'text-ink-2 hover:bg-paper-2 hover:text-ink'
+            }`}
+          >
+            <MessageSquarePlus className={`h-4 w-4 ${isActive('/dashboard/masukan') ? 'text-accent' : ''}`} strokeWidth={1.75} />
+            Bantuan & Masukan
+          </Link>
           <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper-3 text-xs font-semibold text-ink">
               {(user?.name || user?.email || '?').charAt(0).toUpperCase()}
@@ -117,6 +136,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           {status === 'ready' ? <BusinessSwitcher onLogout={logout} compact /> : <Skeleton className="h-9 w-44" />}
         </div>
         <div className="flex items-center gap-1.5">
+          {user?.is_admin && (
+            <Link href="/admin" aria-label="Admin console" title="Admin console" className={btn.icon}>
+              <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
+            </Link>
+          )}
+          <Link href="/dashboard/masukan" aria-label="Bantuan & Masukan" title="Bantuan & Masukan" className={btn.icon}>
+            <MessageSquarePlus className="h-4 w-4" strokeWidth={1.75} />
+          </Link>
           <NotificationBell />
           {business && <ShareMenu slug={business.slug} name={business.name} iconOnly />}
         </div>

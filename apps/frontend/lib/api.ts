@@ -135,6 +135,7 @@ export interface UserProfile {
   name: string;
   email: string;
   whatsapp: string | null;
+  is_admin: boolean;
 }
 
 export class ApiError extends Error {
@@ -646,6 +647,297 @@ export function generateAiContent(
     auth: true,
     body: JSON.stringify(payload),
     fallbackError: 'Gagal menghasilkan konten dengan AI.',
+  });
+}
+
+// ===== masukan pengguna + admin console =====
+
+export type FeedbackCategory = 'masukan' | 'kritik' | 'bug' | 'lainnya';
+export type FeedbackStatus = 'baru' | 'dibaca' | 'selesai';
+
+export interface FeedbackItem {
+  id: string;
+  user_id: string | null;
+  user_name: string | null;
+  user_email: string | null;
+  user_whatsapp: string | null;
+  business_id: string | null;
+  business_name: string | null;
+  source: string;
+  category: FeedbackCategory;
+  rating: number | null;
+  message: string;
+  status: FeedbackStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubmitFeedbackPayload {
+  category: FeedbackCategory;
+  rating?: number | null;
+  message: string;
+  business_id?: string | null;
+}
+
+export function submitFeedback(
+  payload: SubmitFeedbackPayload,
+): Promise<{ success: boolean; feedback_id: string; created_at: string }> {
+  return request('/api/v1/feedback', {
+    method: 'POST',
+    auth: true,
+    body: JSON.stringify(payload),
+    fallbackError: 'Gagal mengirim masukan.',
+  });
+}
+
+export interface AdminFeedbackListResponse {
+  items: FeedbackItem[];
+  total: number;
+  page: number;
+  limit: number;
+  counts: {
+    semua: number;
+    baru: number;
+    dibaca: number;
+    selesai: number;
+  };
+  average_rating: number | null;
+}
+
+export function getAdminFeedback(
+  params: {
+    status?: FeedbackStatus;
+    category?: FeedbackCategory;
+    page?: number;
+    limit?: number;
+  } = {},
+): Promise<AdminFeedbackListResponse> {
+  const query = new URLSearchParams();
+  if (params.status) query.set('status', params.status);
+  if (params.category) query.set('category', params.category);
+  query.set('page', String(params.page ?? 1));
+  query.set('limit', String(params.limit ?? 50));
+
+  return request<AdminFeedbackListResponse>(`/api/v1/admin/feedback?${query.toString()}`, {
+    auth: true,
+    fallbackError: 'Gagal memuat masukan.',
+  });
+}
+
+export function updateFeedbackStatus(id: string, status: FeedbackStatus): Promise<FeedbackItem> {
+  return request<FeedbackItem>(`/api/v1/admin/feedback/${id}`, {
+    method: 'PATCH',
+    auth: true,
+    body: JSON.stringify({ status }),
+    fallbackError: 'Gagal memperbarui status masukan.',
+  });
+}
+
+export interface AdminSeriesPoint {
+  date: string;
+  users: number;
+  businesses: number;
+}
+
+export interface AdminOverview {
+  period_days: number;
+  users: {
+    total: number;
+    new: number;
+    previous: number;
+    delta: number | null;
+    with_business: number;
+  };
+  businesses: {
+    total: number;
+    new: number;
+    previous: number;
+    delta: number | null;
+    with_services: number;
+    with_hero: number;
+    booking_enabled: number;
+    with_traffic: number;
+  };
+  feedback: {
+    total: number;
+    new: number;
+    unread: number;
+    average_rating: number | null;
+    by_category: Array<{ category: FeedbackCategory; count: number }>;
+  };
+  activity: {
+    page_views: number;
+    page_views_delta: number | null;
+    whatsapp_clicks: number;
+    whatsapp_clicks_delta: number | null;
+    leads: number;
+    leads_delta: number | null;
+    bookings: number;
+    bookings_delta: number | null;
+  };
+  series: AdminSeriesPoint[];
+  top_cities: Array<{ city: string; count: number }>;
+  top_categories: Array<{ category: string; count: number }>;
+  recent_users: Array<{
+    id: string;
+    name: string;
+    email: string;
+    created_at: string;
+    business_count: number;
+  }>;
+  recent_businesses: Array<{
+    id: string;
+    slug: string;
+    name: string;
+    city: string;
+    category: string;
+    created_at: string;
+    owner_name: string;
+    owner_email: string;
+  }>;
+  recent_feedback: FeedbackItem[];
+}
+
+export function getAdminOverview(days = 30): Promise<AdminOverview> {
+  return request<AdminOverview>(`/api/v1/admin/overview?days=${days}`, {
+    auth: true,
+    fallbackError: 'Gagal memuat ringkasan admin.',
+  });
+}
+
+// ===== admin: daftar pengguna =====
+
+export type AdminUserSort = 'newest' | 'oldest' | 'name';
+export type AdminUserBusinessFilter = 'ya' | 'tidak';
+
+export interface AdminUserBusiness {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface AdminUserListItem {
+  id: string;
+  name: string;
+  email: string;
+  whatsapp: string | null;
+  created_at: string;
+  business_count: number;
+  businesses: AdminUserBusiness[];
+  feedback_count: number;
+  last_feedback_at: string | null;
+  is_admin: boolean;
+}
+
+export interface AdminUsersResponse {
+  items: AdminUserListItem[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+  summary: {
+    total: number;
+    with_business: number;
+    new_30d: number;
+  };
+}
+
+export interface AdminUsersParams {
+  q?: string;
+  has_business?: AdminUserBusinessFilter;
+  sort?: AdminUserSort;
+  page?: number;
+  limit?: number;
+}
+
+export function getAdminUsers(params: AdminUsersParams = {}): Promise<AdminUsersResponse> {
+  const query = new URLSearchParams();
+  if (params.q) query.set('q', params.q);
+  if (params.has_business) query.set('has_business', params.has_business);
+  if (params.sort) query.set('sort', params.sort);
+  query.set('page', String(params.page ?? 1));
+  query.set('limit', String(params.limit ?? 20));
+
+  return request<AdminUsersResponse>(`/api/v1/admin/users?${query.toString()}`, {
+    auth: true,
+    fallbackError: 'Gagal memuat daftar pengguna.',
+  });
+}
+
+// ===== admin: daftar bisnis =====
+
+export type AdminBusinessSort = 'newest' | 'oldest' | 'name';
+export type AdminBusinessCompleteness = 'lengkap' | 'perlu';
+
+export interface AdminBusinessListItem {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+  category: string;
+  created_at: string;
+  updated_at: string;
+  owner: {
+    name: string;
+    email: string;
+    whatsapp: string | null;
+  };
+  service_count: number;
+  image_count: number;
+  lead_count: number;
+  booking_count: number;
+  has_description: boolean;
+  has_hero: boolean;
+  booking_enabled: boolean;
+  completeness: AdminBusinessCompleteness;
+  page_views_30d: number;
+  whatsapp_clicks_30d: number;
+  last_activity_at: string | null;
+}
+
+export interface AdminBusinessesResponse {
+  items: AdminBusinessListItem[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+  summary: {
+    total: number;
+    complete: number;
+    incomplete: number;
+    cities: number;
+  };
+  filter_options: {
+    cities: string[];
+    categories: string[];
+  };
+}
+
+export interface AdminBusinessesParams {
+  q?: string;
+  city?: string;
+  category?: string;
+  completeness?: AdminBusinessCompleteness;
+  sort?: AdminBusinessSort;
+  page?: number;
+  limit?: number;
+}
+
+export function getAdminBusinesses(
+  params: AdminBusinessesParams = {},
+): Promise<AdminBusinessesResponse> {
+  const query = new URLSearchParams();
+  if (params.q) query.set('q', params.q);
+  if (params.city) query.set('city', params.city);
+  if (params.category) query.set('category', params.category);
+  if (params.completeness) query.set('completeness', params.completeness);
+  if (params.sort) query.set('sort', params.sort);
+  query.set('page', String(params.page ?? 1));
+  query.set('limit', String(params.limit ?? 20));
+
+  return request<AdminBusinessesResponse>(`/api/v1/admin/businesses?${query.toString()}`, {
+    auth: true,
+    fallbackError: 'Gagal memuat daftar bisnis.',
   });
 }
 

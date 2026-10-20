@@ -10,6 +10,8 @@ import { BookingsModule } from './bookings/bookings.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { AiModule } from './ai/ai.module.js';
 import { LeadsModule } from './leads/leads.module.js';
+import { FeedbackModule } from './feedback/feedback.module.js';
+import { AdminModule } from './admin/admin.module.js';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { LeadsModule } from './leads/leads.module.js';
     NotificationsModule,
     AiModule,
     LeadsModule,
+    FeedbackModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

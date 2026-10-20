@@ -1,12 +1,14 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { isAdminEmail } from './admin.js';
 
 export interface UserSession {
   id: string;
   name: string;
   email: string;
   whatsapp: string | null;
+  is_admin: boolean;
 }
 
 interface SupabaseClaims extends JWTPayload {
@@ -72,9 +74,14 @@ export class AuthService {
     if (existing) {
       // sinkronkan email kalau user menggantinya di Supabase Auth
       if (existing.email !== cleanEmail) {
-        return this.prisma.user.update({ where: { id }, data: { email: cleanEmail }, select });
+        const updated = await this.prisma.user.update({
+          where: { id },
+          data: { email: cleanEmail },
+          select,
+        });
+        return { ...updated, is_admin: isAdminEmail(updated.email) };
       }
-      return existing;
+      return { ...existing, is_admin: isAdminEmail(existing.email) };
     }
 
     const name = (meta?.full_name || meta?.name || cleanEmail.split('@')[0]).trim().slice(0, 120);
@@ -85,7 +92,7 @@ export class AuthService {
       select,
     });
     this.logger.log(`Profil user baru: ${cleanEmail} (${id})`);
-    return created;
+    return { ...created, is_admin: isAdminEmail(created.email) };
   }
 
   // dipakai guard: lempar 401 kalau token tidak valid

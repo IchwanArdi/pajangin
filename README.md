@@ -46,6 +46,8 @@ pnpm --filter backend db:deploy     # production / DB baru
 pnpm --filter backend db:migrate    # development (membuat migrasi baru saat schema berubah)
 ```
 > Schema ada di `apps/backend/prisma/schema.prisma`. Prisma Client di-generate otomatis ke `apps/backend/src/generated/prisma` saat `pnpm install` / `build`.
+>
+> Isi `ADMIN_EMAILS` di `apps/backend/.env` (pisahkan dengan koma) untuk membuka console founder di `/admin`. Kosong = admin ditutup.
 
 ### 3. Konfigurasi Supabase Auth
 ```bash
@@ -77,6 +79,11 @@ Buka browser:
 - **Homepage**: `http://localhost:3000`
 - **Daftar bisnis**: `http://localhost:3000/register`
 - **Dashboard Pemilik**: `http://localhost:3000/dashboard`
+- **Bantuan & Masukan**: `http://localhost:3000/dashboard/masukan`
+- **Admin console (founder)**: `http://localhost:3000/admin`
+- **Admin · Pengguna**: `http://localhost:3000/admin/pengguna`
+- **Admin · Bisnis**: `http://localhost:3000/admin/bisnis`
+- **Admin · Masukan**: `http://localhost:3000/admin/masukan`
 - **Halaman publik bisnis**: `http://localhost:3000/<slug-bisnis-anda>`
 
 ---
@@ -101,3 +108,11 @@ Bukan hanya menyajikan grafik mati, engine ini menganalisis:
 - Layanan dengan tingkat konversi tertinggi (rekomendasi untuk dijadikan *highlight* teratas).
 - Analisis dominasi traffic pencarian Google lokal vs ketergantungan media sosial.
 - Rekomendasi optimasi *mobile-first*.
+
+### 4. Founder Admin Console (`/admin`)
+- **Ringkasan platform**: jumlah akun & bisnis, pertumbuhan, aktivitas halaman/WA, lead, booking, dan tingkat aktivasi bisnis.
+- **Daftar pengguna** (`/admin/pengguna`): pencarian nama/email/WhatsApp, filter kepemilikan bisnis, jumlah masukan, dan tautan ke bisnis publik.
+- **Daftar bisnis** (`/admin/bisnis`): pencarian nama/slug/kota/pemilik, filter kota/kategori/kelengkapan, traffic 30 hari, lead, dan booking.
+- **Inbox masukan**: ide, kritik, dan laporan bug dari pemilik usaha; status bisa ditandai `baru` → `dibaca` → `selesai`.
+- **Akses terbatas**: login Supabase tetap diperlukan, lalu dicek terhadap allowlist `ADMIN_EMAILS` di backend. Data pengguna/bisnis bersifat read-only dari console.
+- **Tanpa notifikasi WhatsApp**: masukan hanya masuk ke inbox admin, tidak dikirim ke WA.
