@@ -47,15 +47,29 @@ function Anno({ n, className = '' }: { n: number; className?: string }) {
 function AnatomyMockup() {
   return (
     <MockupFrame label="Anatomi halaman publik" meta={<span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">pratinjau</span>} bodyClassName="space-y-3 p-4">
-      <div className="overflow-hidden rounded-xl border border-rule">
-        <div className="h-14 bg-accent-soft" />
-        <div className="flex items-center gap-3 p-3">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-ink text-[10px] font-bold text-paper">BM</span>
+      <div className="relative overflow-hidden rounded-xl border border-rule">
+        <Anno n={1} className="absolute right-2 top-2 z-10" />
+        <div className="flex items-center gap-2.5 border-b border-rule p-2.5">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-ink text-[10px] font-bold text-paper">BM</span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-ink">Bengkel Makmur</p>
-            <p className="truncate text-[11px] text-ink-2">Otomotif · Purwokerto · Buka 08.00–17.00</p>
+            <p className="truncate text-xs font-bold text-ink">Bengkel Maju Jaya</p>
+            <p className="truncate text-[10px] text-ink-2">Otomotif · Purwokerto · Buka 08.00–17.00</p>
           </div>
-          <Anno n={1} />
+        </div>
+        <div className="relative h-20 overflow-hidden bg-ink p-3">
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-30"
+            style={{ background: 'radial-gradient(120% 120% at 20% 0%, var(--color-accent), transparent 60%)' }}
+          />
+          <div className="relative flex h-full flex-col justify-end">
+            <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-white/50">Bengkel · Purwokerto</p>
+            <p className="font-display mt-0.5 text-sm font-semibold text-white">Servis rapi, harga jelas.</p>
+            <div className="mt-1.5 flex gap-1.5">
+              <span className="h-3.5 w-16 rounded-full bg-accent" />
+              <span className="h-3.5 w-10 rounded-full border border-white/40" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -76,49 +90,79 @@ function AnatomyMockup() {
         </div>
       </div>
 
-      <div className="relative rounded-xl border border-dashed border-ink-3/40 p-3">
+      <div className="relative rounded-xl border border-rule p-3">
         <Anno n={3} className="absolute -top-2.5 right-3" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Galeri foto</p>
-        <div className="mt-2 grid grid-cols-3 gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="aspect-square rounded-md border border-rule bg-paper-2" />
-          ))}
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Galeri bento</p>
+        <div className="mt-2 grid h-20 grid-cols-3 grid-rows-2 gap-1.5">
+          <span className="col-span-2 row-span-2 rounded-md border border-rule bg-paper-2" />
+          <span className="rounded-md border border-rule bg-accent-soft" />
+          <span className="rounded-md border border-rule bg-paper-2" />
         </div>
       </div>
 
-      <div className="relative rounded-xl border border-dashed border-ink-3/40 p-3">
-        <Anno n={4} className="absolute -top-2.5 right-3" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Testimoni pelanggan</p>
-        <p className="mt-2 text-xs leading-relaxed text-ink-3">“Ruang untuk ulasan asli dari pelanggan Anda.”</p>
+      <div className="relative overflow-hidden rounded-xl bg-ink p-3 text-paper">
+        <Anno n={4} className="absolute right-3 top-3" />
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-paper/50">Testimoni pelanggan</p>
+        <p className="font-display mt-1 text-xl leading-none text-accent">“</p>
+        <p className="mt-1 text-[11px] leading-relaxed text-paper/80">Pengerjaan cepat, hasil rapi. Pasti kembali lagi.</p>
+        <p className="mt-1.5 text-[9px] text-paper/45">Rina · ★ 5/5</p>
       </div>
 
       <div className="relative rounded-xl border border-rule p-3">
         <Anno n={5} className="absolute -top-2.5 right-3" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Booking / reservasi</p>
-        <div className="mt-2 grid grid-cols-4 gap-1.5">
-          {['09.00', '10.00', '13.00', '15.00'].map((t) => (
-            <span key={t} className="rounded-lg border border-rule px-2 py-1.5 text-center text-[11px] text-ink-2">
-              {t}
-            </span>
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Pertanyaan umum</p>
+        <div className="mt-2 border-t border-rule">
+          {['Bisa booking hari ini?', 'Berapa lama pengerjaan?'].map((q) => (
+            <div key={q} className="flex items-center justify-between border-b border-rule py-2 text-[11px] text-ink-2">
+              <span>{q}</span>
+              <span className="text-ink-3">+</span>
+            </div>
           ))}
         </div>
       </div>
 
-      <div className="relative flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-2.5 text-xs font-semibold text-accent-ink">
-        <MessageCircle className="h-3.5 w-3.5" /> Hubungi via WhatsApp
-        <Anno n={6} className="border-accent-ink/40 bg-transparent text-accent-ink" />
+      <div className="relative rounded-xl border border-rule p-3">
+        <Anno n={6} className="absolute -top-2.5 right-3" />
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Lokasi &amp; peta</p>
+        <div className="relative mt-2 h-20 overflow-hidden rounded-lg border border-rule bg-paper-2">
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'radial-gradient(var(--color-rule) 1px, transparent 1.5px)',
+              backgroundSize: '12px 12px',
+            }}
+          />
+          <div className="absolute bottom-1.5 left-1.5 right-10 rounded-md border border-rule bg-surface/95 p-1.5">
+            <p className="text-[9px] font-semibold text-ink">Jl. Contoh No. 12</p>
+            <span className="mt-1 inline-block rounded-full bg-ink px-1.5 py-0.5 text-[7px] font-semibold text-paper">Salin alamat</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative rounded-xl border border-rule p-3">
+        <Anno n={7} className="absolute -top-2.5 right-3" />
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Booking &amp; WhatsApp</p>
+        <div className="mt-2 grid grid-cols-2 gap-1.5">
+          <span className="h-6 rounded-md border border-rule bg-paper-2" />
+          <span className="h-6 rounded-md border border-rule bg-paper-2" />
+        </div>
+        <div className="mt-1.5 flex items-center justify-center gap-1.5 rounded-full bg-accent px-3 py-2 text-[10px] font-semibold text-accent-ink">
+          <MessageCircle className="h-3 w-3" /> Hubungi via WhatsApp
+        </div>
       </div>
     </MockupFrame>
   );
 }
 
 const ANATOMY = [
-  'Identitas bisnis: logo, kategori, kota, dan jam buka.',
-  'Layanan dengan harga — satu klik untuk melihat detail.',
-  'Galeri foto: menu, hasil kerja, atau interior.',
-  'Testimoni asli dari pelanggan sebagai bukti sosial.',
-  'Booking opsional dengan pilihan tanggal dan jam.',
-  'Tombol WhatsApp menempel di bawah layar ponsel.',
+  'Hero & identitas: nama, kategori, status buka, dan tombol WhatsApp.',
+  'Layanan & harga — tata letak mengikuti jenis usaha.',
+  'Galeri bento dengan filter kategori dan lightbox.',
+  'Tentang & testimoni asli dalam band gelap sebagai bukti sosial.',
+  'FAQ bergaris untuk menjawab keberatan umum.',
+  'Lokasi: peta besar, tombol Maps, dan salin alamat.',
+  'Booking opsional + tombol WhatsApp menempel di layar ponsel.',
 ];
 
 export default function ContohPage() {
@@ -146,7 +190,7 @@ export default function ContohPage() {
             <div className="lg:sticky lg:top-24">
               <SectionHead
                 eyebrow="Anatomi halaman"
-                title="Enam bagian yang membuat halaman siap jual."
+                title="Tujuh bagian yang membuat halaman siap jual."
                 desc="Setiap bagian diambil dari data profil bisnis Anda — tidak perlu menyusun tata letak dari awal."
               />
               <ol className="mt-8 space-y-3">

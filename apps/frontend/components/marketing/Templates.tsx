@@ -4,49 +4,192 @@ import { BUSINESS_TEMPLATES, type BusinessTemplate } from '../../lib/templates';
 import { Reveal } from '../../app/reveal';
 import { Section, SectionHead } from './primitives';
 
-export function TemplateWire({ t }: { t: BusinessTemplate }) {
-  const accent = t.accentToken;
+/** Bar mini: logo, nav, dan CTA — konteks yang sama di semua wireframe. */
+function WireHeader({ accent }: { accent: string }) {
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-rule bg-surface p-3">
-      <div className="flex items-center gap-1.5">
-        <span className="h-1.5 w-8 rounded-full" style={{ background: accent }} />
-        <span className="ml-auto h-1.5 w-5 rounded-full bg-rule" />
-        <span className="h-1.5 w-5 rounded-full bg-rule" />
-        <span className="h-4 w-9 rounded-full" style={{ background: accent }} />
-      </div>
+    <div className="flex items-center gap-1.5">
+      <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: accent }} />
+      <span className="h-1.5 w-7 rounded-full bg-ink/20" />
+      <span className="ml-auto h-1.5 w-4 rounded-full bg-rule" />
+      <span className="h-1.5 w-4 rounded-full bg-rule" />
+      <span className="h-3.5 w-8 rounded-full" style={{ background: accent }} />
+    </div>
+  );
+}
 
-      {t.heroStyle === 'split' ? (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="space-y-1.5">
-            <span className="block h-2 w-4/5 rounded-full bg-ink/15" />
-            <span className="block h-2 w-3/5 rounded-full bg-rule" />
-            <span className="mt-1.5 block h-4 w-16 rounded-full" style={{ background: accent }} />
+function WireHero({ t }: { t: BusinessTemplate }) {
+  const accent = t.accentToken;
+
+  if (t.id === 'restaurant') {
+    return (
+      <div className="relative mt-2.5 h-[74px] overflow-hidden rounded-lg bg-ink">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ background: `radial-gradient(120% 120% at 15% 0%, ${accent}, transparent 58%)`, opacity: 0.55 }}
+        />
+        <span className="absolute right-2 top-2 h-4 w-10 rounded-full border border-white/25 bg-white/10" />
+        <div className="absolute inset-x-2.5 bottom-2 space-y-1">
+          <span className="block h-1.5 w-8 rounded-full bg-white/40" />
+          <span className="block h-2.5 w-3/5 rounded-full bg-white/85" />
+          <span className="block h-1.5 w-2/5 rounded-full bg-white/30" />
+        </div>
+      </div>
+    );
+  }
+
+  if (t.id === 'workshop') {
+    return (
+      <div className="mt-2.5 grid grid-cols-2 gap-2">
+        <div className="space-y-1.5">
+          <span className="inline-block h-3 w-12 rounded-sm border border-ink/50" />
+          <span className="block h-2.5 w-full rounded-sm bg-ink/80" />
+          <span className="block h-2.5 w-4/5 rounded-sm bg-ink/80" />
+          <span className="block h-1.5 w-3/5 rounded-full bg-rule" />
+          <div className="flex gap-1 pt-0.5">
+            <span className="h-3.5 w-12 rounded-sm" style={{ background: accent }} />
+            <span className="h-3.5 w-9 rounded-sm border border-rule" />
           </div>
-          <span className="rounded-lg" style={{ background: accent, opacity: 0.14 }} />
         </div>
-      ) : t.heroStyle === 'banner' ? (
-        <div className="mt-3 space-y-1.5">
-          <span className="block h-10 rounded-lg" style={{ background: accent, opacity: 0.16 }} />
-          <span className="block h-2 w-2/5 rounded-full bg-ink/15" />
+        <span
+          className="rounded-md border-2 border-ink"
+          style={{ background: accent, opacity: 0.18, boxShadow: '3px 3px 0 var(--color-ink)' }}
+        />
+      </div>
+    );
+  }
+
+  if (t.id === 'salon') {
+    return (
+      <div className="mt-2.5">
+        <div className="flex flex-col items-center space-y-1.5">
+          <span className="h-px w-8" style={{ background: accent }} />
+          <span className="h-2.5 w-3/5 rounded-full bg-ink/20" />
+          <span className="h-1.5 w-2/5 rounded-full bg-rule" />
+          <span className="mt-1 h-3.5 w-14 rounded-full" style={{ background: accent }} />
         </div>
-      ) : t.heroStyle === 'centered' ? (
-        <div className="mt-3 flex flex-col items-center space-y-1.5">
-          <span className="block h-2 w-2/3 rounded-full bg-ink/15" />
-          <span className="block h-2 w-2/5 rounded-full bg-rule" />
-          <span className="mt-1 block h-4 w-16 rounded-full" style={{ background: accent }} />
+        <div className="relative mt-2 h-14 overflow-hidden rounded-xl border border-rule">
+          <div className="h-full w-full" style={{ background: accent, opacity: 0.13 }} />
+          <span className="absolute bottom-1.5 left-2 h-3 w-16 rounded border border-rule bg-surface/90" />
+        </div>
+      </div>
+    );
+  }
+
+  if (t.id === 'clinic') {
+    return (
+      <div className="mt-2.5 grid grid-cols-2 gap-2">
+        <div className="space-y-1.5">
+          <span className="block h-1.5 w-10 rounded-full" style={{ background: accent, opacity: 0.65 }} />
+          <span className="block h-2.5 w-full rounded-full bg-ink/20" />
+          <span className="block h-1.5 w-4/5 rounded-full bg-rule" />
+          <div className="flex gap-1 pt-1">
+            <span className="h-3.5 w-11 rounded" style={{ background: accent }} />
+            <span className="h-3.5 w-6 rounded border border-rule" />
+          </div>
+        </div>
+        <div className="relative">
+          <span className="block h-[56px] rounded-lg border border-rule" style={{ background: accent, opacity: 0.12 }} />
+          <span className="absolute -bottom-1 left-1 h-6 w-20 rounded border border-rule bg-surface p-1.5">
+            <span className="block h-1 w-12 rounded-full bg-ink/20" />
+            <span className="mt-1 block h-1 w-8 rounded-full bg-rule" />
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (t.id === 'retail') {
+    return (
+      <div className="mt-2.5 grid h-[66px] grid-cols-3 grid-rows-2 gap-1.5">
+        <span
+          className="col-span-2 row-span-2 rounded-lg border border-rule"
+          style={{ background: accent, opacity: 0.16 }}
+        />
+        <span className="rounded-md border border-rule bg-paper-2" />
+        <span className="rounded-md border border-rule" style={{ background: accent, opacity: 0.1 }} />
+      </div>
+    );
+  }
+
+  if (t.id === 'education') {
+    return (
+      <div className="mt-2.5 grid grid-cols-[1fr_0.9fr] items-center gap-2">
+        <div className="space-y-1.5">
+          <span className="block h-1.5 w-12 rounded-full" style={{ background: accent, opacity: 0.65 }} />
+          <span className="block h-2.5 w-full rounded-full bg-ink/20" />
+          <span className="block h-1.5 w-3/4 rounded-full bg-rule" />
+          <span className="mt-0.5 block h-3.5 w-12 rounded-full" style={{ background: accent }} />
+        </div>
+        <div className="grid grid-cols-2 gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className="rounded-md border border-rule bg-paper-2 p-1.5">
+              <span className="block h-1 w-4 rounded-full" style={{ background: accent, opacity: 0.6 }} />
+              <span className="mt-1 block h-1.5 w-8 rounded-full bg-ink/15" />
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2.5 grid grid-cols-2 gap-2">
+      <div className="space-y-1.5">
+        <span className="block h-2 w-5/6 rounded-full bg-ink/20" />
+        <span className="block h-2 w-3/5 rounded-full bg-rule" />
+        <span className="block h-1.5 w-2/3 rounded-full bg-rule" />
+        <span className="mt-1 block h-3.5 w-14 rounded-full" style={{ background: accent }} />
+      </div>
+      <span className="rounded-lg border border-rule" style={{ background: accent, opacity: 0.14 }} />
+    </div>
+  );
+}
+
+function WireSections({ t }: { t: BusinessTemplate }) {
+  const accent = t.accentToken;
+
+  return (
+    <>
+      {t.id === 'retail' ? (
+        <div className="mt-2 grid grid-cols-4 gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className="h-6 rounded-md border border-rule bg-paper-2" />
+          ))}
+        </div>
+      ) : t.id === 'restaurant' ? (
+        <div className="mt-2 space-y-1">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <span className="h-1 w-10 rounded-full bg-ink/20" />
+              <span className="flex-1 border-b border-dotted border-rule" />
+              <span className="h-1 w-4 rounded-full" style={{ background: accent, opacity: 0.5 }} />
+            </div>
+          ))}
         </div>
       ) : (
-        <div className="mt-3 space-y-1.5">
-          <span className="block h-2 w-1/2 rounded-full bg-ink/15" />
-          <span className="block h-2 w-1/3 rounded-full bg-rule" />
+        <div className="mt-2 grid grid-cols-3 gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="h-5 rounded-md border border-rule bg-paper-2" />
+          ))}
         </div>
       )}
 
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="h-7 rounded-md border border-rule bg-paper-2" />
-        ))}
+      <div className="mt-2 flex items-center gap-1.5 rounded-md bg-ink px-2 py-1.5">
+        <span className="h-1 w-1 rounded-full" style={{ background: accent }} />
+        <span className="h-1 w-12 rounded-full bg-white/30" />
+        <span className="ml-auto h-1 w-6 rounded-full bg-white/15" />
       </div>
+    </>
+  );
+}
+
+export function TemplateWire({ t }: { t: BusinessTemplate }) {
+  return (
+    <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-rule bg-surface p-3">
+      <WireHeader accent={t.accentToken} />
+      <WireHero t={t} />
+      <WireSections t={t} />
     </div>
   );
 }

@@ -1,72 +1,96 @@
-import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-/** Seksi standar halaman bisnis: lebar konsisten, hairline atas, ritme vertikal. */
+/** Palet latar seksi halaman bisnis. `ink` & `accent` dipakai untuk blok karakter. */
+export type SiteTone = 'plain' | 'soft' | 'ink' | 'accent';
+export type SiteSpace = 'sm' | 'md' | 'lg';
+
+const TONE_CLASS: Record<SiteTone, string> = {
+  plain: 'bg-paper',
+  soft: 'bg-paper-2',
+  ink: 'bg-ink text-paper',
+  accent: 'bg-accent text-accent-ink',
+};
+
+const SPACE_CLASS: Record<SiteSpace, string> = {
+  sm: 'py-10 md:py-14',
+  md: 'py-14 md:py-20',
+  lg: 'py-16 md:py-28',
+};
+
+/** Seksi standar halaman bisnis: lebar konsisten + ritme vertikal.
+ * Tanpa garis pemisah — seksi dibedakan oleh latar & jarak, bukan border. */
 export function SiteSection({
   id,
-  tone = 'paper',
+  tone = 'plain',
+  space = 'md',
+  bleed = false,
   className = '',
   children,
 }: {
   id?: string;
-  tone?: 'paper' | 'alt';
+  tone?: SiteTone;
+  space?: SiteSpace;
+  bleed?: boolean;
   className?: string;
   children: ReactNode;
 }) {
   return (
     <section
       id={id}
-      className={[
-        'border-t border-rule py-14 md:py-20',
-        tone === 'alt' ? 'bg-paper-2' : 'bg-paper',
-        id ? 'scroll-mt-20' : '',
-        className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      className={[TONE_CLASS[tone], SPACE_CLASS[space], id ? 'scroll-mt-20' : '', className].filter(Boolean).join(' ')}
     >
-      <div className="mx-auto w-full max-w-6xl px-5">{children}</div>
+      {bleed ? children : <div className="mx-auto w-full max-w-6xl px-5">{children}</div>}
     </section>
   );
 }
 
-/** Judul + subjudul seksi dengan label kecil di atasnya. */
+/** Judul + subjudul seksi dengan kicker bergaris aksen. */
 export function SectionIntro({
-  icon: Icon,
   eyebrow,
   title,
   sub,
   align = 'left',
+  dark = false,
   className = '',
 }: {
-  icon?: LucideIcon;
   eyebrow?: string;
   title: string;
   sub?: string;
   align?: 'left' | 'center';
+  dark?: boolean;
   className?: string;
 }) {
+  const centered = align === 'center';
   return (
-    <div className={[align === 'center' ? 'text-center' : '', className].filter(Boolean).join(' ')}>
+    <div className={[centered ? 'text-center' : '', className].filter(Boolean).join(' ')}>
       {eyebrow ? (
         <p
           className={[
-            'inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-accent',
-            align === 'center' ? 'justify-center' : '',
+            'flex items-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em]',
+            dark ? 'text-paper/60' : 'text-ink-2',
+            centered ? 'justify-center' : '',
           ]
             .filter(Boolean)
             .join(' ')}
         >
-          {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
+          <span aria-hidden className="h-px w-5 bg-accent" />
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink md:text-3xl">{title}</h2>
+      <h2
+        className={[
+          'font-display mt-4 text-[1.65rem] font-semibold leading-[1.12] tracking-[-0.022em] [overflow-wrap:anywhere] md:text-[2.1rem]',
+          dark ? 'text-paper' : 'text-ink',
+        ].join(' ')}
+      >
+        {title}
+      </h2>
       {sub ? (
         <p
           className={[
-            'mt-2 max-w-2xl text-sm leading-relaxed text-ink-2 md:text-base',
-            align === 'center' ? 'mx-auto' : '',
+            'mt-3 max-w-2xl text-sm leading-relaxed md:text-[15px]',
+            dark ? 'text-paper/70' : 'text-ink-2',
+            centered ? 'mx-auto' : '',
           ]
             .filter(Boolean)
             .join(' ')}

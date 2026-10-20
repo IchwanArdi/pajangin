@@ -70,7 +70,7 @@ export default function BusinessClientView({ business, services, images = [] }: 
     ...(bookingAvailable ? ['booking'] : []),
     'kontak',
   ];
-  const toneFor = (key: string): 'paper' | 'alt' => (flow.indexOf(key) % 2 === 0 ? 'alt' : 'paper');
+  const toneFor = (key: string) => (flow.indexOf(key) % 2 === 0 ? ('soft' as const) : ('plain' as const));
 
   const handleServiceClick = (service: Service) => {
     trackBusinessEvent(business.id, 'service_view', service.id, service.name);
@@ -90,7 +90,6 @@ export default function BusinessClientView({ business, services, images = [] }: 
 
       <SiteHeader
         business={business}
-        badge={template.badge}
         navItems={navItems}
         waLink={waLink}
         onWhatsAppClick={() => handleWhatsAppClick()}
@@ -105,6 +104,8 @@ export default function BusinessClientView({ business, services, images = [] }: 
           primaryCtaLabel={primaryCtaLabelFor(business.template)}
           waLink={waLink}
           emergencyWaLink={emergencyWaLink}
+          images={images}
+          serviceCount={services.length}
           onWhatsAppClick={handleWhatsAppClick}
           onPhoneClick={handlePhoneClick}
         />
@@ -113,6 +114,7 @@ export default function BusinessClientView({ business, services, images = [] }: 
           <ServicesSection
             services={services}
             heading={serviceHeading}
+            layout={template.servicesLayout}
             ctaLabel={serviceCtaLabelFor(business.template)}
             buildWaLink={(serviceName) => buildWhatsAppLink(business, { serviceName })}
             onServiceClick={handleServiceClick}
@@ -125,7 +127,11 @@ export default function BusinessClientView({ business, services, images = [] }: 
 
         <AboutSection business={business} tone={toneFor('tentang')} />
 
-        <TestimonialsSection testimonials={testimonials} tone={toneFor('testimoni')} />
+        <TestimonialsSection
+          testimonials={testimonials}
+          rating={business.rating}
+          reviewCount={business.review_count}
+        />
 
         <FaqSection items={faqItems} tone={toneFor('faq')} />
 

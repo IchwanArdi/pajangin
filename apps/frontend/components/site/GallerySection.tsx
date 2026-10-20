@@ -3,18 +3,25 @@
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ChevronLeft, ChevronRight, ImageIcon, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { BusinessImageItem } from '../../lib/api';
-import { Reveal } from '../../app/reveal';
-import { SectionIntro, SiteSection } from './site-ui';
+import { ItemReveal } from './reveal-item';
+import { SectionIntro, SiteSection, type SiteTone } from './site-ui';
 
 interface Props {
   images: BusinessImageItem[];
   heading: string;
-  tone?: 'paper' | 'alt';
+  tone?: SiteTone;
 }
 
-export default function GallerySection({ images, heading, tone = 'paper' }: Props) {
+/** Pola bento: foto pertama jadi sorotan besar, sesekali ada tile lebar. */
+function tileSpan(index: number, total: number): string {
+  if (index === 0) return 'col-span-2 row-span-2';
+  if ((index === 3 || index === 5) && total > 4) return 'col-span-2';
+  return '';
+}
+
+export default function GallerySection({ images, heading, tone = 'plain' }: Props) {
   const [galleryTab, setGalleryTab] = useState<string>('Semua');
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const reduce = useReducedMotion();
@@ -56,10 +63,9 @@ export default function GallerySection({ images, heading, tone = 'paper' }: Prop
     <SiteSection id="galeri" tone={tone}>
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <SectionIntro
-          icon={ImageIcon}
           eyebrow="Dokumentasi & Visual"
           title={heading}
-          sub="Lihat suasana, fasilitas, dan kualitas hasil kerja kami secara langsung."
+          sub="Suasana, fasilitas, dan hasil kerja — apa adanya."
         />
         {imageCategories.length > 1 && (
           <div className="flex flex-wrap gap-1.5">
@@ -75,8 +81,10 @@ export default function GallerySection({ images, heading, tone = 'paper' }: Prop
                   }}
                   aria-pressed={activeTab}
                   className={[
-                    'press rounded-full px-3.5 py-1.5 text-xs font-semibold',
-                    activeTab ? 'bg-ink text-paper' : 'border border-rule bg-paper text-ink-2 hover:border-ink hover:text-ink',
+                    'press rounded-full border px-3.5 py-1.5 text-xs font-semibold',
+                    activeTab
+                      ? 'border-ink bg-ink text-paper'
+                      : 'border-rule bg-paper text-ink-2 hover:border-ink/30 hover:text-ink',
                   ].join(' ')}
                 >
                   {cat}
@@ -87,32 +95,44 @@ export default function GallerySection({ images, heading, tone = 'paper' }: Prop
         )}
       </div>
 
-      <Reveal className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4" stagger={0.04}>
+      <div className="mt-8 grid auto-rows-[9.5rem] grid-flow-dense grid-cols-2 gap-2.5 sm:auto-rows-[12rem] sm:gap-3 md:auto-rows-[13.5rem] md:grid-cols-4">
         {visibleImages.map((image, index) => (
-          <button
-            key={image.id || index}
-            type="button"
-            onClick={() => setLightboxIdx(index)}
-            aria-label={image.caption ? `Perbesar: ${image.caption}` : 'Perbesar foto'}
-            className="group relative aspect-4/3 cursor-zoom-in overflow-hidden rounded-2xl border border-rule bg-paper shadow-xs transition hover:shadow-md"
-          >
-            <Image
-              src={image.url}
-              alt={image.caption || 'Foto bisnis'}
-              width={1200}
-              height={900}
-              unoptimized
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <span className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/75 via-transparent to-transparent p-3 text-left text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              {image.caption && <span className="line-clamp-2 text-xs font-medium">{image.caption}</span>}
-              {image.category && (
-                <span className="mt-1 self-start rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium backdrop-blur-xs">{image.category}</span>
+          <ItemReveal key={image.id || index} index={index} className={tileSpan(index, visibleImages.length)}>
+            <button
+              type="button"
+              onClick={() => setLightboxIdx(index)}
+              aria-label={image.caption ? `Perbesar: ${image.caption}` : 'Perbesar foto'}
+              className="group relative h-full w-full cursor-zoom-in overflow-hidden rounded-2xl bg-paper-2"
+            >
+              <Image
+                src={image.url}
+                alt={image.caption || 'Foto bisnis'}
+                width={1400}
+                height={1050}
+                unoptimized
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+              />
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+              />
+              <span className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-left opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+                {image.caption && <span className="line-clamp-2 block text-sm font-medium text-white">{image.caption}</span>}
+                {image.category && (
+                  <span className="mt-1 block font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-white/60">
+                    {image.category}
+                  </span>
+                )}
+              </span>
+              {index === 0 && (
+                <span className="absolute left-4 top-4 rounded-full bg-paper/90 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink backdrop-blur">
+                  Sorotan
+                </span>
               )}
-            </span>
-          </button>
+            </button>
+          </ItemReveal>
         ))}
-      </Reveal>
+      </div>
 
       <AnimatePresence>
         {current && (
@@ -177,12 +197,14 @@ export default function GallerySection({ images, heading, tone = 'paper' }: Prop
                 width={1600}
                 height={1200}
                 unoptimized
-                className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl"
               />
               <div className="mt-4 flex w-full items-center justify-between gap-4 px-2 text-white/90">
                 <div className="text-left">
                   {current.caption && <p className="text-sm font-medium">{current.caption}</p>}
-                  {current.category && <span className="text-xs text-white/60">{current.category}</span>}
+                  {current.category && (
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/60">{current.category}</span>
+                  )}
                 </div>
                 <span className="font-mono text-xs whitespace-nowrap text-white/60">
                   {(lightboxIdx ?? 0) + 1} / {visibleImages.length}

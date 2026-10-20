@@ -7,7 +7,6 @@ export interface BusinessTemplate {
   defaultAccent: string;
   colorOptions: string[];
   features: string[];
-  heroStyle: 'split' | 'centered' | 'banner' | 'clean';
   servicesLayout: 'cards' | 'menu-grid' | 'feature-list' | 'catalog';
   accentToken: string;
 }
@@ -22,7 +21,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#e85d3a',
     colorOptions: ['#e85d3a', '#2563eb', '#16a34a', '#7c3aed', '#0f172a'],
     features: ['Hero split-screen modern', 'Layanan dengan kartu interaktif', 'Badge status jam buka', 'Form lead WhatsApp terintegrasi'],
-    heroStyle: 'split',
     servicesLayout: 'cards',
     accentToken: 'oklch(62% 0.19 28)',
   },
@@ -35,7 +33,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#ea580c',
     colorOptions: ['#ea580c', '#d97706', '#dc2626', '#854d0e', '#1c1917'],
     features: ['Menu visual dengan kategori', 'Status buka/tutup menonjol', 'Tombol pesan meja & antar', 'Highlight menu andalan/chef recommend'],
-    heroStyle: 'banner',
     servicesLayout: 'menu-grid',
     accentToken: 'oklch(60% 0.21 40)',
   },
@@ -48,7 +45,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#0284c7',
     colorOptions: ['#0284c7', '#0369a1', '#2563eb', '#f59e0b', '#334155'],
     features: ['Nomor darurat langsung klik', 'Transparansi harga & pengerjaan', 'Jangkauan area servis jelas', 'Buka rute Google Maps instan'],
-    heroStyle: 'split',
     servicesLayout: 'feature-list',
     accentToken: 'oklch(58% 0.18 235)',
   },
@@ -61,7 +57,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#db2777',
     colorOptions: ['#db2777', '#be185d', '#9d174d', '#7c3aed', '#475569'],
     features: ['Daftar paket treatment mewah', 'Booking waktu & slot stylist', 'Review & rating menonjol', 'Suasana rileks & premium'],
-    heroStyle: 'centered',
     servicesLayout: 'cards',
     accentToken: 'oklch(62% 0.22 355)',
   },
@@ -74,7 +69,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#0d9488',
     colorOptions: ['#0d9488', '#0f766e', '#0284c7', '#16a34a', '#334155'],
     features: ['Jadwal praktik teratur', 'Kontak konsultasi cepat', 'Sertifikasi & kredibilitas', 'Booking antrean pasien'],
-    heroStyle: 'clean',
     servicesLayout: 'cards',
     accentToken: 'oklch(60% 0.15 185)',
   },
@@ -87,7 +81,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#16a34a',
     colorOptions: ['#16a34a', '#15803d', '#059669', '#2563eb', '#ea580c'],
     features: ['Katalog etalase produk ringkas', 'Format harga per satuan / kg', 'Order langsung format chat WA', 'Promo diskon berjalan'],
-    heroStyle: 'split',
     servicesLayout: 'catalog',
     accentToken: 'oklch(62% 0.18 145)',
   },
@@ -100,7 +93,6 @@ export const BUSINESS_TEMPLATES: Record<string, BusinessTemplate> = {
     defaultAccent: '#6366f1',
     colorOptions: ['#6366f1', '#4f46e5', '#7c3aed', '#2563eb', '#0f172a'],
     features: ['Struktur program & jenjang kelas', 'Benefit & kurikulum materi', 'Konsultasi minat bakat gratis', 'Testimoni kelulusan'],
-    heroStyle: 'split',
     servicesLayout: 'feature-list',
     accentToken: 'oklch(60% 0.20 275)',
   },

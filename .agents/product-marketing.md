@@ -1,7 +1,7 @@
 # Product Marketing Context
 
-**Document version:** v1
-**Last updated:** 2026-10-19
+**Document version:** v2
+**Last updated:** 2026-10-20
 
 > Auto-draft dari codebase (landing, marketing-content, README). Bagian bertanda
 > **[perlu verifikasi]** menunggu koreksi pemilik produk.
@@ -51,6 +51,7 @@
 - WhatsApp-first: tombol kontak utama & notifikasi chat.
 - Analitik sederhana yang bisa ditindaklanjuti (pengunjung, sumber, klik kontak, layanan ramai tapi sepi chat).
 - SEO lokal bawaan: metadata + Schema.org LocalBusiness per halaman bisnis.
+- Tampilan publik yang menyesuaikan kategori usaha (hero, layout layanan, galeri) — bukan satu template generik.
 - QR & Link in Bio, booking, galeri, AI Konten bahasa Indonesia.
 **How we do it differently:** semua fitur inti terbuka untuk semua; biaya dijaga batas wajar yang diumumkan terbuka, bukan dikunci di balik paywall.
 **Why that's better:** UMKM bisa mulai tanpa risiko biaya; yang biasa pindah dari "tidak ada halaman" langsung ke halaman profesional + data.
@@ -123,8 +124,9 @@
 *Decisions and tested lessons. Newest first. Keep it to about 20 active entries.*
 | Date | Learning | Evidence | Applies to | Status |
 |------|----------|----------|------------|--------|
-| | | | | |
+| 2026-10-20 | Halaman bisnis butuh karakter visual per kategori; landing yang sudah kuat tidak boleh ikut dirombak. | Review pemilik: landing "sempurna", halaman bisnis terasa jadul/kaku sebelum redesign. | Positioning, demo onboarding, materi marketing | applied |
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v2 (2026-10-20) — Catat redesign halaman bisnis (hero per kategori, galeri bento, testimoni band gelap, footer ink) + learning bahwa landing dipertahankan.
 - v1 (2026-10-19) — Initial context (auto-draft dari codebase; verifikasi pemilik ditandai).

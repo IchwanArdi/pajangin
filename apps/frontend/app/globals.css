@@ -35,7 +35,7 @@
   --color-serp-link: oklch(45% 0.17 265);          /* hanya untuk pratinjau hasil Google */
   --shadow-pop: 0 1px 2px oklch(20% 0.012 60 / 0.05), 0 10px 30px -10px oklch(20% 0.012 60 / 0.16);
 
-  --font-display: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), system-ui, sans-serif;
   --font-body:    var(--font-geist-sans), system-ui, sans-serif;
   --font-mono:    var(--font-geist-mono), ui-monospace, monospace;
 
@@ -120,6 +120,7 @@
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-heading: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), system-ui, sans-serif;
   --color-sidebar-ring:      var(--sidebar-ring);
   --color-sidebar-border:      var(--sidebar-border);
   --color-sidebar-accent-foreground:      var(--sidebar-accent-foreground);
@@ -228,14 +229,6 @@ body {
 
 /* ===== Marketing utilities (console/ledger character) ===== */
 
-/* grid halus latar hero — memakai token, bukan nilai mentah */
-.bg-console-grid {
-  background-image:
-    linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-
 /* marquee kategori: trek diduplikasi di JSX agar mulus */
 .marquee {
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
@@ -263,6 +256,24 @@ body {
 .serp-link { color: var(--color-serp-link); }
 
 /* ===== Motion utilities (transform/opacity only, GPU-friendly) ===== */
+
+/* anchor halaman bisnis: lompat halus, hanya saat pengguna tidak reduce motion */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* foto hero: zoom sangat lambat (Ken Burns) — satu transform, tanpa layout shift */
+@keyframes site-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+.kenburns {
+  transform-origin: center;
+  will-change: transform;
+  animation: site-kenburns 20s ease-out both;
+}
 
 /* kartu: naik sedikit + bayangan saat hover */
 .lift {
@@ -383,6 +394,34 @@ details[open] .acc-panel {
   to { transform: translate3d(-4rem, 5rem, 0) scale(1.18); }
 }
 
+/* ===== Halaman bisnis: motif latar per kategori (murni CSS, tanpa gambar) =====
+ * Terutama dipakai saat bisnis belum punya foto hero — supaya tetap tampak
+ * disengaja, bukan tempat gambar yang kosong. */
+.motif-blueprint {
+  background-image:
+    linear-gradient(to right, var(--color-rule) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-rule) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.motif-warm {
+  background:
+    radial-gradient(70% 90% at 12% 0%, var(--color-accent-soft), transparent 62%),
+    radial-gradient(55% 75% at 88% 18%, color-mix(in oklab, var(--color-accent) 7%, white), transparent 66%);
+}
+.motif-soft {
+  background:
+    radial-gradient(42% 55% at 22% 26%, color-mix(in oklab, var(--color-accent) 10%, white), transparent 70%),
+    radial-gradient(46% 60% at 80% 32%, var(--color-paper-2), transparent 72%),
+    radial-gradient(40% 52% at 55% 88%, var(--color-paper-3), transparent 70%);
+}
+.motif-stripes {
+  background-image: repeating-linear-gradient(-45deg, var(--color-rule) 0 1px, transparent 1px 14px);
+}
+.motif-hairline {
+  background-image: radial-gradient(var(--color-rule) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
 /* ===== Halaman bisnis (microsite): entrance hero murni CSS =====
  * Sengaja tanpa JS agar konten utama tetap terlihat walau JS belum jalan —
  * penting untuk SEO & kestabilan halaman publik pelanggan. */
@@ -411,6 +450,7 @@ details[open] .acc-panel {
   .marquee__track { animation: none; }
   .cta-aurora__blob { animation: none; }
   .rise { animation: none; }
+  .kenburns { animation: none; }
   .lift,
   .press,
   .arrow-nudge,

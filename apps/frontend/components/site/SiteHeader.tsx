@@ -14,14 +14,13 @@ export interface NavItem {
 
 interface Props {
   business: Business;
-  badge: string;
   navItems: NavItem[];
   waLink: string;
   onWhatsAppClick: () => void;
   onPhoneClick: () => void;
 }
 
-export default function SiteHeader({ business, badge, navItems, waLink, onWhatsAppClick, onPhoneClick }: Props) {
+export default function SiteHeader({ business, navItems, waLink, onWhatsAppClick, onPhoneClick }: Props) {
   const [active, setActive] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -90,19 +89,15 @@ export default function SiteHeader({ business, badge, navItems, waLink, onWhatsA
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3.5">
         <Link href="/" className="flex min-w-0 items-center gap-3">
           {business.logo_url ? (
-            <Image src={business.logo_url} alt={business.name} width={36} height={36} unoptimized className="h-9 w-9 shrink-0 rounded-full object-cover" />
+            <Image src={business.logo_url} alt={business.name} width={36} height={36} unoptimized className="h-9 w-9 shrink-0 rounded-xl object-cover" />
           ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-ink">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent text-sm font-bold text-accent-ink">
               {business.name.slice(0, 1).toUpperCase()}
             </div>
           )}
           <div className="min-w-0">
             <p className="truncate text-sm font-bold leading-tight text-ink">{business.name}</p>
-            <div className="flex items-center gap-1.5">
-              <p className="truncate text-xs text-ink-2">{business.category}</p>
-              <span className="text-[10px] text-ink-2/60">·</span>
-              <span className="shrink-0 text-[10px] font-semibold text-accent">{badge}</span>
-            </div>
+            <p className="truncate text-xs text-ink-2">{business.category}</p>
           </div>
         </Link>
 
@@ -114,8 +109,8 @@ export default function SiteHeader({ business, badge, navItems, waLink, onWhatsA
               onClick={() => go(item.id)}
               aria-current={active === item.id ? 'true' : undefined}
               className={[
-                'press rounded-full px-3 py-2 text-sm transition',
-                active === item.id ? 'font-semibold text-accent' : 'text-ink-2 hover:text-ink',
+                'press rounded-full px-3.5 py-2 text-sm transition',
+                active === item.id ? 'bg-ink font-semibold text-paper' : 'text-ink-2 hover:bg-paper-2 hover:text-ink',
               ].join(' ')}
             >
               {item.label}

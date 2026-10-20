@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, MessageCircle, Phone } from 'lucide-react';
+import { AtSign, Clock, MapPin, MessageCircle, Phone } from 'lucide-react';
 import type { Business } from '../../lib/api';
 
 interface Props {
@@ -11,65 +11,91 @@ interface Props {
 
 export default function SiteFooter({ business, waLink, onWhatsAppClick, onPhoneClick }: Props) {
   return (
-    <footer className="border-t border-rule bg-paper-2 py-12 text-sm text-ink-2">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
-          <p className="text-base font-bold text-ink">{business.name}</p>
-          {business.tagline && <p className="mt-1.5 max-w-sm leading-relaxed">{business.tagline}</p>}
-          <p className="mt-3 flex items-start gap-2">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-            <span>
-              {business.address}, {business.city}
-              {business.province ? `, ${business.province}` : ''}
-            </span>
-          </p>
-        </div>
+    <footer className="bg-ink text-paper/70">
+      <div className="mx-auto w-full max-w-6xl px-5 py-14 md:py-20">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_0.8fr_0.8fr]">
+          <div>
+            <p className="font-display text-2xl font-semibold tracking-[-0.02em] text-paper">{business.name}</p>
+            {business.tagline && <p className="mt-2 max-w-sm text-sm leading-relaxed">{business.tagline}</p>}
+            <p className="mt-4 flex items-start gap-2 text-sm">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              <span>
+                {business.address}, {business.city}
+                {business.province ? `, ${business.province}` : ''}
+              </span>
+            </p>
+          </div>
 
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-3">Kontak</p>
-          <ul className="mt-3 space-y-2">
-            {business.phone && (
-              <li>
-                <a href={`tel:${business.phone}`} onClick={onPhoneClick} className="inline-flex items-center gap-2 hover:text-ink">
-                  <Phone className="h-4 w-4" />
-                  {business.phone}
-                </a>
+          <div>
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-paper/40">Kontak</p>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {business.phone && (
+                <li>
+                  <a
+                    href={`tel:${business.phone}`}
+                    onClick={onPhoneClick}
+                    className="inline-flex items-center gap-2 text-paper/80 transition hover:text-paper"
+                  >
+                    <Phone className="h-4 w-4" />
+                    {business.phone}
+                  </a>
+                </li>
+              )}
+              {business.whatsapp && (
+                <li>
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={onWhatsAppClick}
+                    className="inline-flex items-center gap-2 text-paper/80 transition hover:text-paper"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                </li>
+              )}
+              {business.instagram_url && (
+                <li>
+                  <a
+                    href={business.instagram_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-paper/80 transition hover:text-paper"
+                  >
+                    <AtSign className="h-4 w-4" />
+                    Instagram
+                  </a>
+                </li>
+              )}
+              <li className="flex items-start gap-2">
+                <Clock className="mt-0.5 h-4 w-4 shrink-0" />
+                {business.opening_hours || 'Jam operasional menyusul'}
               </li>
-            )}
-            {business.whatsapp && (
-              <li>
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={onWhatsAppClick}
-                  className="inline-flex items-center gap-2 hover:text-ink"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  WhatsApp
-                </a>
-              </li>
-            )}
-            <li>{business.opening_hours || 'Jam operasional menyusul'}</li>
-          </ul>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-paper/40">Halaman ini</p>
+            <p className="mt-4 text-sm leading-relaxed">
+              Halaman resmi {business.name}. Dibuat gratis dengan{' '}
+              <Link
+                href="/"
+                className="font-semibold text-paper underline decoration-paper/30 underline-offset-4 transition hover:decoration-paper"
+              >
+                Pajangin
+              </Link>
+              .
+            </p>
+          </div>
         </div>
 
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-3">Tentang halaman ini</p>
-          <p className="mt-3 leading-relaxed">
-            Halaman bisnis {business.name}. Ditenagai oleh{' '}
-            <Link href="/" className="font-semibold text-ink hover:text-accent">
-              Pajangin
-            </Link>
-            .
+        <div className="mt-12 flex flex-col gap-2 border-t border-paper/10 pt-6 text-xs text-paper/40 sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {new Date().getFullYear()} {business.name}. Semua hak dilindungi.
           </p>
+          <p>Dibuat dengan Pajangin</p>
         </div>
-      </div>
-
-      <div className="mx-auto mt-10 w-full max-w-6xl px-5">
-        <p className="border-t border-rule pt-6 text-xs">
-          © {new Date().getFullYear()} {business.name}. Semua hak dilindungi.
-        </p>
       </div>
     </footer>
   );

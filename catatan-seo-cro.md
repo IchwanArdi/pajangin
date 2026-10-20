@@ -38,6 +38,25 @@
 
 ---
 
+## Redesign Halaman Bisnis (20 Okt 2026) — visual-only
+
+Halaman publik `/[slug]`, `/[slug]/bio`, dan preview `/contoh` dirombak tanpa mengubah fondasi SEO/CRO:
+
+- **Hero per kategori** (6 varian + default) dengan motif CSS saat bisnis belum punya foto.
+- **Layanan** memakai 4 tata letak sesuai template (menu, daftar fitur, kartu, katalog).
+- **Galeri bento** + filter kategori & lightbox; **Tentang** dengan status jam buka; **Testimoni** sebagai band gelap (bukti sosial); **FAQ** daftar bergaris; **Lokasi** peta besar + kartu mengapung + salin alamat; footer `ink`.
+- **Booking & form kontak** dirapikan dua kolom — alur simpan, notifikasi, dan pembukaan WhatsApp tidak berubah.
+- **Bio page** diselaraskan dengan aksen bisnis; canonical tetap ke `/[slug]`.
+- Font display **Bricolage Grotesque**; landing tidak diubah.
+
+**Yang dipertahankan:** satu `<h1>` per halaman, metadata/canonical/JSON-LD, seluruh event analitik (`trackBusinessEvent`), sticky WhatsApp mobile, anchor nav, dan `prefers-reduced-motion`.
+
+**QA:** `next build` ✅ 25 halaman (TS bersih) · ESLint ✅ 0 error · 6 bisnis demo (semua template) HTTP 200 di dev · seeder dev idempoten `apps/backend/src/scripts/seed-demo.ts`.
+
+**Catatan:** deploy tetap ditunda; optimasi gambar produksi masih backlog P2.
+
+---
+
 ## Backlog P1 — Aksi Setelah Deploy (hari pertama live)
 
 1. **Google Search Console** (+ Bing Webmaster): verifikasi domain, submit `sitemap.xml`, cek coverage & Rich Results (LocalBusiness).
