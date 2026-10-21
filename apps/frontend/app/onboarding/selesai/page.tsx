@@ -25,6 +25,7 @@ import {
 } from '../../../lib/api';
 import { primaryButtonClass, secondaryButtonClass } from '../../../components/auth/AuthShell';
 import OnboardingShell from '../../../components/onboarding/OnboardingShell';
+import SuccessPhotoUpload from '../../../components/onboarding/SuccessPhotoUpload';
 import { toWaNumber } from '../../../lib/whatsapp';
 import { useBrowserOrigin } from '../../../lib/useBrowserOrigin';
 
@@ -49,6 +50,7 @@ function SuccessContent() {
   const [publicBusiness, setPublicBusiness] = useState<PublicBusinessResponse | null>(null);
   const origin = useBrowserOrigin();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [refreshingStatus, setRefreshingStatus] = useState(false);
 
   useEffect(() => {
     if (!businessId) {
@@ -148,6 +150,9 @@ function SuccessContent() {
     business.logo_url || business.hero_image_url || (publicBusiness?.images?.length ?? 0) > 0,
   );
   const statusAvailable = publicBusiness !== null;
+  const needsPhoto = !hasPhoto;
+  // Tampilkan kartu foto juga saat hero sudah ada supaya bisa dipratinjau dan diganti.
+  const showPhotoSection = needsPhoto || Boolean(business.hero_image_url);
 
   const requiredSteps = [
     ...(!business.description?.trim()
@@ -172,32 +177,11 @@ function SuccessContent() {
           },
         ]
       : []),
-    ...(!hasPhoto
-      ? [
-          {
-            key: 'photo',
-            label: 'Satu foto utama',
-            detail: 'Tambahkan logo atau foto yang mewakili bisnis Anda.',
-            href: galleryHref,
-            cta: 'Tambah foto',
-          },
-        ]
-      : []),
   ];
 
-  // Jaring pengaman kalau penilaian backend berubah tetapi checklist lokal belum tahu item barunya.
-  const missingItems =
-    requiredSteps.length > 0
-      ? requiredSteps
-      : [
-          {
-            key: 'profile',
-            label: 'Lengkapi profil bisnis',
-            detail: 'Periksa kembali data bisnis agar halaman siap diindeks.',
-            href: profileHref,
-            cta: 'Lengkapi',
-          },
-        ];
+  // Foto ditangani langsung oleh kartu upload di atas, jadi tidak diulang di checklist.
+  const missingItems = requiredSteps;
+  const remainingStepCount = missingItems.length + (needsPhoto ? 1 : 0);
 
   const copyLink = async () => {
     try {
@@ -207,6 +191,17 @@ function SuccessContent() {
     } catch {
       setCopyState('failed');
     }
+  };
+
+  const handlePhotoUploaded = (url: string) => {
+    setBusiness((previous) => (previous ? { ...previous, hero_image_url: url } : previous));
+    setRefreshingStatus(true);
+
+    // Ambil status indeks terbaru setelah hero tersimpan, tanpa memuat ulang seluruh halaman.
+    getPublicBusiness(business.slug, { fresh: true })
+      .then((data) => setPublicBusiness(data))
+      .catch(() => setPublicBusiness(null))
+      .finally(() => setRefreshingStatus(false));
   };
 
   return (
@@ -241,7 +236,7 @@ function SuccessContent() {
 
         <div className="rounded-2xl border border-rule bg-paper p-4">
           <p className="text-xs font-medium text-ink-2">Link publik</p>
-          <p className="mt-1 break-words font-mono text-sm font-semibold text-ink">{pageUrl}</p>
+          <p className="mt-1 break-words font-mono text-[13px] font-semibold text-ink sm:text-sm">{pageUrl}</p>
           <div className="mt-3 flex flex-wrap items-center gap-4">
             <button
               type="button"
@@ -304,7 +299,21 @@ function SuccessContent() {
         </div>
       </div>
 
-      {!statusAvailable ? (
+      {showPhotoSection && (
+        <SuccessPhotoUpload
+          businessId={business.id}
+          currentUrl={business.hero_image_url}
+          galleryHref={galleryHref}
+          onUploaded={handlePhotoUploaded}
+        />
+      )}
+
+      {refreshingStatus ? (
+        <div className="flex items-center gap-3 rounded-3xl border border-rule bg-white p-6">
+          <Loader2 className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+          <p className="text-sm font-semibold text-ink">Menyegarkan status Google…</p>
+        </div>
+      ) : !statusAvailable ? (
         <div className="space-y-3 rounded-3xl border border-rule bg-white p-6">
           <div className="flex items-start gap-3">
             <span className="rounded-xl bg-paper-2 p-2 text-ink-2">
@@ -337,7 +346,7 @@ function SuccessContent() {
             menampilkan halaman ini di hasil pencarian.
           </p>
         </div>
-      ) : (
+      ) : missingItems.length > 0 ? (
         <div className="space-y-4 rounded-3xl border border-rule bg-white p-6 sm:p-8">
           <div className="flex items-start gap-3">
             <span className="rounded-xl bg-paper-2 p-2 text-ink-2">
@@ -345,7 +354,7 @@ function SuccessContent() {
             </span>
             <div>
               <h2 className="text-lg font-bold tracking-[-0.015em]">
-                Tinggal {missingItems.length} langkah agar siap diindeks Google
+                Tinggal {remainingStepCount} langkah agar siap diindeks Google
               </h2>
               <p className="mt-1 text-sm leading-relaxed text-ink-2">
                 Halaman sudah aktif. Lengkapi bagian berikut agar Google bisa menemukan halaman Anda.
@@ -373,6 +382,28 @@ function SuccessContent() {
               </li>
             ))}
           </ul>
+        </div>
+      ) : needsPhoto ? null : (
+        <div className="space-y-3 rounded-3xl border border-rule bg-white p-6">
+          <div className="flex items-start gap-3">
+            <span className="rounded-xl bg-paper-2 p-2 text-ink-2">
+              <AlertCircle className="h-5 w-5" strokeWidth={1.75} />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold tracking-[-0.015em]">Status halaman perlu dimuat ulang</h2>
+              <p className="mt-1 text-sm leading-relaxed text-ink-2">
+                Halaman tetap aktif. Muat ulang untuk melihat kesiapan indeks terbaru.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={retryLoad}
+            className={`${secondaryButtonClass} sm:w-auto`}
+          >
+            <RefreshCw className="h-4 w-4" strokeWidth={1.75} />
+            Muat ulang status
+          </button>
         </div>
       )}
     </OnboardingShell>

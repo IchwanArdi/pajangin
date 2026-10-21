@@ -59,7 +59,7 @@ Di Supabase Dashboard:
 - **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`)
 - Produksi: pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
 
-Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`.
+Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`.
 
 ### 4. Jalankan Backend (Port 3001)
 ```bash
