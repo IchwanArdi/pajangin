@@ -266,11 +266,16 @@ export function updateBusiness(businessId: string, payload: Partial<Business>): 
 }
 
 // ambil detail bisnis publik berdasarkan slug (dipakai server component halaman publik)
-export async function getPublicBusiness(slug: string): Promise<PublicBusinessResponse | null> {
+// fresh=true dipakai layar sukses agar checklist indeks tidak membaca cache lama setelah user menambah foto.
+export async function getPublicBusiness(
+  slug: string,
+  options: { fresh?: boolean } = {},
+): Promise<PublicBusinessResponse | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/v1/public/business/${encodeURIComponent(slug)}`, {
-      next: { revalidate: 30 },
-    });
+    const res = await fetch(
+      `${API_BASE_URL}/api/v1/public/business/${encodeURIComponent(slug)}`,
+      options.fresh ? { cache: 'no-store' } : { next: { revalidate: 30 } },
+    );
     if (!res.ok) return null;
     return res.json();
   } catch (err) {
