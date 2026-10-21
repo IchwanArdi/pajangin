@@ -59,7 +59,9 @@ Di Supabase Dashboard:
 - **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`)
 - Produksi: pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
 
-Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`.
+Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`. Ganti kata sandi dan akses legal tersedia di `/dashboard/akun`.
+
+> Sebelum peluncuran publik, aktifkan mailbox `halo@pajangin.web.id` yang dipakai sebagai kontak di `/syarat` dan `/privasi`, lalu tinjau isi kedua dokumen sesuai entitas dan operasional yang sebenarnya.
 
 ### 4. Jalankan Backend (Port 3001)
 ```bash
@@ -79,7 +81,10 @@ Buka browser:
 - **Homepage**: `http://localhost:3000`
 - **Daftar bisnis**: `http://localhost:3000/register`
 - **Dashboard Pemilik**: `http://localhost:3000/dashboard`
+- **Akun & keamanan**: `http://localhost:3000/dashboard/akun`
 - **Bantuan & Masukan**: `http://localhost:3000/dashboard/masukan`
+- **Syarat & Ketentuan**: `http://localhost:3000/syarat`
+- **Kebijakan Privasi**: `http://localhost:3000/privasi`
 - **Admin console (founder)**: `http://localhost:3000/admin`
 - **Admin · Pengguna**: `http://localhost:3000/admin/pengguna`
 - **Admin · Bisnis**: `http://localhost:3000/admin/bisnis`

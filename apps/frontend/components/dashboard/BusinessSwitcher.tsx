@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, ChevronsUpDown, LogOut, Plus } from 'lucide-react';
+import { Check, ChevronsUpDown, LogOut, Plus, UserRound } from 'lucide-react';
 import { useBusiness } from './BusinessContext';
 import { Popover } from './Popover';
 import { initials } from '../../lib/format';
@@ -81,6 +81,18 @@ export function BusinessSwitcher({ onLogout, compact = false }: { onLogout: () =
               <Plus className="h-4 w-4" strokeWidth={1.75} />
             </span>
             Tambah bisnis
+          </Link>
+          <div className="my-1.5 h-px bg-rule" />
+          <Link
+            href="/dashboard/akun"
+            role="menuitem"
+            onClick={close}
+            className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium text-ink hover:bg-paper-2 focus-visible:bg-paper-2 focus-visible:outline-none"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-rule text-ink-2">
+              <UserRound className="h-4 w-4" strokeWidth={1.75} />
+            </span>
+            Akun &amp; keamanan
           </Link>
           {compact && (
             <>

@@ -116,13 +116,19 @@ export function AppShell({ children }: { children: ReactNode }) {
             Bantuan & Masukan
           </Link>
           <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper-3 text-xs font-semibold text-ink">
-              {(user?.name || user?.email || '?').charAt(0).toUpperCase()}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-medium text-ink">{user?.name ?? '—'}</span>
-              <span className="block truncate text-xs text-ink-2">{user?.email ?? ''}</span>
-            </span>
+            <Link
+              href="/dashboard/akun"
+              className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg transition-colors hover:bg-paper-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              title="Akun & keamanan"
+            >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-paper-3 text-xs font-semibold text-ink">
+                {(user?.name || user?.email || '?').charAt(0).toUpperCase()}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-ink">{user?.name ?? '—'}</span>
+                <span className="block truncate text-xs text-ink-2">{user?.email ?? ''}</span>
+              </span>
+            </Link>
             <button type="button" onClick={logout} aria-label="Keluar" title="Keluar" className={btn.icon}>
               <LogOut className="h-4 w-4" strokeWidth={1.75} />
             </button>
