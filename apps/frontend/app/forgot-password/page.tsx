@@ -67,13 +67,15 @@ export default function ForgotPasswordPage() {
               type="email"
               required
               autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
               placeholder="budi@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={authInputClass}
             />
           </div>
-          <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
+          <button type="submit" disabled={loading} aria-busy={loading} className={authPrimaryButtonClass}>
             {loading ? 'Mengirim…' : 'Kirim link reset'}
           </button>
         </form>

@@ -24,7 +24,19 @@ const NOTICES: Record<string, { tone: 'error' | 'info'; text: string }> = {
   password_updated: { tone: 'info', text: 'Kata sandi berhasil diperbarui. Silakan masuk dengan kata sandi baru.' },
   link_invalid: {
     tone: 'error',
-    text: 'Link sudah kedaluwarsa, sudah pernah dipakai, atau dibuka di browser berbeda. Jika email Anda sudah terverifikasi, silakan masuk. Jika belum, masuk untuk mengirim ulang link verifikasi.',
+    text: 'Link verifikasi tidak valid, sudah kedaluwarsa, atau dibuka di browser berbeda. Masuk untuk mengirim ulang link verifikasi.',
+  },
+  reset_link_invalid: {
+    tone: 'error',
+    text: 'Link reset kata sandi sudah kedaluwarsa atau sudah dipakai. Minta link baru dari halaman Lupa kata sandi.',
+  },
+  oauth_cancelled: {
+    tone: 'info',
+    text: 'Login dengan Google dibatalkan. Silakan coba lagi atau masuk dengan email.',
+  },
+  auth_failed: {
+    tone: 'error',
+    text: 'Login tidak bisa diselesaikan. Coba lagi, atau masuk dengan email dan kata sandi.',
   },
 };
 

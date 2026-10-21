@@ -14,22 +14,35 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
   const next = safeNext(searchParams.get('next'));
+  const error = searchParams.get('error');
+  const errorCode = searchParams.get('error_code') || '';
+  const errorDescription = (searchParams.get('error_description') || '').toLowerCase();
 
-  // Supabase meneruskan error di query (mis. link kedaluwarsa)
-  if (searchParams.get('error')) {
-    return NextResponse.redirect(`${origin}/login?error=link_invalid`);
+  const loginError = (reason: string) =>
+    NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(reason)}`);
+
+  // Supabase meneruskan error di query (link email rusak, OAuth dibatalkan, dll).
+  if (error) {
+    const isEmailLinkError =
+      errorCode.includes('otp') ||
+      errorDescription.includes('email link') ||
+      errorDescription.includes('expired');
+
+    if (error === 'access_denied' && !isEmailLinkError) return loginError('oauth_cancelled');
+    if (isEmailLinkError) return loginError(next === '/reset-password' ? 'reset_link_invalid' : 'link_invalid');
+    return loginError('auth_failed');
   }
 
   const supabase = await createClient();
 
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    if (!exchangeError) return NextResponse.redirect(`${origin}${next}`);
   } else if (tokenHash && type) {
-    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+    if (!otpError) return NextResponse.redirect(`${origin}${next}`);
   }
 
   // Gagal: link sudah dipakai, kedaluwarsa, atau dibuka di browser/perangkat lain
-  return NextResponse.redirect(`${origin}/login?error=link_invalid`);
+  return loginError(next === '/reset-password' ? 'reset_link_invalid' : 'link_invalid');
 }

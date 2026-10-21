@@ -185,6 +185,8 @@ export default function RegisterPage() {
             type="email"
             required
             autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
             placeholder="budi@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -205,10 +207,22 @@ export default function RegisterPage() {
           {hint && <p className="mt-1.5 text-xs text-paper/60">{hint}</p>}
         </div>
 
-        <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
+        <button type="submit" disabled={loading} aria-busy={loading} className={authPrimaryButtonClass}>
           {loading ? 'Membuat akun…' : 'Buat akun'}
         </button>
       </form>
+
+      <p className="text-center text-xs leading-relaxed text-paper/50">
+        Dengan membuat akun, Anda menyetujui{' '}
+        <Link href="/syarat" className="text-paper/75 underline-offset-2 hover:text-paper hover:underline">
+          Syarat &amp; Ketentuan
+        </Link>{' '}
+        dan{' '}
+        <Link href="/privasi" className="text-paper/75 underline-offset-2 hover:text-paper hover:underline">
+          Kebijakan Privasi
+        </Link>
+        .
+      </p>
     </AuthShell>
   );
 }

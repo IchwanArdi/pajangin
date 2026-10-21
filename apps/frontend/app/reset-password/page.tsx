@@ -56,7 +56,7 @@ export default function ResetPasswordPage() {
           <label htmlFor="confirm" className={authLabelClass}>Ulangi kata sandi baru</label>
           <PasswordInput id="confirm" value={confirm} onChange={setConfirm} autoComplete="new-password" minLength={MIN_PASSWORD} />
         </div>
-        <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
+        <button type="submit" disabled={loading} aria-busy={loading} className={authPrimaryButtonClass}>
           {loading ? 'Menyimpan…' : 'Simpan kata sandi'}
         </button>
       </form>
