@@ -178,8 +178,8 @@ model BusinessImage {
 }
 
 // Masukan produk dari pemilik usaha. Sengaja menyimpan snapshot nama/email/bisnis
-// supaya arsip tetap terbaca walau akun atau bisnis dihapus. Tanpa FK, karena
-// feedback adalah catatan historis dan tidak boleh ikut terhapus.
+// supaya arsip tetap terbaca walau bisnis dihapus. Saat akun dihapus dari dashboard,
+// identitas pemilik di baris feedback dianonimkan, bukan ikut terhapus.
 model Feedback {
   id           String           @id @default(uuid()) @db.Uuid
   userId       String?          @map("user_id") @db.Uuid

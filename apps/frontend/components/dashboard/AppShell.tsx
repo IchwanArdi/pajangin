@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isActive = (href: string, exact?: boolean) => (exact ? pathname === href : pathname.startsWith(href));
 
   const logout = async () => {
-    await createClient().auth.signOut();
+    await createClient().auth.signOut({ scope: 'local' });
     router.replace('/login');
     router.refresh();
   };

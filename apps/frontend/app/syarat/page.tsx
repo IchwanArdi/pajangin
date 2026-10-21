@@ -160,7 +160,9 @@ export default function TermsPage() {
 
       <LegalSection id="penghapusan" title="Penghentian dan penghapusan akun">
         <p>
-          Anda dapat berhenti menggunakan Pajangin kapan saja dan meminta penghapusan akun melalui{' '}
+          Anda dapat berhenti menggunakan Pajangin kapan saja dan menghapus akun langsung dari halaman{' '}
+          <strong className="font-semibold text-ink">Akun &amp; keamanan</strong> di dashboard. Jika tidak
+          bisa masuk, kirim permintaan ke{' '}
           <a href={LEGAL_CONTACT_HREF} className={linkClass}>
             {LEGAL_CONTACT_EMAIL}
           </a>

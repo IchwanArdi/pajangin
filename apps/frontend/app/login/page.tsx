@@ -22,6 +22,14 @@ export default function LoginPage() {
 const NOTICES: Record<string, { tone: 'error' | 'info'; text: string }> = {
   session_expired: { tone: 'info', text: 'Sesi Anda telah berakhir. Silakan masuk kembali.' },
   password_updated: { tone: 'info', text: 'Kata sandi berhasil diperbarui. Silakan masuk dengan kata sandi baru.' },
+  account_deleted: {
+    tone: 'info',
+    text: 'Akun Pajangin Anda sudah dihapus. Terima kasih pernah memakai Pajangin.',
+  },
+  signed_out_all: {
+    tone: 'info',
+    text: 'Anda telah keluar dari semua perangkat yang memakai akun ini.',
+  },
   link_invalid: {
     tone: 'error',
     text: 'Link verifikasi tidak valid, sudah kedaluwarsa, atau dibuka di browser berbeda. Masuk untuk mengirim ulang link verifikasi.',

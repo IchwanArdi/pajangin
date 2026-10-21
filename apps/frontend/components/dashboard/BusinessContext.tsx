@@ -14,6 +14,7 @@ interface BusinessContextValue {
   error: string;
   selectBusiness: (id: string) => void;
   replaceBusiness: (biz: Business) => void;
+  replaceUser: (user: UserProfile) => void;
   reload: () => void;
 }
 
@@ -70,6 +71,10 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
     setBusinesses((prev) => prev.map((b) => (b.id === biz.id ? biz : b)));
   }, []);
 
+  const replaceUser = useCallback((next: UserProfile) => {
+    setUser(next);
+  }, []);
+
   const reload = useCallback(() => {
     setStatus('loading');
     setReloadKey((k) => k + 1);
@@ -84,9 +89,10 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
       error,
       selectBusiness,
       replaceBusiness,
+      replaceUser,
       reload,
     }),
-    [businesses, selectedId, user, status, error, selectBusiness, replaceBusiness, reload],
+    [businesses, selectedId, user, status, error, selectBusiness, replaceBusiness, replaceUser, reload],
   );
 
   return <BusinessContext.Provider value={value}>{children}</BusinessContext.Provider>;

@@ -48,6 +48,8 @@ pnpm --filter backend db:migrate    # development (membuat migrasi baru saat sch
 > Schema ada di `apps/backend/prisma/schema.prisma`. Prisma Client di-generate otomatis ke `apps/backend/src/generated/prisma` saat `pnpm install` / `build`.
 >
 > Isi `ADMIN_EMAILS` di `apps/backend/.env` (pisahkan dengan koma) untuk membuka console founder di `/admin`. Kosong = admin ditutup.
+>
+> Isi `SUPABASE_SERVICE_ROLE_KEY` di `apps/backend/.env` (Supabase → Project Settings → API Keys) untuk mengaktifkan hapus akun mandiri. Key ini hanya boleh ada di backend; jangan memakai prefix `NEXT_PUBLIC_`. Tanpa key ini, edit profil dan ganti kata sandi tetap berjalan, tetapi tombol hapus akun akan menampilkan pesan belum dikonfigurasi.
 
 ### 3. Konfigurasi Supabase Auth
 ```bash
@@ -59,7 +61,7 @@ Di Supabase Dashboard:
 - **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`)
 - Produksi: pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
 
-Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`. Ganti kata sandi dan akses legal tersedia di `/dashboard/akun`.
+Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`. Halaman `/dashboard/akun` berisi edit nama/WhatsApp, ganti kata sandi, logout perangkat/all devices, tautan legal, dan hapus akun mandiri (auth user + data bisnis + file storage; feedback dianonimkan).
 
 > Sebelum peluncuran publik, aktifkan mailbox `halo@pajangin.web.id` yang dipakai sebagai kontak di `/syarat` dan `/privasi`, lalu tinjau isi kedua dokumen sesuai entitas dan operasional yang sebenarnya.
 

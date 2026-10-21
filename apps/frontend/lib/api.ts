@@ -138,6 +138,18 @@ export interface UserProfile {
   is_admin: boolean;
 }
 
+export interface AccountDeletionImpact {
+  businesses: Array<{ id: string; name: string; slug: string }>;
+  totals: {
+    businesses: number;
+    services: number;
+    images: number;
+    leads: number;
+    bookings: number;
+    feedback: number;
+  };
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -158,7 +170,7 @@ async function getAccessToken(): Promise<string | null> {
 // sesi habis / tidak valid → keluar dan kembali ke login, lalu balik ke halaman ini setelah masuk
 async function handleUnauthorized() {
   if (typeof window === 'undefined') return;
-  await createClient().auth.signOut();
+  await createClient().auth.signOut({ scope: 'local' });
   const next = encodeURIComponent(window.location.pathname + window.location.search);
   // sengaja full reload (bukan router.push): helper ini di luar komponen & state lama harus dibuang
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
@@ -219,6 +231,35 @@ async function request<T>(
 export async function getCurrentUser(): Promise<UserProfile> {
   const data = await request<{ user: UserProfile }>('/api/v1/auth/me', { auth: true });
   return data.user;
+}
+
+export async function updateCurrentUser(payload: {
+  name: string;
+  whatsapp: string | null;
+}): Promise<UserProfile> {
+  const data = await request<{ user: UserProfile }>('/api/v1/auth/me', {
+    method: 'PATCH',
+    auth: true,
+    body: JSON.stringify(payload),
+    fallbackError: 'Gagal memperbarui informasi akun.',
+  });
+  return data.user;
+}
+
+export function getAccountDeletionImpact(): Promise<AccountDeletionImpact> {
+  return request<AccountDeletionImpact>('/api/v1/auth/me/deletion-impact', {
+    auth: true,
+    fallbackError: 'Gagal memuat data yang akan dihapus.',
+  });
+}
+
+export function deleteCurrentAccount(confirmation: string): Promise<{ success: boolean }> {
+  return request<{ success: boolean }>('/api/v1/auth/me', {
+    method: 'DELETE',
+    auth: true,
+    body: JSON.stringify({ confirmation }),
+    fallbackError: 'Gagal menghapus akun. Coba lagi.',
+  });
 }
 
 // ===== bisnis =====

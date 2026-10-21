@@ -273,7 +273,7 @@ export default function OnboardingPage() {
   };
 
   const handleLogout = async () => {
-    await createClient().auth.signOut();
+    await createClient().auth.signOut({ scope: 'local' });
     router.replace('/login');
     router.refresh();
   };

@@ -66,7 +66,7 @@ export default function PrivacyPage() {
         <ul className={listClass}>
           <li>Kami tidak menjual data pribadi Anda.</li>
           <li>Data utama dipakai untuk menampilkan halaman bisnis, mengirim notifikasi, dan menghitung statistik.</li>
-          <li>Anda dapat meminta akses, koreksi, atau penghapusan data melalui email kami.</li>
+          <li>Anda dapat mengubah profil, mengganti kata sandi, dan menghapus akun dari halaman Akun &amp; keamanan.</li>
           <li>Beberapa penyedia teknologi memproses data atas nama kami agar layanan dapat berjalan.</li>
         </ul>
       </LegalSection>
@@ -187,9 +187,11 @@ export default function PrivacyPage() {
           sampai dihapus oleh pemilik usaha atau melalui permintaan yang sah.
         </p>
         <p>
-          Setelah permintaan penghapusan, data dihapus dari sistem aktif. Salinan cadangan, log keamanan,
-          dan arsip dapat bertahan untuk waktu terbatas sebelum terhapus sesuai siklus penyimpanan. Masukan
-          yang pernah dikirim dapat disimpan sebagai arsip produk; Anda dapat meminta penghapusannya.
+          Setelah permintaan penghapusan, data dihapus dari sistem aktif. Anda dapat menghapus akun
+          langsung dari halaman Akun &amp; keamanan di dashboard. Salinan cadangan, log keamanan, dan
+          arsip dapat bertahan untuk waktu terbatas sebelum terhapus sesuai siklus penyimpanan.
+          Masukan produk yang pernah dikirim tetap disimpan sebagai arsip, tetapi nama, email, nomor
+          WhatsApp, dan identitas bisnis Anda dilepas saat akun dihapus.
         </p>
       </LegalSection>
 
@@ -212,7 +214,8 @@ export default function PrivacyPage() {
           <li>mengajukan keluhan kepada otoritas perlindungan data pribadi yang berwenang di Indonesia.</li>
         </ul>
         <p>
-          Kirim permintaan ke{' '}
+          Untuk menghapus akun, buka <strong className="font-semibold text-ink">Akun &amp; keamanan</strong>{' '}
+          di dashboard. Untuk permintaan akses, koreksi, atau salinan data, kirim permintaan ke{' '}
           <a href={LEGAL_CONTACT_HREF} className={linkClass}>
             {LEGAL_CONTACT_EMAIL}
           </a>
@@ -239,7 +242,7 @@ export default function PrivacyPage() {
 
       <LegalSection id="kontak" title="Hubungi kami">
         <p>
-          Pertanyaan, permintaan akses, atau penghapusan data dapat dikirim ke{' '}
+          Pertanyaan, permintaan akses, atau salinan data dapat dikirim ke{' '}
           <a href={LEGAL_CONTACT_HREF} className={linkClass}>
             {LEGAL_CONTACT_EMAIL}
           </a>
