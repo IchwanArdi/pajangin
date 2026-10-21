@@ -82,7 +82,21 @@ export default function AuthShell({
         </main>
 
         <footer className="px-5 pb-4 text-center text-[11px] text-paper/55 sm:px-8 lg:px-10">
-          Gratis 100% · Tanpa kartu kredit · Dibuat untuk UMKM lokal
+          <p>Gratis 100% · Tanpa kartu kredit · Dibuat untuk UMKM lokal</p>
+          <nav aria-label="Legal" className="mt-2 flex items-center justify-center gap-4">
+            <Link
+              href="/syarat"
+              className="transition-colors hover:text-paper focus-visible:outline-none focus-visible:underline"
+            >
+              Syarat &amp; Ketentuan
+            </Link>
+            <Link
+              href="/privasi"
+              className="transition-colors hover:text-paper focus-visible:outline-none focus-visible:underline"
+            >
+              Kebijakan Privasi
+            </Link>
+          </nav>
         </footer>
       </div>
     </div>

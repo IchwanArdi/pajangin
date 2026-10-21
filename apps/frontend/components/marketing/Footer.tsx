@@ -46,8 +46,16 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-rule pt-6 text-xs text-ink-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-rule pt-6 text-xs text-ink-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <span>© {new Date().getFullYear()} Pajangin. Dibuat untuk usaha lokal Indonesia.</span>
+          <nav aria-label="Legal" className="flex items-center gap-4">
+            <Link href="/syarat" className="transition hover:text-ink">
+              Syarat &amp; Ketentuan
+            </Link>
+            <Link href="/privasi" className="transition hover:text-ink">
+              Kebijakan Privasi
+            </Link>
+          </nav>
           <span className="font-mono uppercase tracking-[0.12em]">Halaman publik · SEO lokal · Analitik</span>
         </div>
       </Container>
