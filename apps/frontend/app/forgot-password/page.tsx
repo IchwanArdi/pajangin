@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
-import AuthShell, { FormAlert, inputClass, labelClass, primaryButtonClass } from '../../components/auth/AuthShell';
+import AuthShell, { AuthAlert, authInputClass, authLabelClass, authPrimaryButtonClass } from '../../components/auth/AuthShell';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -48,10 +48,10 @@ export default function ForgotPasswordPage() {
         </p>
       }
     >
-      {errorMessage && <FormAlert>{errorMessage}</FormAlert>}
+      {errorMessage && <AuthAlert>{errorMessage}</AuthAlert>}
 
       {sent ? (
-        <div className="space-y-4 text-sm text-ink-2">
+        <div className="space-y-4 text-sm text-paper/65">
           <p>Tidak menemukan email? Cek folder <strong>Spam</strong>, atau coba lagi dalam beberapa menit.</p>
           <button type="button" onClick={() => setSent(false)} className="font-semibold text-accent hover:underline">
             Kirim ke email lain
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className={labelClass}>Email</label>
+            <label htmlFor="email" className={authLabelClass}>Email</label>
             <input
               id="email"
               name="email"
@@ -70,10 +70,10 @@ export default function ForgotPasswordPage() {
               placeholder="budi@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
+              className={authInputClass}
             />
           </div>
-          <button type="submit" disabled={loading} className={primaryButtonClass}>
+          <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
             {loading ? 'Mengirim…' : 'Kirim link reset'}
           </button>
         </form>

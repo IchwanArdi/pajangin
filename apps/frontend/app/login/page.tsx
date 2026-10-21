@@ -2,11 +2,12 @@
 
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
 import { safeNext } from '../../lib/safe-next';
-import AuthShell, { FormAlert, inputClass, labelClass, primaryButtonClass } from '../../components/auth/AuthShell';
+import AuthShell, { AuthAlert, authInputClass, authLabelClass, authPrimaryButtonClass } from '../../components/auth/AuthShell';
 import PasswordInput from '../../components/auth/PasswordInput';
 import GoogleButton, { OrDivider } from '../../components/auth/GoogleButton';
 
@@ -79,66 +80,79 @@ function LoginForm() {
 
   return (
     <AuthShell
-      title="Masuk ke akun Anda"
-      subtitle="Kelola halaman bisnis, layanan, dan analitik Anda dari satu tempat."
+      eyebrow="Selamat datang kembali"
+      title="Masuk ke dashboard bisnis Anda"
+      subtitle="Kelola halaman, layanan, dan pesan WhatsApp dari satu tempat."
       footer={
         <p>
           Belum punya akun?{' '}
-          <Link href="/register" className="font-semibold text-accent hover:underline">
+          <Link href="/register" className="font-semibold text-accent underline-offset-4 hover:underline">
             Daftar gratis
           </Link>
         </p>
       }
     >
-      {notice && !errorMessage && <FormAlert tone={notice.tone}>{notice.text}</FormAlert>}
+      {notice && !errorMessage && <AuthAlert tone={notice.tone}>{notice.text}</AuthAlert>}
 
       {errorMessage && (
-        <FormAlert>
+        <AuthAlert>
           <p>{errorMessage}</p>
           {needsVerification && (
             <button
               type="button"
               onClick={handleResend}
               disabled={resendState !== 'idle'}
-              className="mt-2 font-semibold text-accent hover:underline disabled:opacity-60"
+              className="mt-2 font-semibold text-accent underline-offset-4 hover:underline disabled:opacity-60"
             >
               {resendState === 'sent' ? 'Link verifikasi terkirim ✓' : resendState === 'sending' ? 'Mengirim…' : 'Kirim ulang link verifikasi'}
             </button>
           )}
-        </FormAlert>
+        </AuthAlert>
       )}
 
       <GoogleButton next={next} onError={setErrorMessage} />
       <OrDivider />
 
-      <form onSubmit={handleLogin} className="space-y-4" noValidate={false}>
+      <form onSubmit={handleLogin} className="space-y-5" noValidate={false}>
         <div>
-          <label htmlFor="email" className={labelClass}>Email</label>
+          <label htmlFor="email" className={authLabelClass}>Email</label>
           <input
             id="email"
             name="email"
             type="email"
             required
             autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
             placeholder="budi@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={inputClass}
+            className={authInputClass}
           />
         </div>
 
         <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <label htmlFor="password" className="text-xs font-medium text-ink-2">Kata sandi</label>
-            <Link href="/forgot-password" className="text-xs font-semibold text-accent hover:underline">
+          <div className="mb-1.5 flex items-center justify-between gap-3">
+            <label htmlFor="password" className="text-[13px] font-semibold text-paper/80">Kata sandi</label>
+            <Link href="/forgot-password" className="text-xs font-semibold text-accent underline-offset-4 hover:underline">
               Lupa kata sandi?
             </Link>
           </div>
           <PasswordInput id="password" value={password} onChange={setPassword} autoComplete="current-password" />
         </div>
 
-        <button type="submit" disabled={loading} className={primaryButtonClass}>
-          {loading ? 'Memeriksa akun…' : 'Masuk'}
+        <button type="submit" disabled={loading} aria-busy={loading} className={authPrimaryButtonClass}>
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
+              Memeriksa akun…
+            </>
+          ) : (
+            <>
+              Masuk
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
+            </>
+          )}
         </button>
       </form>
     </AuthShell>

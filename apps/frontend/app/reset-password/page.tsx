@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
-import AuthShell, { FormAlert, labelClass, primaryButtonClass } from '../../components/auth/AuthShell';
+import AuthShell, { AuthAlert, authLabelClass, authPrimaryButtonClass } from '../../components/auth/AuthShell';
 import PasswordInput from '../../components/auth/PasswordInput';
 
 const MIN_PASSWORD = 8;
@@ -46,17 +46,17 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthShell title="Buat kata sandi baru" subtitle="Gunakan minimal 8 karakter. Setelah disimpan Anda langsung masuk ke dashboard.">
-      {errorMessage && <FormAlert>{errorMessage}</FormAlert>}
+      {errorMessage && <AuthAlert>{errorMessage}</AuthAlert>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="password" className={labelClass}>Kata sandi baru</label>
+          <label htmlFor="password" className={authLabelClass}>Kata sandi baru</label>
           <PasswordInput id="password" value={password} onChange={setPassword} autoComplete="new-password" minLength={MIN_PASSWORD} />
         </div>
         <div>
-          <label htmlFor="confirm" className={labelClass}>Ulangi kata sandi baru</label>
+          <label htmlFor="confirm" className={authLabelClass}>Ulangi kata sandi baru</label>
           <PasswordInput id="confirm" value={confirm} onChange={setConfirm} autoComplete="new-password" minLength={MIN_PASSWORD} />
         </div>
-        <button type="submit" disabled={loading} className={primaryButtonClass}>
+        <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
           {loading ? 'Menyimpan…' : 'Simpan kata sandi'}
         </button>
       </form>

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { inputClass } from './AuthShell';
+import { Eye, EyeOff } from 'lucide-react';
+import { authInputClass } from './AuthShell';
 
-// Input kata sandi dengan tombol tampilkan/sembunyikan
+// Input kata sandi dengan tombol tampilkan/sembunyikan.
 export default function PasswordInput({
   id,
   value,
@@ -33,15 +34,16 @@ export default function PasswordInput({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`${inputClass} pr-20`}
+        className={`${authInputClass} pr-12`}
       />
       <button
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-        className="absolute inset-y-0 right-0 px-4 text-xs font-semibold text-ink-2 hover:text-ink focus-visible:outline-none focus-visible:underline"
+        title={visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+        className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-paper/50 transition-colors hover:bg-paper/10 hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
-        {visible ? 'Sembunyi' : 'Lihat'}
+        {visible ? <EyeOff className="h-4 w-4" strokeWidth={1.75} /> : <Eye className="h-4 w-4" strokeWidth={1.75} />}
       </button>
     </div>
   );

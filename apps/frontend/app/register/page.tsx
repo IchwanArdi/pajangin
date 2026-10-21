@@ -5,7 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
-import AuthShell, { FormAlert, inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from '../../components/auth/AuthShell';
+import AuthShell, {
+  AuthAlert,
+  authInputClass,
+  authLabelClass,
+  authPrimaryButtonClass,
+  authSecondaryButtonClass,
+} from '../../components/auth/AuthShell';
 import PasswordInput from '../../components/auth/PasswordInput';
 import GoogleButton, { OrDivider } from '../../components/auth/GoogleButton';
 
@@ -99,7 +105,7 @@ export default function RegisterPage() {
         title="Cek email Anda"
         subtitle={
           <>
-            Kami mengirim link verifikasi ke <strong className="text-ink">{sentTo}</strong>. Klik link tersebut untuk mengaktifkan akun dan membuat halaman bisnis Anda.
+            Kami mengirim link verifikasi ke <strong className="text-paper">{sentTo}</strong>. Klik link tersebut untuk mengaktifkan akun dan membuat halaman bisnis Anda.
           </>
         }
         footer={
@@ -111,12 +117,12 @@ export default function RegisterPage() {
           </p>
         }
       >
-        {errorMessage && <FormAlert>{errorMessage}</FormAlert>}
-        <ul className="space-y-2 text-sm leading-relaxed text-ink-2">
+        {errorMessage && <AuthAlert>{errorMessage}</AuthAlert>}
+        <ul className="space-y-2 text-sm leading-relaxed text-paper/70">
           <li>• Tidak menemukan email? Cek folder <strong>Spam</strong> atau <strong>Promosi</strong>.</li>
           <li>• Buka link di browser yang sama dengan tempat Anda mendaftar.</li>
         </ul>
-        <button type="button" onClick={handleResend} disabled={resendState !== 'idle'} className={secondaryButtonClass}>
+        <button type="button" onClick={handleResend} disabled={resendState !== 'idle'} className={authSecondaryButtonClass}>
           {resendState === 'sent' ? 'Link verifikasi terkirim ulang ✓' : resendState === 'sending' ? 'Mengirim…' : 'Kirim ulang link verifikasi'}
         </button>
         <button
@@ -126,7 +132,7 @@ export default function RegisterPage() {
             setResendState('idle');
             setErrorMessage('');
           }}
-          className="w-full text-sm font-semibold text-ink-2 hover:text-ink"
+          className="w-full text-sm font-semibold text-paper/65 transition-colors hover:text-paper"
         >
           Salah email? Ubah alamat email
         </button>
@@ -150,14 +156,14 @@ export default function RegisterPage() {
         </p>
       }
     >
-      {errorMessage && <FormAlert>{errorMessage}</FormAlert>}
+      {errorMessage && <AuthAlert>{errorMessage}</AuthAlert>}
 
       <GoogleButton next={AFTER_SIGNUP} label="Daftar dengan Google" onError={setErrorMessage} />
       <OrDivider />
 
       <form onSubmit={handleRegister} className="space-y-4">
         <div>
-          <label htmlFor="name" className={labelClass}>Nama Anda</label>
+          <label htmlFor="name" className={authLabelClass}>Nama Anda</label>
           <input
             id="name"
             name="name"
@@ -167,12 +173,12 @@ export default function RegisterPage() {
             placeholder="Budi Santoso"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={inputClass}
+            className={authInputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="email" className={labelClass}>Email</label>
+          <label htmlFor="email" className={authLabelClass}>Email</label>
           <input
             id="email"
             name="email"
@@ -182,12 +188,12 @@ export default function RegisterPage() {
             placeholder="budi@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={inputClass}
+            className={authInputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="password" className={labelClass}>Kata sandi</label>
+          <label htmlFor="password" className={authLabelClass}>Kata sandi</label>
           <PasswordInput
             id="password"
             value={password}
@@ -196,10 +202,10 @@ export default function RegisterPage() {
             placeholder={`Minimal ${MIN_PASSWORD} karakter`}
             minLength={MIN_PASSWORD}
           />
-          {hint && <p className="mt-1.5 text-xs text-ink-2">{hint}</p>}
+          {hint && <p className="mt-1.5 text-xs text-paper/60">{hint}</p>}
         </div>
 
-        <button type="submit" disabled={loading} className={primaryButtonClass}>
+        <button type="submit" disabled={loading} className={authPrimaryButtonClass}>
           {loading ? 'Membuat akun…' : 'Buat akun'}
         </button>
       </form>

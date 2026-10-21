@@ -255,6 +255,50 @@ body {
 .serp-url { color: var(--color-ink-3); }
 .serp-link { color: var(--color-serp-link); }
 
+/* ===== Auth shell =====
+ * Seluruh halaman auth memakai satu kanvas ink. Grid halus memberi tekstur,
+ * bukan dekorasi yang bersaing dengan form. */
+.auth-panel {
+  color-scheme: dark;
+  background-color: var(--color-ink);
+  background-image:
+    radial-gradient(48% 38% at 8% 0%, color-mix(in oklab, var(--color-accent) 16%, transparent), transparent 70%),
+    radial-gradient(36% 36% at 96% 100%, color-mix(in oklab, var(--color-paper) 6%, transparent), transparent 72%);
+}
+
+/* Panel form solid — grid di belakang tidak tembus, jadi bukan efek kaca. */
+.auth-surface {
+  background-color: color-mix(in oklab, var(--color-ink) 92%, var(--color-paper));
+}
+
+/* Autofill browser tetap gelap; tanpa ini Chrome bisa menimpa input dengan putih. */
+.auth-panel input:-webkit-autofill,
+.auth-panel input:-webkit-autofill:hover,
+.auth-panel input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-paper);
+  caret-color: var(--color-paper);
+  -webkit-box-shadow: 0 0 0 1000px color-mix(in oklab, var(--color-ink) 94%, var(--color-paper)) inset;
+}
+
+.auth-panel-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-paper) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-paper) 5%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 66%, transparent 100%);
+}
+
+/* Layar desktop pendek: sembunyikan proof chips agar form tetap muat tanpa scroll. */
+@media (min-width: 64rem) and (max-height: 47.5rem) {
+  .auth-proof {
+    display: none;
+  }
+}
+
 /* ===== Motion utilities (transform/opacity only, GPU-friendly) ===== */
 
 /* anchor halaman bisnis: lompat halus, hanya saat pengguna tidak reduce motion */
