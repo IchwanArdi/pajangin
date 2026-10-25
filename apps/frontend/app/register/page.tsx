@@ -20,6 +20,9 @@ const MIN_PASSWORD = 8;
 // Setelah verifikasi email / login Google, user baru langsung masuk ke onboarding bisnis
 const AFTER_SIGNUP = '/onboarding';
 
+// Google OAuth hanya ditampilkan jika provider-nya sudah aktif di Supabase.
+const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true';
+
 function passwordHint(pw: string): string | null {
   if (!pw) return null;
   if (pw.length < MIN_PASSWORD) return `Minimal ${MIN_PASSWORD} karakter (${pw.length}/${MIN_PASSWORD}).`;
@@ -158,8 +161,12 @@ export default function RegisterPage() {
     >
       {errorMessage && <AuthAlert>{errorMessage}</AuthAlert>}
 
-      <GoogleButton next={AFTER_SIGNUP} label="Daftar dengan Google" onError={setErrorMessage} />
-      <OrDivider />
+      {GOOGLE_AUTH_ENABLED && (
+        <>
+          <GoogleButton next={AFTER_SIGNUP} label="Daftar dengan Google" onError={setErrorMessage} />
+          <OrDivider />
+        </>
+      )}
 
       <form onSubmit={handleRegister} className="space-y-4">
         <div>

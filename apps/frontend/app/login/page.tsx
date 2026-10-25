@@ -19,6 +19,9 @@ export default function LoginPage() {
   );
 }
 
+// Google OAuth hanya ditampilkan jika provider-nya sudah aktif di Supabase.
+const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true';
+
 const NOTICES: Record<string, { tone: 'error' | 'info'; text: string }> = {
   session_expired: { tone: 'info', text: 'Sesi Anda telah berakhir. Silakan masuk kembali.' },
   password_updated: { tone: 'info', text: 'Kata sandi berhasil diperbarui. Silakan masuk dengan kata sandi baru.' },
@@ -130,8 +133,12 @@ function LoginForm() {
         </AuthAlert>
       )}
 
-      <GoogleButton next={next} onError={setErrorMessage} />
-      <OrDivider />
+      {GOOGLE_AUTH_ENABLED && (
+        <>
+          <GoogleButton next={next} onError={setErrorMessage} />
+          <OrDivider />
+        </>
+      )}
 
       <form onSubmit={handleLogin} className="space-y-5" noValidate={false}>
         <div>

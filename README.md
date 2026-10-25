@@ -51,6 +51,25 @@ pnpm --filter backend db:migrate    # development (membuat migrasi baru saat sch
 >
 > Isi `SUPABASE_SERVICE_ROLE_KEY` di `apps/backend/.env` (Supabase → Project Settings → API Keys) untuk mengaktifkan hapus akun mandiri. Key ini hanya boleh ada di backend; jangan memakai prefix `NEXT_PUBLIC_`. Tanpa key ini, edit profil dan ganti kata sandi tetap berjalan, tetapi tombol hapus akun akan menampilkan pesan belum dikonfigurasi.
 
+### 2b. Database Production Baru
+
+Database development dan production sebaiknya dipisah. Untuk environment baru:
+
+1. Buat Supabase project baru, lalu isi `DATABASE_URL` (transaction pooler 6543), `DIRECT_URL` (session pooler 5432), `SUPABASE_URL`, dan `SUPABASE_SERVICE_ROLE_KEY` di environment backend production.
+2. Jalankan migration dari nol:
+   ```bash
+   pnpm --filter backend db:deploy
+   ```
+   `db:deploy` memakai `DIRECT_URL`; jangan memakai `prisma db push` untuk production.
+3. Buka Supabase **SQL Editor**, lalu jalankan seluruh isi `supabase/setup.sql`. File ini membuat bucket `business-assets`, policy upload khusus pemilik bisnis, dan mengaktifkan RLS pada tabel publik agar tidak bisa diakses langsung lewat REST Supabase.
+4. Jangan menjalankan `src/scripts/seed-demo.ts` di production. Script itu khusus data contoh development.
+5. Setelah migration, cek status:
+   ```bash
+   pnpm --filter backend exec prisma migrate status
+   ```
+
+> Folder `apps/backend/prisma/migrations` adalah sumber kebenaran struktur database. Setiap perubahan schema harus menghasilkan file migration baru dan ikut di-commit.
+
 ### 3. Konfigurasi Supabase Auth
 ```bash
 cp apps/frontend/.env.example apps/frontend/.env.local   # isi URL + publishable key
@@ -58,8 +77,8 @@ cp apps/frontend/.env.example apps/frontend/.env.local   # isi URL + publishable
 Di Supabase Dashboard:
 - **Authentication → URL Configuration**: Site URL `http://localhost:3000`, Redirect URLs `http://localhost:3000/auth/callback`
 - **Authentication → Providers → Email**: aktifkan *Confirm email*; set minimal password 8 karakter
-- **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`)
-- Produksi: pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
+- **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`). Setelah provider aktif, set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`; jika belum, biarkan `false` agar tombol Google tidak tampil.
+- Produksi: Site URL `https://pajangin.web.id`, Redirect URL `https://pajangin.web.id/auth/callback`, dan pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
 
 Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`. Halaman `/dashboard/akun` berisi edit nama/WhatsApp, ganti kata sandi, logout perangkat/all devices, tautan legal, dan hapus akun mandiri (auth user + data bisnis + file storage; feedback dianonimkan).
 
