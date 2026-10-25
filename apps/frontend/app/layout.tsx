@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, Geist, Geist_Mono } from 'next/font/google';
 import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/seo';
 import './globals.css';
@@ -24,6 +24,7 @@ const TITLE = 'Pajangin — Halaman Bisnis & Analitik Gratis untuk UMKM';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: 'Pajangin',
   title: TITLE,
   description: SITE_DESCRIPTION,
   openGraph: {
@@ -41,6 +42,11 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [DEFAULT_OG_IMAGE],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#1A1511',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({

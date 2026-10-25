@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <title>Pajangin mark — paper</title>
+  <g transform="translate(17 0)">
+    <path fill="#FEFCFB" fill-rule="evenodd" d="M44 208V48c0-8 4-8 8-8h68l58 58v2q0 38-38 38H78v70c0 8-4 8-8 8H52c-8 0-8-8-8-8Z M78 74v30h58c8 0 8-8 8-8V82c0-8-8-8-8-8H78Z"/>
+    <path fill="#E24A3F" d="M120 40h58v58Z"/>
+  </g>
+</svg>
