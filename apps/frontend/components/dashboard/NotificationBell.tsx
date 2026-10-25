@@ -127,7 +127,9 @@ export function NotificationBell() {
 
       {/* Popover Dropdown */}
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-80 sm:w-96 rounded-2xl border border-rule bg-paper p-4 shadow-xl backdrop-blur-md">
+        // Di sidebar desktop, panel dibuka ke kanan agar lebar 384px tidak terpotong layar.
+        // Di mobile tetap ke kiri karena lonceng berada di kanan header.
+        <div className="absolute right-0 top-11 z-50 w-80 max-w-[calc(100vw-1.5rem)] rounded-2xl border border-rule bg-paper p-4 shadow-xl backdrop-blur-md sm:w-96 lg:top-12 lg:left-full lg:right-auto lg:ml-2">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-rule pb-3">
             <div className="flex items-center gap-2">
