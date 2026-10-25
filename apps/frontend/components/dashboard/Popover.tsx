@@ -28,7 +28,7 @@ export function Popover({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpen(false);
-        (ref.current?.querySelector('[aria-haspopup]') as HTMLElement | null)?.focus();
+        (ref.current?.querySelector('[aria-expanded]') as HTMLElement | null)?.focus();
       }
     };
     document.addEventListener('mousedown', onDown);

@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react';
+import { Info } from 'lucide-react';
+import { PageHelp } from './HelpTip';
+import type { PageHelpKey } from '../../lib/dashboard-help';
 
 /* Hallmark · app primitives · genre: modern-minimal · theme: Coral (design.md)
  * Shape lock: card 12px · button pill · input 10px. Colour only via tokens. */
@@ -77,11 +80,46 @@ export function Badge({
   );
 }
 
-export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {
+export function InfoNote({
+  children,
+  tone = 'neutral',
+  className = '',
+}: {
+  children: ReactNode;
+  tone?: 'neutral' | 'warning' | 'positive';
+  className?: string;
+}) {
+  const tones = {
+    neutral: 'bg-paper-2 text-ink-2',
+    warning: 'bg-warning-soft text-ink',
+    positive: 'bg-positive-soft text-positive',
+  };
+  return (
+    <div role="note" className={`flex items-start gap-2.5 rounded-(--radius-input) px-4 py-3 text-sm leading-relaxed ${tones[tone]} ${className}`}>
+      <Info className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+export function PageHeader({
+  title,
+  description,
+  actions,
+  helpKey,
+}: {
+  title: string;
+  description?: ReactNode;
+  actions?: ReactNode;
+  helpKey?: PageHelpKey;
+}) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
-        <h1 className="text-2xl font-semibold tracking-[-0.025em] text-ink">{title}</h1>
+        <div className="flex items-center gap-1">
+          <h1 className="text-2xl font-semibold tracking-[-0.025em] text-ink">{title}</h1>
+          {helpKey && <PageHelp helpKey={helpKey} />}
+        </div>
         {description && <p className="mt-1 text-sm text-ink-2">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Calendar, CalendarCheck, Check, Clock, MessageCircle, Phone, RefreshCw, Search, Trash2, Users, X } from 'lucide-react';
 import { BookingItem, BookingStats, BookingStatus, deleteBooking, getBookings, getBookingStats, updateBooking, updateBusiness } from '../../../lib/api';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
-import { Badge, Card, PageHeader, Skeleton, btn } from '../../../components/dashboard/ui';
+import { Badge, Card, InfoNote, PageHeader, Skeleton, btn } from '../../../components/dashboard/ui';
 import { toWaNumber } from '../../../lib/whatsapp';
 
 function formatDateIndo(dateStr: string) {
@@ -111,7 +111,7 @@ export default function BookingPage() {
           `• Layanan: ${booking.service_name || '-'}\n` +
           `• Tanggal: ${formatDateIndo(booking.date)}\n` +
           `• Jam: ${booking.time_slot} WIB\n` +
-          `• Jumlah Tamu/Pax: ${booking.pax} orang\n\n` +
+          `• Jumlah orang: ${booking.pax} orang\n\n` +
           `Reservasi Anda telah *DIKONFIRMASI*. Mohon hadir tepat waktu ya. Terima kasih!`;
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
       }
@@ -168,7 +168,11 @@ export default function BookingPage() {
     <div className="space-y-6">
       {/* Page Header with Toggle */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader title="Booking & Reservasi" description="Kelola jadwal kunjungan, janji temu, dan reservasi pelanggan langsung dari dashboard." />
+        <PageHeader
+          title="Booking & Reservasi"
+          helpKey="booking"
+          description="Kelola jadwal kunjungan, janji temu, dan reservasi pelanggan langsung dari dashboard."
+        />
 
         {/* Toggle Booking Online Switch */}
         <div className="flex items-center gap-3 rounded-2xl border border-rule bg-surface p-3 sm:self-start">
@@ -178,15 +182,22 @@ export default function BookingPage() {
           </div>
           <button
             type="button"
+            role="switch"
+            aria-checked={Boolean(business.booking_enabled)}
+            aria-label={business.booking_enabled ? 'Nonaktifkan booking online' : 'Aktifkan booking online'}
             onClick={handleToggleBookingEnabled}
             disabled={togglingBooking}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent ${business.booking_enabled ? 'bg-positive' : 'bg-paper-3'}`}
-            aria-label="Toggle Booking"
           >
             <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${business.booking_enabled ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
         </div>
       </div>
+
+      <InfoNote>
+        <strong>Booking online</strong> membuat pelanggan memilih tanggal dan jam sendiri. Status <strong>Menunggu</strong> berarti belum Anda
+        konfirmasi. Setelah dikonfirmasi, gunakan tombol WhatsApp untuk memberi tahu pelanggan.
+      </InfoNote>
 
       {actionMessage && <div className="rounded-xl border border-positive-soft bg-positive-soft/40 px-4 py-3 text-sm text-positive">{actionMessage}</div>}
 

@@ -95,7 +95,7 @@ function buildUserPrompt(
 
     post_sosmed: `Buatkan 3 ide posting media sosial (Instagram/Facebook) untuk bisnis ini. Setiap posting berisi: caption yang engaging (2-3 kalimat), 3-5 hashtag relevan. Pisahkan setiap posting dengan "---".\n\n${info}`,
 
-    seo_meta: `Buatkan meta title (maks 60 karakter) dan meta description (maks 155 karakter) yang SEO-friendly untuk halaman bisnis ini. Format:\nMeta Title: [judul]\nMeta Description: [deskripsi]\n\n${info}`,
+    seo_meta: `Buatkan judul (maks 60 karakter) dan deskripsi (maks 155 karakter) untuk hasil pencarian Google halaman bisnis ini. Format:\nJudul di Google: [judul]\nDeskripsi di Google: [deskripsi]\n\n${info}`,
 
     faq: `Buatkan 5 pertanyaan FAQ (Frequently Asked Questions) yang relevan beserta jawabannya untuk bisnis ini. Format: setiap FAQ diawali "Q:" untuk pertanyaan dan "A:" untuk jawaban.\n\n${info}`,
 

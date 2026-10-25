@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, Bot, Copy, Check, RefreshCw, FileText, Hash, Search, HelpCircle, MessageSquare, Star, Layers, ArrowRight, ExternalLink } from 'lucide-react';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
-import { Card, CardHeader, PageHeader, Badge, Skeleton, btn, field } from '../../../components/dashboard/ui';
+import { Card, CardHeader, InfoNote, PageHeader, Badge, Skeleton, btn, field } from '../../../components/dashboard/ui';
 import { generateAiContent, getAiProviders, updateBusiness, getServices, type AiContentType, type Service, type AiProvidersResponse } from '../../../lib/api';
 
 interface ContentTypeConfig {
@@ -48,9 +48,9 @@ const CONTENT_TYPES: ContentTypeConfig[] = [
   },
   {
     type: 'seo_meta',
-    label: 'SEO Meta Tag Google',
+    label: 'Judul & deskripsi Google',
     icon: Search,
-    description: 'Meta Title & Description optimal agar mudah dicari di Google.',
+    description: 'Dua teks yang muncul di hasil pencarian Google.',
     category: 'marketing',
     canApplyToProfile: true,
   },
@@ -148,6 +148,7 @@ export default function AiPage() {
 
   const handleApplyToProfile = async () => {
     if (!business?.id || !result?.content) return;
+    if (!confirm('Terapkan hasil ini ke profil bisnis? Isi profil yang terkait akan diganti.')) return;
     setApplying(true);
     setError(null);
 
@@ -168,8 +169,9 @@ export default function AiPage() {
             .filter(Boolean)[0] || result.content.slice(0, 80);
         await updateBusiness(business.id, { tagline: firstLine });
       } else if (result.type === 'seo_meta') {
-        const titleMatch = result.content.match(/Meta Title:\s*(.*)/i);
-        const descMatch = result.content.match(/Meta Description:\s*(.*)/i);
+        // Terima format baru sekaligus format lama agar hasil AI versi sebelumnya tetap bisa diterapkan.
+        const titleMatch = result.content.match(/^(?:Meta Title|Judul di Google)\s*:\s*(.*)$/im);
+        const descMatch = result.content.match(/^(?:Meta Description|Deskripsi di Google)\s*:\s*(.*)$/im);
         await updateBusiness(business.id, {
           meta_title: titleMatch?.[1]?.trim() || undefined,
           meta_description: descMatch?.[1]?.trim() || undefined,
@@ -219,8 +221,9 @@ export default function AiPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="AI Content Generator"
-        description="Buat copywriting profesional, konten media sosial, dan materi pemasaran instan dengan Gemini & OpenAI."
+        title="AI Konten"
+        helpKey="ai"
+        description="Bantu tulis deskripsi bisnis, caption media sosial, dan pesan WhatsApp. Hasilnya berupa draft. Periksa dulu sebelum dipakai."
         actions={
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 rounded-full border border-rule bg-surface px-3 py-1 text-xs font-medium text-ink-2">
@@ -230,6 +233,10 @@ export default function AiPage() {
           </div>
         }
       />
+
+      <InfoNote tone="warning">
+        Hasil AI adalah <strong>draft</strong>, bukan fakta. Periksa harga, alamat, dan janji sebelum menerapkan ke profil.
+      </InfoNote>
 
       {/* Grid Utama */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -259,7 +266,7 @@ export default function AiPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <span className={`text-sm font-semibold ${isSelected ? 'text-accent' : 'text-ink'}`}>{item.label}</span>
-                        {item.canApplyToProfile && <span className="text-[10px] font-medium text-ink-2/80">Sync Profil</span>}
+                        {item.canApplyToProfile && <span className="text-[10px] font-medium text-ink-2/80">Bisa diterapkan</span>}
                       </div>
                       <p className="mt-0.5 line-clamp-2 text-xs text-ink-2">{item.description}</p>
                     </div>
@@ -383,7 +390,7 @@ export default function AiPage() {
                   {result && <Badge tone="positive">{result.provider.toUpperCase()}</Badge>}
                 </div>
               }
-              description="Review hasil copywriting dan salin atau terapkan langsung ke profil Anda."
+              description="Periksa hasilnya, lalu salin atau terapkan ke profil. Menerapkan akan mengganti isi profil yang terkait."
               action={
                 result && (
                   <div className="flex items-center gap-2">

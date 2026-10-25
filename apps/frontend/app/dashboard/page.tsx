@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { ApiError, DashboardOverview, getDashboardOverview, getMarketingInsights, getTimeseries, MarketingInsight, TimeseriesPoint } from '../../lib/api';
 import { useBusiness } from '../../components/dashboard/BusinessContext';
 import { ShareMenu } from '../../components/dashboard/ShareMenu';
-import { Card, CardHeader, PageHeader, Skeleton } from '../../components/dashboard/ui';
+import { Card, CardHeader, InfoNote, PageHeader, Skeleton } from '../../components/dashboard/ui';
 import { KpiHero } from '../../components/dashboard/overview/KpiHero';
 import { PERIODS, PeriodDays, PeriodTabs } from '../../components/dashboard/overview/PeriodTabs';
 import { TrendChart } from '../../components/dashboard/overview/TrendChart';
@@ -92,6 +92,7 @@ export default function RingkasanPage() {
     <div className="space-y-6">
       <PageHeader
         title="Ringkasan"
+        helpKey="ringkasan"
         description={
           <>
             {business.name} · {periodLabel} terakhir
@@ -109,6 +110,13 @@ export default function RingkasanPage() {
           </>
         }
       />
+
+      {isEmpty && (
+        <InfoNote>
+          <strong>Halaman Anda sudah aktif.</strong> Angka di Ringkasan akan terisi setelah link dibagikan. Mulai dari langkah berikutnya di
+          bawah, atau buka tombol bantuan (?) di samping judul.
+        </InfoNote>
+      )}
 
       {errorMessage && (
         <Card className="flex flex-col items-start gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -134,7 +142,11 @@ export default function RingkasanPage() {
             <div className="space-y-6 lg:col-span-2">
               {isEmpty ? (
                 <Card>
-                  <CardHeader title="Mulai dapatkan pelanggan" description="Grafik dan perjalanan pengunjung muncul setelah ada yang membuka halaman Anda." className="pb-4" />
+                  <CardHeader
+                    title="Langkah berikutnya"
+                    description="Semakin lengkap halaman, semakin siap dibagikan ke calon pelanggan."
+                    className="pb-4"
+                  />
                   <SetupChecklist steps={steps} onShare={copyLink} />
                 </Card>
               ) : (
@@ -154,7 +166,7 @@ export default function RingkasanPage() {
               <Card>
                 <CardHeader
                   title="Layanan paling dilirik"
-                  description={`Klik layanan vs chat WhatsApp, ${periodLabel} terakhir`}
+                  description={`Buka layanan dan klik WhatsApp, ${periodLabel} terakhir`}
                   action={
                     <Link href="/dashboard/layanan" className="text-sm font-semibold text-accent hover:underline">
                       Kelola

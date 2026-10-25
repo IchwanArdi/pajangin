@@ -7,8 +7,8 @@ import type { Business } from '../../../lib/api';
 /* Empty state sebagai onboarding (pola Mercury/Supabase): akun baru melihat langkah berikutnya, bukan deretan nol. */
 export function getSetupSteps(business: Business, serviceCount: number, hasVisitors: boolean) {
   return [
-    { id: 'live', label: 'Halaman bisnis tayang', done: true, href: undefined as string | undefined },
-    { id: 'services', label: 'Tambahkan minimal 3 layanan dengan harga', done: serviceCount >= 3, href: '/dashboard/layanan' },
+    { id: 'live', label: 'Halaman bisnis aktif', done: true, href: undefined as string | undefined },
+    { id: 'services', label: 'Tambahkan minimal 3 layanan', done: serviceCount >= 3, href: '/dashboard/layanan' },
     {
       id: 'profile',
       label: 'Isi deskripsi dan jam buka',
@@ -17,17 +17,17 @@ export function getSetupSteps(business: Business, serviceCount: number, hasVisit
     },
     {
       id: 'links',
-      label: 'Hubungkan Google Maps atau Instagram',
+      label: 'Tambahkan link Google Maps atau Instagram',
       done: Boolean(business.google_maps_url || business.instagram_url),
       href: '/dashboard/profil',
     },
     {
       id: 'photos',
-      label: 'Tambahkan foto bisnis',
+      label: 'Tambahkan logo dan foto utama',
       done: Boolean(business.logo_url || business.hero_image_url),
       href: '/dashboard/profil',
     },
-    { id: 'share', label: 'Bagikan link halaman ke pelanggan', done: hasVisitors, href: undefined },
+    { id: 'share', label: 'Bagikan link ke pelanggan', done: hasVisitors, href: undefined },
   ];
 }
 

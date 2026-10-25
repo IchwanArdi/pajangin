@@ -365,6 +365,7 @@ export default function AccountPage() {
     <div className="space-y-6 pb-20">
       <PageHeader
         title="Akun & keamanan"
+        helpKey="akun"
         description="Kelola profil pemilik, keamanan, dan data akun Pajangin Anda."
       />
 

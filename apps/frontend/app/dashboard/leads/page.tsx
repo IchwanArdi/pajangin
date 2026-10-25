@@ -5,7 +5,7 @@ import { MessageCircle, MessageSquare, RefreshCw, Search } from 'lucide-react';
 import { getLeads, type LeadItem } from '../../../lib/api';
 import { toWaNumber } from '../../../lib/whatsapp';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
-import { Badge, Card, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
+import { Badge, Card, InfoNote, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -107,6 +107,7 @@ export default function LeadsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Pesan masuk"
+        helpKey="pesan"
         description="Semua orang yang mengisi form kontak di halaman publik Anda."
         actions={
           <button type="button" onClick={() => load(false)} disabled={refreshing} className={btn.secondary}>
@@ -115,6 +116,11 @@ export default function LeadsPage() {
           </button>
         }
       />
+
+      <InfoNote>
+        Halaman ini hanya mencatat pesan dari <strong>form kontak</strong> di halaman publik. Chat WhatsApp yang langsung masuk ke HP Anda
+        tidak otomatis muncul di sini.
+      </InfoNote>
 
       {error && (
         <p role="alert" className="rounded-(--radius-input) bg-negative-soft px-4 py-3 text-sm text-negative">
@@ -132,7 +138,7 @@ export default function LeadsPage() {
           <p className="mt-2 text-2xl font-semibold tabular-nums text-accent">{todayCount}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs font-medium text-ink-2">Dengan detail kebutuhan</p>
+          <p className="text-xs font-medium text-ink-2">Pesan dengan detail</p>
           <p className="mt-2 text-2xl font-semibold tabular-nums text-positive">
             {leads.filter((lead) => Boolean(lead.message)).length}
           </p>

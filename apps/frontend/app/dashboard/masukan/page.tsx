@@ -3,8 +3,10 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import {
+  BookOpen,
   Bug,
   CheckCircle2,
+  ChevronDown,
   Inbox,
   Lightbulb,
   Loader2,
@@ -28,6 +30,34 @@ const CATEGORIES: Array<{
   { value: 'kritik', label: 'Kritik', description: 'Bagian yang membingungkan atau kurang nyaman.', icon: MessageSquare },
   { value: 'bug', label: 'Bug / error', description: 'Ada yang rusak, gagal simpan, atau tampil aneh.', icon: Bug },
   { value: 'lainnya', label: 'Lainnya', description: 'Apa saja yang tidak masuk kategori di atas.', icon: MoreHorizontal },
+];
+
+const QUICK_GUIDE = [
+  {
+    question: 'Apa bedanya Pesan masuk dan chat WhatsApp?',
+    answer:
+      'Pesan masuk hanya mencatat form kontak di halaman publik. Chat WhatsApp yang langsung masuk ke HP Anda tidak otomatis muncul di dashboard.',
+  },
+  {
+    question: 'Apa arti angka di Ringkasan?',
+    answer:
+      'Klik kontak menghitung tombol WhatsApp atau telepon yang ditekan. Pesan form menghitung form kontak yang dikirim. Rasio klik kontak membandingkan klik dengan jumlah pengunjung.',
+  },
+  {
+    question: 'Bagaimana cara muncul di Google?',
+    answer:
+      'Lengkapi profil, deskripsi, layanan, dan bagikan link halaman. Pajangin menyiapkan judul dan deskripsi otomatis. Proses muncul di Google butuh waktu dan tidak bisa dijamin.',
+  },
+  {
+    question: 'Apa bedanya foto utama dan galeri?',
+    answer:
+      'Foto utama diatur di Profil bisnis dan tampil besar di bagian atas halaman. Galeri untuk foto tambahan seperti menu, hasil kerja, dan suasana tempat.',
+  },
+  {
+    question: 'Apa itu booking online?',
+    answer:
+      'Pelanggan memilih tanggal dan jam sendiri lewat halaman publik. Anda mengonfirmasi dari halaman Booking, lalu bisa memberi tahu pelanggan lewat WhatsApp.',
+  },
 ];
 
 function FormSkeleton() {
@@ -131,8 +161,31 @@ export default function FeedbackPage() {
     <div className="space-y-6">
       <PageHeader
         title="Bantuan & Masukan"
-        description="Ada yang membingungkan, rusak, atau bisa dibuat lebih baik? Sampaikan langsung ke saya."
+        description="Baca panduan singkat, lalu kirim kritik, bug, atau ide yang bisa membuat Pajangin lebih berguna."
       />
+
+      <Card className="p-5 sm:p-6">
+        <div className="flex items-start gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent">
+            <BookOpen className="h-4 w-4" strokeWidth={1.75} />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold text-ink">Panduan cepat</h2>
+            <p className="mt-0.5 text-sm text-ink-2">Pertanyaan yang paling sering muncul saat pertama kali memakai dashboard.</p>
+          </div>
+        </div>
+        <div className="mt-4 divide-y divide-rule border-y border-rule">
+          {QUICK_GUIDE.map((item) => (
+            <details key={item.question} className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-md py-3 text-sm font-medium text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <ChevronDown className="h-4 w-4 shrink-0 text-ink-2 transition-transform group-open:rotate-180" strokeWidth={1.75} />
+              </summary>
+              <p className="pb-3 pr-6 text-sm leading-relaxed text-ink-2">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <Card className="p-5 sm:p-6">

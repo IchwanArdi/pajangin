@@ -19,7 +19,7 @@ import { formatNumber, formatRupiah } from '../../../lib/format';
 import { createClient } from '../../../lib/supabase/client';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
 import { ImageUpload } from '../../../components/dashboard/ImageUpload';
-import { Badge, Card, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
+import { Badge, Card, InfoNote, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
 
 const PRICE_PREFIXES = ['Mulai dari', 'Harga', 'Per kg', 'Per jam', 'Per orang'];
 
@@ -165,6 +165,7 @@ export default function LayananPage() {
     <div className="space-y-6">
       <PageHeader
         title="Layanan"
+        helpKey="layanan"
         description={`${list.length} layanan · tampil di halaman publik sesuai urutan di bawah`}
         actions={
           !adding && (
@@ -174,6 +175,11 @@ export default function LayananPage() {
           )
         }
       />
+
+      <InfoNote>
+        Urutan di sini sama dengan urutan di halaman publik. Layanan bertanda <strong>Andalan</strong> tampil lebih menonjol dengan badge
+        “Populer”.
+      </InfoNote>
 
       {error && (
         <p role="alert" className="rounded-(--radius-input) bg-negative-soft px-4 py-3 text-sm text-negative">
@@ -349,7 +355,7 @@ function ServiceRow({
               <Star className="h-3 w-3 fill-current" /> Andalan
             </Badge>
           )}
-          {friction && <Badge tone="warning">Sepi chat</Badge>}
+          {friction && <Badge tone="warning">Klik rendah</Badge>}
         </div>
         <p className="mt-0.5 text-sm text-ink-2">
           {s.price ? (
@@ -459,6 +465,7 @@ function ServiceForm({
               <option key={p} value={p}>{p}</option>
             ))}
           </select>
+          <p className={field.hint}>Cara harga ditampilkan, misalnya “Mulai dari” atau “Per jam”.</p>
         </div>
         <div>
           <label htmlFor="svc-price" className={field.label}>Harga (Rp)</label>
@@ -478,6 +485,7 @@ function ServiceForm({
       <div>
         <label htmlFor="svc-desc" className={field.label}>Keterangan singkat</label>
         <textarea id="svc-desc" rows={2} value={d.description} onChange={(e) => set('description', e.target.value)} placeholder="Apa yang termasuk, berapa lama, garansi…" className={field.textarea} />
+        <p className={field.hint}>Jelaskan apa yang termasuk, durasi, atau garansi.</p>
       </div>
       <div>
         <label htmlFor="svc-category" className={field.label}>Kategori layanan</label>

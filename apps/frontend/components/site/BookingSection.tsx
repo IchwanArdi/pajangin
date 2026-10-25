@@ -112,7 +112,7 @@ export default function BookingSection({ business, services, heading, buildBooki
                   </p>
                   {lastBooking.pax > 1 && (
                     <p>
-                      <span className="text-ink-2">Jumlah Tamu:</span> <strong>{lastBooking.pax} orang</strong>
+                      <span className="text-ink-2">Jumlah orang:</span> <strong>{lastBooking.pax} orang</strong>
                     </p>
                   )}
                   {lastBooking.note && (
@@ -211,7 +211,7 @@ export default function BookingSection({ business, services, heading, buildBooki
                     </select>
                   </label>
                   <label className="block">
-                    <span className={LABEL_CLASS}>Jumlah Tamu/Pax</span>
+                    <span className={LABEL_CLASS}>Jumlah orang</span>
                     <input name="booking_pax" type="number" min={1} defaultValue={1} className={FIELD_CLASS} />
                   </label>
                 </div>

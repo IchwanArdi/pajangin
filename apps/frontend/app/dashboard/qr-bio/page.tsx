@@ -17,6 +17,7 @@ import { useBusiness } from '../../../components/dashboard/BusinessContext';
 import {
   Card,
   CardHeader,
+  InfoNote,
   PageHeader,
   Badge,
   Skeleton,
@@ -126,8 +127,9 @@ export default function QrBioPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="QR Code & Link in Bio"
-        description="Buat stiker QR Code cetak untuk toko fisik Anda dan kelola halaman Link in Bio untuk Instagram & TikTok."
+        title="QR Code & Link Bio"
+        helpKey="qr-bio"
+        description="Buat stiker QR Code untuk toko fisik dan kelola halaman Link Bio untuk Instagram & TikTok."
         actions={
           <div className="flex items-center gap-2">
             <button
@@ -150,6 +152,11 @@ export default function QrBioPage() {
         }
       />
 
+      <InfoNote>
+        <strong>Link Bio</strong> cocok untuk bio Instagram/TikTok. <strong>Website utama</strong> menampilkan halaman lengkap.{' '}
+        <strong>Chat WhatsApp</strong> langsung membuka percakapan.
+      </InfoNote>
+
       {/* Grid Utama */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Kolom Kiri: Konfigurasi QR Code & Bio Link */}
@@ -160,7 +167,7 @@ export default function QrBioPage() {
               title={
                 <div className="flex items-center gap-2">
                   <Smartphone className="h-4 w-4 text-accent" />
-                  <span>Halaman Link in Bio Anda</span>
+                  <span>Halaman Link Bio Anda</span>
                   <Badge tone="accent">Aktif</Badge>
                 </div>
               }
@@ -216,12 +223,12 @@ export default function QrBioPage() {
             <div className="space-y-4 p-5">
               {/* Pilihan Tujuan URL */}
               <div>
-                <label className={field.label}>Arahkan Pengunjung Saat Scan QR ke:</label>
+                <label className={field.label}>Tujuan setelah scan QR:</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: 'bio', label: 'Link in Bio', desc: 'Ringkas & Cepat', icon: Smartphone },
-                    { id: 'website', label: 'Website Utama', desc: 'Halaman Penuh', icon: Globe },
-                    { id: 'whatsapp', label: 'Chat WhatsApp', desc: 'Direct Message', icon: MessageCircle },
+                    { id: 'bio', label: 'Link Bio', desc: 'Ringkas & cepat', icon: Smartphone },
+                    { id: 'website', label: 'Website utama', desc: 'Halaman lengkap', icon: Globe },
+                    { id: 'whatsapp', label: 'Chat WhatsApp', desc: 'Langsung chat', icon: MessageCircle },
                   ].map((item) => {
                     const Icon = item.icon;
                     const isSelected = targetType === item.id;
@@ -280,7 +287,7 @@ export default function QrBioPage() {
 
               {/* Tautan yang sedang aktif */}
               <div className="rounded-xl border border-rule bg-paper-2/50 p-3 text-xs text-ink-2">
-                <span className="font-semibold text-ink">Target URL Aktif:</span>
+                <span className="font-semibold text-ink">Link tujuan aktif:</span>
                 <p className="mt-0.5 truncate font-mono text-[11px] text-accent">
                   {getTargetUrl(targetType)}
                 </p>

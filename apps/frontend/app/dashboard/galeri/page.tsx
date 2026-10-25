@@ -5,7 +5,7 @@ import { ArrowDown, ArrowUp, ExternalLink, Image as ImageIcon, Pencil, Plus, Tra
 import { addImage, deleteImage, getImages, updateImage, type BusinessImageItem } from '../../../lib/api';
 import { createClient } from '../../../lib/supabase/client';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
-import { Card, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
+import { Card, InfoNote, PageHeader, Skeleton, btn, field } from '../../../components/dashboard/ui';
 
 const PRESET_CATEGORIES = ['Menu / Makanan', 'Hasil Kerja / Portfolio', 'Suasana / Tempat', 'Fasilitas', 'Before-After', 'Produk', 'Lainnya'];
 const MAX_GALLERY_IMAGES = 24;
@@ -215,6 +215,7 @@ export default function GaleriPage() {
     <div className="space-y-6 pb-20">
       <PageHeader
         title="Galeri foto bisnis"
+        helpKey="galeri"
         description="Foto menu, hasil kerja, suasana toko, dan sertifikat yang tampil langsung di halaman publik Anda."
         actions={
           <div className="flex items-center gap-2">
@@ -235,6 +236,11 @@ export default function GaleriPage() {
           </div>
         }
       />
+
+      <InfoNote>
+        <strong>Foto utama</strong> diatur di Profil bisnis dan tampil besar di bagian atas halaman. Galeri ini untuk foto tambahan seperti
+        menu, hasil kerja, dan suasana tempat.
+      </InfoNote>
 
       {error && (
         <p role="alert" className="rounded-(--radius-input) bg-negative-soft px-4 py-3 text-sm text-negative">
@@ -451,6 +457,7 @@ export default function GaleriPage() {
                     </option>
                   ))}
                 </select>
+                <p className={field.hint}>Membantu pengunjung menyaring foto. Tidak wajib.</p>
               </div>
 
               {/* Caption */}

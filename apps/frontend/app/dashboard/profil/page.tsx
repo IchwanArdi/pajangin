@@ -167,6 +167,7 @@ function ProfilForm({ business }: { business: Business }) {
     <form onSubmit={save} className="space-y-6 pb-20">
       <PageHeader
         title="Profil bisnis"
+        helpKey="profil"
         description="Informasi ini tampil di halaman publik dan di hasil pencarian Google."
         actions={
           <a href={`/${business.slug}`} target="_blank" rel="noopener noreferrer" className={btn.secondary}>
@@ -197,7 +198,7 @@ function ProfilForm({ business }: { business: Business }) {
                   ))}
                 </select>
               </Field>
-              <Field label="Slogan" htmlFor="tagline" optional>
+              <Field label="Slogan" htmlFor="tagline" optional hint="Kalimat pendek di bawah nama bisnis. Contoh: Servis cepat, harga jujur.">
                 <input id="tagline" value={form.tagline} onChange={(e) => set('tagline', e.target.value)} placeholder="Servis cepat, harga jujur" className={field.input} />
               </Field>
             </div>
@@ -206,7 +207,7 @@ function ProfilForm({ business }: { business: Business }) {
             </Field>
           </Section>
 
-          <Section title="Template & Desain Halaman" description="Pilih karakter visual yang paling mewakili identitas bisnis Anda di mata pelanggan.">
+          <Section title="Template & warna halaman" description="Pilih tampilan yang paling mewakili identitas bisnis Anda di mata pelanggan.">
             <div className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 {Object.values(BUSINESS_TEMPLATES).map((tmpl) => {
@@ -302,13 +303,16 @@ function ProfilForm({ business }: { business: Business }) {
               onChange={(url) => set('hero_image_url', url)}
               onUpload={(file) => uploadBusinessPhoto('hero', file)}
             />
-            <label className="mt-4 flex cursor-pointer items-center gap-2.5 text-sm text-ink">
-              <input type="checkbox" checked={form.booking_enabled} onChange={(e) => set('booking_enabled', e.target.checked)} className="h-4 w-4 rounded border-rule accent-accent" />
-              Tampilkan tombol Booking Cepat di halaman publik
-            </label>
+            <div className="mt-4">
+              <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink">
+                <input type="checkbox" checked={form.booking_enabled} onChange={(e) => set('booking_enabled', e.target.checked)} className="h-4 w-4 rounded border-rule accent-accent" />
+                Tampilkan booking online di halaman publik
+              </label>
+              <p className={`${field.hint} ml-6`}>Pelanggan bisa memilih tanggal dan jam sendiri. Anda konfirmasi dari halaman Booking.</p>
+            </div>
           </Section>
 
-          <Section title="Testimoni" description="Bukti kepuasan pelanggan yang tampil di halaman publik.">
+          <Section title="Testimoni" description="Ulasan asli pelanggan yang tampil di halaman publik.">
             <div className="space-y-3">
               {parseTestimonials(form.testimonials).map((t, i) => (
                 <div key={i} className="rounded-xl border border-rule bg-paper-2 p-3">
@@ -394,7 +398,7 @@ function ProfilForm({ business }: { business: Business }) {
               </Field>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Jam buka" htmlFor="opening_hours" optional>
+              <Field label="Jam buka" htmlFor="opening_hours" optional hint="Contoh: Senin–Sabtu 08.00–17.00.">
                 <input id="opening_hours" value={form.opening_hours} onChange={(e) => set('opening_hours', e.target.value)} placeholder="Senin–Sabtu 08.00–17.00" className={field.input} />
               </Field>
               <Field label="Kisaran harga" htmlFor="price_range" optional hint="Tampil sebagai informasi umum, bukan janji harga.">
@@ -402,10 +406,10 @@ function ProfilForm({ business }: { business: Business }) {
               </Field>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Link Google Maps" htmlFor="google_maps_url" optional>
+              <Field label="Link Google Maps" htmlFor="google_maps_url" optional hint="Tempel link lokasi dari Google Maps.">
                 <input id="google_maps_url" type="url" value={form.google_maps_url} onChange={(e) => set('google_maps_url', e.target.value)} placeholder="https://maps.app.goo.gl/…" className={field.input} />
               </Field>
-              <Field label="Link Instagram" htmlFor="instagram_url" optional>
+              <Field label="Link Instagram" htmlFor="instagram_url" optional hint="Tempel link profil Instagram bisnis.">
                 <input id="instagram_url" type="url" value={form.instagram_url} onChange={(e) => set('instagram_url', e.target.value)} placeholder="https://instagram.com/…" className={field.input} />
               </Field>
             </div>
@@ -431,10 +435,20 @@ function ProfilForm({ business }: { business: Business }) {
           </Section>
 
           <Section title="Tampilan di Google" description="Opsional. Jika dikosongkan, dibuat otomatis dari nama, kategori, dan deskripsi.">
-            <Field label="Judul" htmlFor="meta_title" optional hint={`${previewTitle.length}/60 karakter`}>
+            <Field
+              label="Judul di Google"
+              htmlFor="meta_title"
+              optional
+              hint={`${previewTitle.length}/60 karakter · Muncul sebagai judul biru di hasil pencarian.`}
+            >
               <input id="meta_title" maxLength={70} value={form.meta_title} onChange={(e) => set('meta_title', e.target.value)} placeholder={`${form.name} - ${form.category} ${form.city}`} className={field.input} />
             </Field>
-            <Field label="Deskripsi" htmlFor="meta_description" optional hint={`${previewDesc.length}/160 karakter`}>
+            <Field
+              label="Deskripsi di Google"
+              htmlFor="meta_description"
+              optional
+              hint={`${previewDesc.length}/160 karakter · Ringkasan 1–2 kalimat di bawah judul.`}
+            >
               <textarea id="meta_description" rows={2} maxLength={170} value={form.meta_description} onChange={(e) => set('meta_description', e.target.value)} className={field.textarea} />
             </Field>
           </Section>

@@ -248,7 +248,7 @@ export default function AdminOverviewPage() {
               {[
                 { label: 'Kunjungan halaman', value: data.activity.page_views, delta: data.activity.page_views_delta },
                 { label: 'Klik WhatsApp', value: data.activity.whatsapp_clicks, delta: data.activity.whatsapp_clicks_delta },
-                { label: 'Lead form', value: data.activity.leads, delta: data.activity.leads_delta },
+                { label: 'Pesan form', value: data.activity.leads, delta: data.activity.leads_delta },
                 { label: 'Reservasi', value: data.activity.bookings, delta: data.activity.bookings_delta },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between gap-3 border-t border-rule py-3 first:border-t-0">
