@@ -35,6 +35,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# ------------------------------------------------------------------------------
+# ENVIRONMENT VARIABLES (Nilai Default untuk Server CI)
+# ------------------------------------------------------------------------------
+# Prisma dan Next.js memerlukan variabel lingkungan ini saat proses build & instalasi.
+# Karena file .env asli tidak di-commit ke Git (keamanan), kita sediakan nilai fallback di sini.
+env:
+  DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+  DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+  SUPABASE_URL: "https://ubupiotlmoakridoxjqg.supabase.co"
+
 jobs:
   # ============================================================================
   # JOB 1: VERIFIKASI BACKEND (NestJS 12 + Prisma ORM + Oxlint + Vitest)
