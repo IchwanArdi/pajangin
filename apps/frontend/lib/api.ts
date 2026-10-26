@@ -1,8 +1,12 @@
 import { createClient } from './supabase/client';
 import { getAttribution, getDevice, getSessionId } from './attribution';
 
-// url dasar backend nestjs (port 3001)
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// url dasar backend nestjs (port 3001 lokal, atau service binding BACKEND_URL saat di Vercel)
+export const API_BASE_URL =
+  (typeof window === 'undefined' ? process.env.BACKEND_URL : undefined) ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  'http://localhost:3001';
+
 
 // tipe data bisnis
 export interface Business {
