@@ -1,0 +1,143 @@
+# ==============================================================================
+# PAJANGIN CI (CONTINUOUS INTEGRATION) PIPELINE
+# ==============================================================================
+# Pipeline ini berjalan otomatis di GitHub Actions setiap ada perubahan kode (push)
+# atau saat ada kontributor yang membuat Pull Request (PR) ke branch 'main'.
+#
+# Tujuannya:
+# 1. Menjaga kualitas kode (Linting, TypeScript Type Checking).
+# 2. Memastikan tidak ada fitur yang rusak (Unit & Integration Testing).
+# 3. Memvalidasi bahwa aplikasi bisa di-build untuk production tanpa error.
+# ==============================================================================
+
+name: CI Pipeline
+
+# ------------------------------------------------------------------------------
+# TRIGGER (Pemicu Workflow)
+# ------------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Memungkinkan workflow dijalankan manual dari tab "Actions" di GitHub jika diperlukan
+  workflow_dispatch:
+
+# ------------------------------------------------------------------------------
+# CONCURRENCY (Efisiensi Sumber Daya & Waktu Build)
+# ------------------------------------------------------------------------------
+# Jika Anda melakukan beberapa commit berturut-turut dalam waktu singkat,
+# 'cancel-in-progress: true' akan otomatis membatalkan build lama yang belum selesai
+# dan langsung memproses commit yang paling baru. Menghemat kuota menit GitHub Actions.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================================
+  # JOB 1: VERIFIKASI BACKEND (NestJS 12 + Prisma ORM + Oxlint + Vitest)
+  # ============================================================================
+  backend:
+    name: Backend (Lint, Test, Build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # Batas maksimal 10 menit agar tidak menggantung jika ada error
+
+    steps:
+      # Langkah 1: Mengunduh repository ke runner virtual machine
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # Langkah 2: Memasang pnpm package manager sesuai versi di package.json
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
+
+      # Langkah 3: Menyiapkan environment Node.js 22 LTS dengan cache pnpm store
+      - name: 🟢 Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      # Langkah 4: Menginstall semua dependencies secara deterministik (--frozen-lockfile)
+      # Memastikan tidak ada perbedaan versi library antara lokal dan server CI
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Langkah 5: Generate Prisma Client dari schema.prisma
+      # Wajib dijalankan agar type-definition tabel database tersedia sebelum kompilasi TypeScript
+      - name: 🗄️ Generate Prisma Client
+        run: pnpm --filter backend db:generate
+
+      # Langkah 6: Static code analysis dengan Oxlint (sangat cepat & mendeteksi bug sintaks)
+      - name: 🔍 Lint backend (Oxlint)
+        run: pnpm --filter backend lint
+
+      # Langkah 7: Menjalankan automated test suite dengan Vitest
+      # Memastikan logika auth, query admin, sanitasi token, dll. berjalan sesuai ekspektasi
+      - name: 🧪 Run backend unit tests (Vitest)
+        run: pnpm --filter backend test
+
+      # Langkah 8: Kompilasi kode TypeScript backend ke folder dist/ (NestJS Build)
+      - name: 🏗️ Build backend
+        run: pnpm --filter backend build
+
+  # ============================================================================
+  # JOB 2: VERIFIKASI FRONTEND (Next.js 16 + React 19 + TypeScript)
+  # ============================================================================
+  frontend:
+    name: Frontend (Type-Check & Next.js Build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # Langkah 1: Mengunduh repository
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # Langkah 2: Memasang pnpm
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.9.1
+
+      # Langkah 3: Menyiapkan Node.js 22 + cache pnpm
+      - name: 🟢 Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      # Langkah 4: Cache Next.js build artifacts (.next/cache)
+      # Langkah profesional ini mempercepat build selanjutnya hingga 3-5x lipat
+      - name: ⚡ Restore Next.js cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/frontend/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/frontend/**/*.{js,jsx,ts,tsx}') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      # Langkah 5: Install dependencies
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Langkah 6: Strict TypeScript compilation check (tanpa output file)
+      # Memastikan 100% type safety pada komponen React, hooks, dan API client
+      - name: 🔎 Verify TypeScript types (tsc --noEmit)
+        run: pnpm --filter frontend exec tsc --noEmit
+
+      # Langkah 7: Kompilasi production Next.js App Router (Static Generation & SSR Pages)
+      # Next.js butuh variabel environment dummy saat build agar prerendering tidak crash
+      - name: 🏗️ Build frontend (Next.js production build)
+        run: pnpm --filter frontend build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: "https://ubupiotlmoakridoxjqg.supabase.co"
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_WsuUeCNJ9yEMVblYivq6bw_eWqABhUD"
+          NEXT_PUBLIC_API_URL: "http://localhost:3001"
+          NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+          NEXT_PUBLIC_GOOGLE_AUTH_ENABLED: "true"
