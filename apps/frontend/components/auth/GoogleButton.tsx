@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
-import { authSecondaryButtonClass } from './AuthShell';
+import { authPrimaryButtonClass } from './AuthShell';
 
 // Login / daftar dengan Google (Supabase OAuth). Setelah sukses kembali ke /auth/callback.
-export default function GoogleButton({ next, label = 'Lanjutkan dengan Google', onError }: { next: string; label?: string; onError: (message: string) => void }) {
+export default function GoogleButton({ next, label = 'Masuk dengan Google', onError }: { next: string; label?: string; onError: (message: string) => void }) {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -31,7 +31,7 @@ export default function GoogleButton({ next, label = 'Lanjutkan dengan Google', 
       onClick={handleClick}
       disabled={loading}
       aria-busy={loading}
-      className={`${authSecondaryButtonClass} inline-flex items-center justify-center gap-2.5`}
+      className={authPrimaryButtonClass}
     >
       {loading ? (
         <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
@@ -45,15 +45,5 @@ export default function GoogleButton({ next, label = 'Lanjutkan dengan Google', 
       )}
       {loading ? 'Mengarahkan ke Google…' : label}
     </button>
-  );
-}
-
-export function OrDivider() {
-  return (
-    <div className="flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.14em] text-paper/35">
-      <span className="h-px flex-1 bg-paper/15" />
-      atau
-      <span className="h-px flex-1 bg-paper/15" />
-    </div>
   );
 }

@@ -61,7 +61,7 @@ async function fetchAccountContext() {
 }
 
 // Wizard 3 langkah: profil → isi halaman → pratinjau/terbit.
-// Dipakai untuk bisnis pertama setelah verifikasi email maupun "+ Bisnis baru".
+// Dipakai untuk bisnis pertama setelah login Google maupun "+ Bisnis baru".
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<OnboardingStep>(1);

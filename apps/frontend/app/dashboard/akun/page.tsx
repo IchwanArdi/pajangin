@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   AlertTriangle,
   ArrowUpRight,
-  KeyRound,
   Loader2,
+  LogIn,
   LogOut,
   Mail,
   Monitor,
@@ -15,7 +15,6 @@ import {
   Trash2,
 } from 'lucide-react';
 import { createClient } from '../../../lib/supabase/client';
-import { authErrorMessage } from '../../../lib/auth-errors';
 import { updateCurrentUser, type UserProfile } from '../../../lib/api';
 import { LEGAL_CONTACT_EMAIL } from '../../../lib/legal';
 import { formatWaDisplay, isValidWhatsapp, toWaNumber } from '../../../lib/whatsapp';
@@ -31,13 +30,6 @@ import {
 } from '../../../components/dashboard/ui';
 import { FormAlert } from '../../../components/auth/AuthShell';
 
-const MIN_PASSWORD = 8;
-
-type AuthInfo = {
-  provider: string;
-  hasPassword: boolean;
-};
-
 type Alert = { tone: 'error' | 'success'; message: string };
 
 function AccountInfoSkeleton() {
@@ -45,7 +37,7 @@ function AccountInfoSkeleton() {
     <Card>
       <CardHeader
         title="Informasi akun"
-        description="Nama dan WhatsApp untuk dashboard. Email dipakai untuk masuk."
+        description="Nama dan WhatsApp untuk dashboard. Email mengikuti akun Google."
       />
       <div className="space-y-4 p-5" aria-hidden="true">
         <div className="flex items-center gap-3">
@@ -69,11 +61,9 @@ function AccountInfoSkeleton() {
 // Ini menghindari sinkronisasi state lewat effect dan tetap responsif setelah save.
 function ProfileForm({
   user,
-  authInfo,
   onUpdated,
 }: {
   user: UserProfile;
-  authInfo: AuthInfo | null;
   onUpdated: (user: UserProfile) => void;
 }) {
   const [name, setName] = useState(user.name);
@@ -130,7 +120,7 @@ function ProfileForm({
     <Card>
       <CardHeader
         title="Informasi akun"
-        description="Nama dan WhatsApp untuk dashboard. Email dipakai untuk masuk."
+        description="Nama dan WhatsApp untuk dashboard. Email mengikuti akun Google."
       />
       <form onSubmit={handleSubmit} className="space-y-4 p-5">
         {alert && <FormAlert tone={alert.tone}>{alert.message}</FormAlert>}
@@ -191,26 +181,14 @@ function ProfileForm({
           </div>
           <div className="flex items-start justify-between gap-4">
             <dt className="text-ink-2">Metode masuk</dt>
-            <dd className="text-right font-medium text-ink">
-              {authInfo === null
-                ? 'Memeriksa…'
-                : authInfo.provider === 'google'
-                  ? 'Google'
-                  : 'Email & kata sandi'}
-            </dd>
+            <dd className="text-right font-medium text-ink">Google</dd>
           </div>
         </dl>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-xs text-xs leading-relaxed text-ink-2">
-            Ingin mengganti email? Kirim permintaan ke{' '}
-            <a
-              href={`mailto:${LEGAL_CONTACT_EMAIL}?subject=${encodeURIComponent('Perubahan email akun Pajangin')}`}
-              className="font-medium text-ink underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-            >
-              {LEGAL_CONTACT_EMAIL}
-            </a>
-            .
+            Email mengikuti akun Google Anda. Jika email di Google berubah, Pajangin akan
+            menyinkronkannya saat Anda masuk kembali.
           </p>
           <button
             type="submit"
@@ -231,93 +209,9 @@ export default function AccountPage() {
   const router = useRouter();
   const { user, replaceUser } = useBusiness();
 
-  const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [securitySaving, setSecuritySaving] = useState(false);
-  const [securityAlert, setSecurityAlert] = useState<Alert | null>(null);
   const [sessionBusy, setSessionBusy] = useState<'local' | 'global' | null>(null);
   const [sessionAlert, setSessionAlert] = useState<Alert | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-
-  // Password hanya relevan untuk akun dengan identitas email. Akun Google-only
-  // tetap bisa memakai halaman ini untuk keluar dan mengelola data.
-  useEffect(() => {
-    let active = true;
-    createClient()
-      .auth.getUser()
-      .then(({ data }) => {
-        if (!active) return;
-        const identities = data.user?.identities ?? [];
-        const hasPassword =
-          identities.length === 0 || identities.some((identity) => identity.provider === 'email');
-        setAuthInfo({
-          provider: data.user?.app_metadata.provider ?? 'email',
-          hasPassword,
-        });
-      })
-      .catch(() => {
-        if (active) setAuthInfo({ provider: 'email', hasPassword: true });
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const handlePasswordChange = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setSecurityAlert(null);
-
-    if (!user) {
-      setSecurityAlert({ tone: 'error', message: 'Data akun belum siap. Muat ulang halaman ini.' });
-      return;
-    }
-    if (newPassword.length < MIN_PASSWORD) {
-      setSecurityAlert({
-        tone: 'error',
-        message: `Kata sandi baru minimal ${MIN_PASSWORD} karakter.`,
-      });
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setSecurityAlert({ tone: 'error', message: 'Konfirmasi kata sandi baru tidak sama.' });
-      return;
-    }
-
-    setSecuritySaving(true);
-    const supabase = createClient();
-
-    // Verifikasi kata sandi lama sebelum mengganti, agar sesi yang tertinggal
-    // di perangkat lain tidak bisa langsung mengambil alih akun.
-    const { error: verifyError } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: currentPassword,
-    });
-    if (verifyError) {
-      setSecuritySaving(false);
-      setSecurityAlert({ tone: 'error', message: 'Kata sandi saat ini tidak sesuai.' });
-      return;
-    }
-
-    const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
-    if (updateError) {
-      setSecuritySaving(false);
-      setSecurityAlert({ tone: 'error', message: authErrorMessage(updateError) });
-      return;
-    }
-
-    // Sesi ini tetap aktif; sesi di perangkat lain dikeluarkan.
-    await supabase.auth.signOut({ scope: 'others' });
-    setSecuritySaving(false);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setSecurityAlert({
-      tone: 'success',
-      message: 'Kata sandi diperbarui. Sesi di perangkat lain sudah dikeluarkan.',
-    });
-  };
 
   // Logout biasa hanya membersihkan sesi di browser ini. Tombol "semua perangkat"
   // memakai scope global untuk mencabut refresh token di perangkat lain.
@@ -366,104 +260,39 @@ export default function AccountPage() {
       <PageHeader
         title="Akun & keamanan"
         helpKey="akun"
-        description="Kelola profil pemilik, keamanan, dan data akun Pajangin Anda."
+        description="Kelola profil pemilik, metode masuk, dan data akun Pajangin Anda."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         {user ? (
-          <ProfileForm
-            key={user.id}
-            user={user}
-            authInfo={authInfo}
-            onUpdated={replaceUser}
-          />
+          <ProfileForm key={user.id} user={user} onUpdated={replaceUser} />
         ) : (
           <AccountInfoSkeleton />
         )}
 
         <Card>
           <CardHeader
-            title="Keamanan"
-            description="Ganti kata sandi secara berkala dan keluarkan sesi yang tidak dikenal."
+            title="Metode masuk"
+            description="Pajangin memakai Google. Tidak ada kata sandi yang disimpan di sini."
             action={<ShieldCheck className="h-4 w-4 text-accent" strokeWidth={1.75} />}
           />
           <div className="p-5">
-            {securityAlert && (
-              <div className="mb-4">
-                <FormAlert tone={securityAlert.tone}>{securityAlert.message}</FormAlert>
-              </div>
-            )}
-
-            {authInfo === null ? (
-              <p className="text-sm text-ink-2">Memeriksa metode masuk…</p>
-            ) : authInfo.hasPassword ? (
-              <form onSubmit={handlePasswordChange} className="space-y-4">
-                <div>
-                  <label htmlFor="current-password" className={field.label}>
-                    Kata sandi saat ini
-                  </label>
-                  <input
-                    id="current-password"
-                    type="password"
-                    required
-                    autoComplete="current-password"
-                    value={currentPassword}
-                    onChange={(event) => setCurrentPassword(event.target.value)}
-                    className={field.input}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="new-password" className={field.label}>
-                    Kata sandi baru
-                  </label>
-                  <input
-                    id="new-password"
-                    type="password"
-                    required
-                    minLength={MIN_PASSWORD}
-                    autoComplete="new-password"
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    className={field.input}
-                  />
-                  <p className={field.hint}>Minimal {MIN_PASSWORD} karakter.</p>
-                </div>
-                <div>
-                  <label htmlFor="confirm-password" className={field.label}>
-                    Ulangi kata sandi baru
-                  </label>
-                  <input
-                    id="confirm-password"
-                    type="password"
-                    required
-                    minLength={MIN_PASSWORD}
-                    autoComplete="new-password"
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    className={field.input}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={securitySaving}
-                  aria-busy={securitySaving}
-                  className={btn.primary}
-                >
-                  {securitySaving && (
-                    <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} />
-                  )}
-                  {securitySaving ? 'Menyimpan…' : 'Simpan kata sandi'}
-                </button>
-              </form>
-            ) : (
-              <div className="rounded-xl border border-rule bg-paper-2 p-4 text-sm leading-relaxed text-ink-2">
-                <KeyRound className="mb-2 h-4 w-4 text-ink-2" strokeWidth={1.75} />
-                <p>
-                  Akun ini masuk dengan Google. Kata sandi dikelola oleh akun Google Anda, bukan oleh
-                  Pajangin.
-                </p>
-              </div>
-            )}
+            <div className="rounded-xl border border-rule bg-paper-2 p-4 text-sm leading-relaxed text-ink-2">
+              <LogIn className="mb-2 h-4 w-4 text-ink-2" strokeWidth={1.75} />
+              <p className="font-medium text-ink">Masuk dengan Google</p>
+              <p className="mt-1">
+                Kata sandi, verifikasi dua langkah, dan pemulihan akun dikelola langsung oleh Google.
+              </p>
+              <a
+                href="https://myaccount.google.com/security"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 font-semibold text-ink underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
+              >
+                Kelola keamanan akun Google
+                <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.75} />
+              </a>
+            </div>
           </div>
         </Card>
       </div>
@@ -563,7 +392,7 @@ export default function AccountPage() {
             <button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              disabled={!user || authInfo === null}
+              disabled={!user}
               className={btn.danger}
             >
               <AlertTriangle className="h-4 w-4" strokeWidth={1.75} />
@@ -578,7 +407,6 @@ export default function AccountPage() {
           onClose={() => setDeleteOpen(false)}
           userId={user.id}
           userEmail={user.email}
-          hasPassword={authInfo?.hasPassword ?? false}
         />
       )}
     </div>

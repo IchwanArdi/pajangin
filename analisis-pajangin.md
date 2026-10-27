@@ -8,7 +8,7 @@
 ### Fitur yang Sudah Ada
 | Fitur | Status |
 |---|---|
-| Auth (login, register, OAuth Google, forgot/reset password) | ✅ Ada |
+| Auth (login dengan Google OAuth) | ✅ Ada |
 | Onboarding wizard (2 langkah) | ✅ Ada |
 | Dashboard ringkasan (KPI, tren, funnel, sumber traffic) | ✅ Ada |
 | Kelola layanan/produk (CRUD, reorder, gambar, harga) | ✅ Ada |

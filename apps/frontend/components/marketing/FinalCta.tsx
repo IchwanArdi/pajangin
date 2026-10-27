@@ -44,11 +44,11 @@ export function FinalCta() {
               Buat halaman bisnis Anda, lalu bagikan satu link ke pelanggan.
             </motion.h2>
             <motion.p variants={fadeUp} transition={{ duration: 0.5, ease }} className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-2">
-              Tidak perlu desainer, tidak perlu hosting. Daftar, isi profil singkat, dan halaman Anda langsung siap menerima chat.
+              Tidak perlu desainer, tidak perlu hosting. Masuk dengan Google, isi profil singkat, dan halaman Anda langsung siap menerima chat.
             </motion.p>
             <motion.div variants={fadeUp} transition={{ duration: 0.5, ease }} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href={loggedIn ? '/dashboard' : '/register'}
+                href={loggedIn ? '/dashboard' : '/login'}
                 className="press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink shadow-pop transition hover:opacity-90"
               >
                 {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}

@@ -41,7 +41,7 @@ export function PricingTeaser() {
             </ul>
 
             <Link
-              href="/register"
+              href="/login"
               className="press group mt-6 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-ink transition hover:opacity-90"
             >
               Buat halaman gratis

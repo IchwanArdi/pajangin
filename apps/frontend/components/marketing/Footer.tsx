@@ -16,10 +16,10 @@ export function Footer() {
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <Link
-                href="/register"
+                href="/login"
                 className="press inline-flex whitespace-nowrap rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:opacity-90"
               >
-                Daftar gratis
+                Mulai gratis
               </Link>
               <Link
                 href="/pricing"

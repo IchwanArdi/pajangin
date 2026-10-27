@@ -13,8 +13,8 @@ export default function NotFound() {
           <Link href="/" className="rounded-xl bg-accent px-5 py-3 text-sm font-bold text-ink transition hover:opacity-90">
             Kembali ke Beranda
           </Link>
-          <Link href="/register" className="rounded-xl border border-rule bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:bg-slate-800">
-            Daftarkan Bisnis Saya
+          <Link href="/login" className="rounded-xl border border-rule bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:bg-slate-800">
+            Masuk dengan Google
           </Link>
         </div>
       </div>

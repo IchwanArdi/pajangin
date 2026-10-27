@@ -54,7 +54,7 @@ interface SupabaseClaims extends JWTPayload {
   user_metadata?: { full_name?: string; name?: string };
 }
 
-// Autentikasi ditangani Supabase Auth (daftar, login, verifikasi email, reset password, OAuth Google).
+// Autentikasi ditangani Supabase Auth melalui Google OAuth.
 // Backend hanya memverifikasi access token (JWT ES256) lewat JWKS publik Supabase,
 // lalu memastikan profil user ada di tabel `users`.
 @Injectable()
@@ -109,7 +109,7 @@ export class AuthService {
 
     const existing = await this.prisma.user.findUnique({ where: { id }, select });
     if (existing) {
-      // sinkronkan email kalau user menggantinya di Supabase Auth
+      // sinkronkan email kalau user menggantinya di akun Google/Supabase Auth
       if (existing.email !== cleanEmail) {
         const updated = await this.prisma.user.update({
           where: { id },

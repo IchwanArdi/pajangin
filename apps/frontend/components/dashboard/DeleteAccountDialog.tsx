@@ -40,12 +40,10 @@ export function DeleteAccountDialog({
   onClose,
   userId,
   userEmail,
-  hasPassword,
 }: {
   onClose: () => void;
   userId: string;
   userEmail: string;
-  hasPassword: boolean;
 }) {
   const router = useRouter();
   const titleId = useId();
@@ -53,7 +51,6 @@ export function DeleteAccountDialog({
   const [impact, setImpact] = useState<AccountDeletionImpact | null>(null);
   const [impactError, setImpactError] = useState('');
   const [loadingImpact, setLoadingImpact] = useState(true);
-  const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
@@ -107,15 +104,6 @@ export function DeleteAccountDialog({
     const supabase = createClient();
 
     try {
-      if (hasPassword) {
-        if (!password) throw new Error('Masukkan kata sandi akun Anda.');
-        const { error: verifyError } = await supabase.auth.signInWithPassword({
-          email: userEmail,
-          password,
-        });
-        if (verifyError) throw new Error('Kata sandi tidak sesuai.');
-      }
-
       await deleteCurrentAccount('HAPUS');
       clearLocalAccountData(userId);
       await supabase.auth.signOut({ scope: 'local' });
@@ -218,23 +206,6 @@ export function DeleteAccountDialog({
               </div>
             </>
           ) : null}
-
-          {hasPassword && (
-            <div>
-              <label htmlFor="delete-account-password" className={field.label}>
-                Kata sandi akun
-              </label>
-              <input
-                id="delete-account-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                disabled={deleting}
-                className={field.input}
-              />
-            </div>
-          )}
 
           <div>
             <label htmlFor="delete-account-confirmation" className={field.label}>

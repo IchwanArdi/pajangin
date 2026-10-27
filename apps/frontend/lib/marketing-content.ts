@@ -104,7 +104,7 @@ export const COMPARISON_ROWS = [
 export const FAQS = [
   {
     q: 'Apakah saya perlu hosting atau domain sendiri?',
-    a: 'Tidak. Pajangin menyiapkan halaman publik dan dashboard; Anda cukup daftar dan mengisi profil bisnis.',
+    a: 'Tidak. Pajangin menyiapkan halaman publik dan dashboard; Anda cukup masuk dengan akun Google dan mengisi profil bisnis.',
   },
   {
     q: 'Apakah link halaman bisa dibagikan?',
@@ -189,8 +189,7 @@ export const FOOTER_GROUPS = [
   {
     title: 'Mulai',
     links: [
-      { label: 'Daftar gratis', href: '/register' },
-      { label: 'Masuk', href: '/login' },
+      { label: 'Masuk dengan Google', href: '/login' },
       { label: 'Harga', href: '/pricing' },
       { label: 'Dashboard', href: '/dashboard' },
     ],

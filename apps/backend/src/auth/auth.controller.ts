@@ -4,7 +4,7 @@ import type { AuthenticatedUser } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
 import type { DeleteAccountInput, UpdateAccountInput } from './auth.service.js';
 
-// Daftar / login / reset password ditangani langsung oleh Supabase Auth di frontend.
+// Login Google ditangani langsung oleh Supabase Auth di frontend.
 @Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}

@@ -17,7 +17,7 @@ export function Faq() {
             Masih ragu? Buat halaman gratis, isi profil singkat, dan lihat halaman Anda terbit tanpa langganan.
           </p>
           <Link
-            href="/register"
+            href="/login"
             className="press mt-6 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper transition hover:opacity-90"
           >
             Mulai sekarang
