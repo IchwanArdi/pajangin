@@ -1,9 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pnpm install --frozen-lockfile --config.minimum-release-age=0",
   "services": {
     "backend": {
       "root": "apps/backend",
       "framework": "nestjs",
+      "installCommand": "pnpm install --frozen-lockfile --config.minimum-release-age=0",
       "buildCommand": "pnpm build",
       "entrypoint": "src/main.ts",
       "outputDirectory": "."
@@ -11,6 +13,7 @@
     "frontend": {
       "root": "apps/frontend",
       "framework": "nextjs",
+      "installCommand": "pnpm install --frozen-lockfile --config.minimum-release-age=0",
       "bindings": [
         {
           "type": "service",
