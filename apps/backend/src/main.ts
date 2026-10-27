@@ -3,8 +3,17 @@ import * as path from 'node:path';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 
-// .env selalu dibaca dari apps/backend/.env, baik dijalankan dari root maupun dari folder backend
-loadEnv({ path: path.resolve(import.meta.dirname, '../.env') });
+// Di serverless Vercel, env vars sudah disediakan di process.env.
+// dotenv hanya dimuat saat local development agar tidak crash jika file .env tidak ada.
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    const envDir = typeof import.meta.dirname !== 'undefined' ? import.meta.dirname : process.cwd();
+    loadEnv({ path: path.resolve(envDir, '../.env') });
+    loadEnv();
+  } catch {
+    // Abaikan jika dotenv gagal di environment serverless
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
