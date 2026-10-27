@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 // Halaman auth tidak perlu diindeks; title-nya juga jangan mewarisi homepage.
 export const metadata: Metadata = {
-  title: 'Masuk — Pajangin',
+  title: 'Masuk dengan Google — Pajangin',
   robots: {
     index: false,
     follow: false,

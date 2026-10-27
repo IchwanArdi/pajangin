@@ -288,7 +288,7 @@ export default function FeedbackPage() {
                 className={field.textarea}
               />
               <div className="flex items-center justify-between gap-3">
-                <p className={field.hint}>Minimal 10 karakter. Jangan tulis password atau data sensitif.</p>
+                <p className={field.hint}>Minimal 10 karakter. Jangan tulis kata sandi atau data sensitif.</p>
                 <p className={`${field.hint} shrink-0 tabular-nums`}>{message.length}/2000</p>
               </div>
             </div>

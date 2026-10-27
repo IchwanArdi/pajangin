@@ -170,16 +170,8 @@ export function AuthAlert({ tone = 'error', children }: { tone?: 'error' | 'succ
   );
 }
 
-export const authInputClass =
-  'w-full rounded-xl border border-paper/15 bg-ink px-4 py-3 text-sm text-paper placeholder:text-paper/30 transition hover:border-paper/25 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 aria-invalid:border-negative aria-invalid:ring-negative/15 disabled:cursor-not-allowed disabled:opacity-50';
-
-export const authLabelClass = 'mb-1.5 block text-[13px] font-semibold text-paper/80';
-
 export const authPrimaryButtonClass =
   'group inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink transition hover:brightness-110 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50';
-
-export const authSecondaryButtonClass =
-  'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-paper/20 bg-paper/5 px-6 py-3.5 text-sm font-semibold text-paper transition hover:border-paper/35 hover:bg-paper/10 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50';
 
 /* Style terang di bawah sengaja dipertahankan untuk onboarding. */
 export const inputClass =

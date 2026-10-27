@@ -97,7 +97,7 @@ export default function PricingPage() {
             </ul>
 
             <Link
-              href="/register"
+              href="/login"
               className="press mt-8 inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink transition hover:opacity-90 sm:w-auto"
             >
               {plan.cta}

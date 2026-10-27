@@ -119,17 +119,12 @@ export function MegaNav() {
                 Dashboard
               </Link>
             ) : (
-              <>
-                <Link href="/login" className="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-ink-2 transition hover:text-ink">
-                  Masuk
-                </Link>
-                <Link
-                  href="/register"
-                  className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:opacity-90"
-                >
-                  Daftar
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:opacity-90"
+              >
+                Masuk dengan Google
+              </Link>
             )}
           </div>
 
@@ -196,7 +191,7 @@ export function MegaNav() {
                       </p>
                     </div>
                     <Link
-                      href={loggedIn ? '/dashboard' : '/register'}
+                      href={loggedIn ? '/dashboard' : '/login'}
                       onClick={() => setOpen(null)}
                       className="press group mt-4 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink transition hover:opacity-90"
                     >
@@ -261,21 +256,12 @@ export function MegaNav() {
                 </Link>
                 <div className="flex flex-col gap-2 pt-2">
                   <Link
-                    href={loggedIn ? '/dashboard' : '/register'}
+                    href={loggedIn ? '/dashboard' : '/login'}
                     className="press block whitespace-nowrap rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-paper"
                     onClick={() => setMobileOpen(false)}
                   >
-                    {loggedIn ? 'Buka dashboard' : 'Daftar gratis'}
+                    {loggedIn ? 'Buka dashboard' : 'Masuk dengan Google'}
                   </Link>
-                  {!loggedIn ? (
-                    <Link
-                      href="/login"
-                      className="block whitespace-nowrap rounded-full border border-rule px-5 py-3 text-center text-sm font-semibold text-ink"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      Masuk
-                    </Link>
-                  ) : null}
                 </div>
               </div>
             </motion.div>

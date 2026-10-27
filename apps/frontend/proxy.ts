@@ -2,9 +2,9 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 // Halaman yang wajib login
-const PROTECTED = ['/dashboard', '/onboarding', '/reset-password', '/admin'];
+const PROTECTED = ['/dashboard', '/onboarding', '/admin'];
 // Halaman tamu — user yang sudah login langsung diarahkan ke dashboard
-const GUEST_ONLY = ['/login', '/register', '/forgot-password'];
+const GUEST_ONLY = ['/login'];
 
 const matches = (pathname: string, list: string[]) =>
   list.some((p) => pathname === p || pathname.startsWith(`${p}/`));

@@ -66,7 +66,7 @@ export default function PrivacyPage() {
         <ul className={listClass}>
           <li>Kami tidak menjual data pribadi Anda.</li>
           <li>Data utama dipakai untuk menampilkan halaman bisnis, mengirim notifikasi, dan menghitung statistik.</li>
-          <li>Anda dapat mengubah profil, mengganti kata sandi, dan menghapus akun dari halaman Akun &amp; keamanan.</li>
+          <li>Anda dapat mengubah profil dan menghapus akun dari halaman Akun &amp; keamanan.</li>
           <li>Beberapa penyedia teknologi memproses data atas nama kami agar layanan dapat berjalan.</li>
         </ul>
       </LegalSection>
@@ -74,8 +74,8 @@ export default function PrivacyPage() {
       <LegalSection id="data" title="Data yang kami kumpulkan">
         <p>
           <strong className="font-semibold text-ink">Data akun.</strong> Nama, alamat email, nomor WhatsApp
-          jika Anda mengisinya, serta penyedia login (email atau Google). Kata sandi diproses oleh Supabase
-          Auth dan tidak kami simpan dalam bentuk teks biasa.
+          jika Anda mengisinya, serta penyedia login (Google). Autentikasi diproses oleh Supabase Auth dan
+          Google. Pajangin tidak menyimpan kata sandi.
         </p>
         <p>
           <strong className="font-semibold text-ink">Data bisnis.</strong> Nama usaha, kategori, deskripsi,
@@ -199,7 +199,7 @@ export default function PrivacyPage() {
         <p>
           Kami memakai koneksi HTTPS, autentikasi Supabase, pembatasan akses administratif, dan kontrol
           akses pada aplikasi untuk melindungi data. Namun, tidak ada sistem yang sepenuhnya bebas risiko.
-          Jaga kerahasiaan kata sandi dan segera hubungi kami jika mengetahui akses yang tidak sah.
+          Jaga keamanan akun Google Anda dan segera hubungi kami jika mengetahui akses yang tidak sah.
         </p>
       </LegalSection>
 

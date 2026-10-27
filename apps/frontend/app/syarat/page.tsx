@@ -76,7 +76,7 @@ export default function TermsPage() {
 
       <LegalSection id="akun" title="Akun dan tanggung jawab">
         <ul className={listClass}>
-          <li>Anda wajib memberikan informasi yang benar dan menjaga kerahasiaan akses akun.</li>
+          <li>Anda wajib memberikan informasi yang benar dan menjaga keamanan akun Google yang dipakai untuk masuk.</li>
           <li>
             Anda bertanggung jawab atas aktivitas yang dilakukan melalui akun Anda. Beri tahu kami segera
             jika mengetahui akses yang tidak sah.

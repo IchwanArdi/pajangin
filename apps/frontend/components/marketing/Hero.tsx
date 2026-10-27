@@ -228,7 +228,7 @@ export function Hero() {
 
           <motion.div variants={fadeUp} transition={{ duration: 0.5, ease }} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href={loggedIn ? '/dashboard' : '/register'}
+              href={loggedIn ? '/dashboard' : '/login'}
               className="press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink shadow-pop transition hover:opacity-90"
             >
               {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}

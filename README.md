@@ -21,7 +21,7 @@ Tidak ada data demo atau seed. Semua user, bisnis, layanan, event analitik, dan 
 | :--- | :--- | :--- |
 | **Backend** | **NestJS 12 + TypeScript (ESM)** | Enterprise-grade modular architecture, Dependency Injection, REST API |
 | **Database** | **Supabase Postgres + Prisma ORM 7** (`@prisma/adapter-pg`) | Managed Postgres, schema & migrasi terversi, type-safe query; runtime via transaction pooler, migrasi via session pooler |
-| **Auth** | **Supabase Auth** (`@supabase/ssr`) + verifikasi JWT ES256 via JWKS (`jose`) di NestJS | Verifikasi email, lupa password, login Google, sesi cookie yang di-refresh di `proxy.ts` |
+| **Auth** | **Supabase Auth** (`@supabase/ssr`) + verifikasi JWT ES256 via JWKS (`jose`) di NestJS | Login Google OAuth, sesi cookie yang di-refresh di `proxy.ts` |
 | **Frontend** | **Next.js 16 (App Router) + React 19** | Dynamic SSR/ISR, React Server Components, Fast Turbopack |
 | **Styling** | **Tailwind CSS 4** | Mobile-first high-converting responsive UI |
 | **SEO** | **Technical SEO + Schema.org JSON-LD** | Dynamic `LocalBusiness`, `AutoRepair`, `CafeOrCoffeeShop`, `DryCleaningOrLaundry` structured data |
@@ -49,7 +49,7 @@ pnpm --filter backend db:migrate    # development (membuat migrasi baru saat sch
 >
 > Isi `ADMIN_EMAILS` di `apps/backend/.env` (pisahkan dengan koma) untuk membuka console founder di `/admin`. Kosong = admin ditutup.
 >
-> Isi `SUPABASE_SERVICE_ROLE_KEY` di `apps/backend/.env` (Supabase → Project Settings → API Keys) untuk mengaktifkan hapus akun mandiri. Key ini hanya boleh ada di backend; jangan memakai prefix `NEXT_PUBLIC_`. Tanpa key ini, edit profil dan ganti kata sandi tetap berjalan, tetapi tombol hapus akun akan menampilkan pesan belum dikonfigurasi.
+> Isi `SUPABASE_SERVICE_ROLE_KEY` di `apps/backend/.env` (Supabase → Project Settings → API Keys) untuk mengaktifkan hapus akun mandiri. Key ini hanya boleh ada di backend; jangan memakai prefix `NEXT_PUBLIC_`. Tanpa key ini, edit profil tetap berjalan, tetapi tombol hapus akun akan menampilkan pesan belum dikonfigurasi.
 
 ### 2b. Database Production Baru
 
@@ -76,11 +76,12 @@ cp apps/frontend/.env.example apps/frontend/.env.local   # isi URL + publishable
 ```
 Di Supabase Dashboard:
 - **Authentication → URL Configuration**: Site URL `http://localhost:3000`, Redirect URLs `http://localhost:3000/auth/callback`
-- **Authentication → Providers → Email**: aktifkan *Confirm email*; set minimal password 8 karakter
-- **Authentication → Providers → Google** (opsional): isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`). Setelah provider aktif, set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`; jika belum, biarkan `false` agar tombol Google tidak tampil.
-- Produksi: Site URL `https://pajangin.web.id`, Redirect URL `https://pajangin.web.id/auth/callback`, dan pasang SMTP sendiri (SMTP bawaan Supabase dibatasi beberapa email/jam)
+- **Authentication → Providers → Google**: aktifkan dan isi Client ID & Secret dari Google Cloud Console (redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`).
+- **Google Cloud Console → OAuth consent screen**: publish aplikasi atau tambahkan test user; mode Testing hanya mengizinkan akun yang terdaftar.
+- **Authentication → Providers → Email**: tidak dipakai. Nonaktifkan setelah memastikan tidak ada akun lama yang hanya memakai email/password.
+- Produksi: Site URL `https://pajangin-app.vercel.app`, Redirect URL `https://pajangin-app.vercel.app/auth/callback`. Tidak ada SMTP yang perlu dikonfigurasi untuk login.
 
-Alur: `/register` → email verifikasi → `/auth/callback` → `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Lupa password: `/forgot-password` → email → `/reset-password`. Halaman `/dashboard/akun` berisi edit nama/WhatsApp, ganti kata sandi, logout perangkat/all devices, tautan legal, dan hapus akun mandiri (auth user + data bisnis + file storage; feedback dianonimkan).
+Alur: `/login` → Google OAuth → `/auth/callback` → akun baru diarahkan ke `/onboarding` (3 langkah: profil, layanan, pratinjau; draft tersimpan per akun di perangkat) → `/onboarding/selesai` (link, share WA/QR, upload foto utama, checklist indeks) → `/dashboard`. Akun lama langsung ke dashboard. Tidak ada kata sandi, verifikasi email, atau reset password. Halaman `/dashboard/akun` berisi edit nama/WhatsApp, info metode masuk Google, logout perangkat/all devices, tautan legal, dan hapus akun mandiri (auth user + data bisnis + file storage; feedback dianonimkan).
 
 > Sebelum peluncuran publik, aktifkan mailbox `halo@pajangin.web.id` yang dipakai sebagai kontak di `/syarat` dan `/privasi`, lalu tinjau isi kedua dokumen sesuai entitas dan operasional yang sebenarnya.
 
@@ -100,7 +101,7 @@ pnpm dev:frontend
 
 Buka browser:
 - **Homepage**: `http://localhost:3000`
-- **Daftar bisnis**: `http://localhost:3000/register`
+- **Masuk dengan Google**: `http://localhost:3000/login`
 - **Dashboard Pemilik**: `http://localhost:3000/dashboard`
 - **Akun & keamanan**: `http://localhost:3000/dashboard/akun`
 - **Bantuan & Masukan**: `http://localhost:3000/dashboard/masukan`

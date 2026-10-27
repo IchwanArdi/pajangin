@@ -3,7 +3,7 @@ import { Reveal } from '../../app/reveal';
 import { Section, SectionHead } from './primitives';
 
 const STEPS = [
-  { n: '01', title: 'Daftar akun', text: 'Nama, email, dan kata sandi — selesai dalam satu menit.', icon: UserPlus },
+  { n: '01', title: 'Masuk dengan Google', text: 'Satu klik, tanpa kata sandi. Akun dibuat otomatis saat pertama masuk.', icon: UserPlus },
   { n: '02', title: 'Isi profil bisnis', text: 'Kategori, kota, alamat, nomor WhatsApp, dan layanan pertama.', icon: Store },
   { n: '03', title: 'Halaman langsung tayang', text: 'Profil publik live dengan metadata SEO dan tombol chat.', icon: Globe },
   { n: '04', title: 'Pantau & optimalkan', text: 'Dashboard menunjukkan dari mana lead datang dan layanan yang laku.', icon: BarChart3 },
@@ -14,8 +14,8 @@ export function HowItWorks() {
     <Section id="cara-kerja" bordered>
       <SectionHead
         eyebrow="Cara kerja"
-        title="Daftar, tampil, ukur, tingkatkan."
-        desc="Tidak perlu desainer atau konfigurasi teknis. Empat langkah, lalu halaman bisnis Anda siap dibagikan."
+        title="Mulai, tampil, ukur, tingkatkan."
+        desc="Tidak perlu desainer atau konfigurasi teknis. Masuk dengan Google, isi profil, lalu halaman bisnis Anda siap dibagikan."
       />
       <Reveal className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((s) => {

@@ -232,7 +232,7 @@ export default function ContohPage() {
                     ))}
                   </ul>
                   <Link
-                    href="/register"
+                    href="/login"
                     className="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-paper-2 active:translate-y-px"
                   >
                     Pakai template ini
