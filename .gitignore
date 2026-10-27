@@ -62,3 +62,4 @@ data/
 # Ignore package manager artifacts (lockfiles should be committed)
 # package-lock.json
 # pnpm-lock.yaml
+.vercel

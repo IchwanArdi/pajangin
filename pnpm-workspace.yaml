@@ -1,6 +1,8 @@
 packages:
   # Semua proyek/aplikasi ada di dalam folder apps/
   - 'apps/*'
+# Vercel functions must contain real package directories, not pnpm symlinks.
+nodeLinker: hoisted
 allowBuilds:
   sharp: false
   unrs-resolver: false
