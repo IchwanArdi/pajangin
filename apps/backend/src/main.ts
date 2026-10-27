@@ -1,6 +1,8 @@
 import { config as loadEnv } from 'dotenv';
 import * as path from 'node:path';
+import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { Request, Response } from 'express';
 import { AppModule } from './app.module.js';
 
 // Di serverless Vercel, env vars sudah disediakan di process.env.
@@ -15,7 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
-async function bootstrap() {
+let appPromise: Promise<INestApplication> | undefined;
+
+async function createApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule);
   // Auth memakai header Bearer (bukan cookie), jadi credentials tidak diperlukan
   const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
@@ -28,9 +32,29 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type,Authorization',
   });
 
+  await app.init();
+  return app;
+}
+
+function getApp(): Promise<INestApplication> {
+  appPromise ??= createApp();
+  return appPromise;
+}
+
+async function bootstrap() {
+  const app = await getApp();
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
   console.log(`🚀 Pajangin Backend API running on http://localhost:${port}`);
 }
 
-await bootstrap();
+// Vercel Functions memanggil default export handler. Di luar Vercel (dev lokal),
+// jalankan server HTTP biasa lewat app.listen().
+if (!process.env.VERCEL) {
+  await bootstrap();
+}
+
+export default async function handler(req: Request, res: Response): Promise<void> {
+  const app = await getApp();
+  app.getHttpAdapter().getInstance()(req, res);
+}

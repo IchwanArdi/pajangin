@@ -16,8 +16,25 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit() {
-    await this.$connect();
-    this.logger.log('Terhubung ke database Postgres (Supabase).');
+    // Jangan blokir cold start terlalu lama. Di serverless, koneksi database bisa
+    // lambat/tidak tersedia sementara; Prisma tetap akan mencoba lagi saat query.
+    try {
+      await Promise.race([
+        this.$connect(),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error('Koneksi database timeout setelah 5 detik')),
+            5000,
+          ),
+        ),
+      ]);
+      this.logger.log('Terhubung ke database Postgres (Supabase).');
+    } catch (error) {
+      this.logger.error(
+        'Gagal terhubung ke database saat startup; API tetap dijalankan.',
+        error instanceof Error ? error.message : String(error),
+      );
+    }
   }
 
   async onModuleDestroy() {

@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const res = await fetch(`${apiUrl()}/api/v1/public/businesses/sitemap`, {
       next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5000),
     });
     if (res.ok) businesses = (await res.json()) as SitemapBusiness[];
   } catch {
