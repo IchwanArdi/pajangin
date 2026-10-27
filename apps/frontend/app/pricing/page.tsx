@@ -62,7 +62,7 @@ export default function PricingPage() {
         <section className="relative border-b border-rule">
           <Container className="relative py-16 sm:py-24">
             <Eyebrow>Harga</Eyebrow>
-            <h1 className="mt-5 max-w-3xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl">
+            <h1 className="mt-5 max-w-3xl font-display text-[clamp(2.5rem,5vw,4.75rem)] font-semibold leading-[0.99] tracking-[-0.045em] text-ink [text-wrap:balance] [overflow-wrap:anywhere]">
               Gratis untuk usaha lokal. Tanpa langganan.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-2">
@@ -72,18 +72,18 @@ export default function PricingPage() {
           </Container>
         </section>
 
-        <Section bordered>
-          <div className="mx-auto max-w-3xl rounded-3xl border border-accent bg-surface p-6 shadow-sm ring-1 ring-accent/20 sm:p-8">
+        <Section>
+          <div className="mx-auto max-w-3xl rounded-[2rem] border border-accent bg-surface p-6 shadow-window sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-semibold text-ink">{plan.name}</h2>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink">{plan.name}</h2>
                 <p className="mt-1 text-sm leading-relaxed text-ink-2">{plan.tagline}</p>
               </div>
               <span className="rounded-full bg-positive-soft px-3 py-1 text-xs font-semibold text-positive">Aktif sekarang</span>
             </div>
 
             <div className="mt-6 flex items-baseline gap-1.5">
-              <span className="text-5xl font-semibold tracking-[-0.03em] text-ink">{plan.price}</span>
+              <span className="font-display text-6xl font-semibold tracking-[-0.05em] text-ink">{plan.price}</span>
               <span className="text-sm text-ink-2">{plan.period}</span>
             </div>
 
@@ -108,7 +108,7 @@ export default function PricingPage() {
         <Section>
           <div className="max-w-2xl">
             <Eyebrow>Batas wajar</Eyebrow>
-            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.02em] text-ink">Gratis, tapi tetap sehat untuk semua.</h2>
+            <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.03em] text-ink">Gratis, tapi tetap sehat untuk semua.</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-2">
               Batas ini menjaga biaya AI, penyimpanan foto, dan gateway WhatsApp. Tidak ada fitur yang dikunci—hanya kuota pemakaian yang wajar.
             </p>

@@ -4,11 +4,11 @@ import { Container } from './primitives';
 
 export function Footer() {
   return (
-    <footer className="border-t border-rule bg-surface">
+    <footer className="border-t border-rule bg-paper-2">
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
-            <Link href="/" className="text-lg font-extrabold tracking-tight text-ink">
+            <Link href="/" className="font-display text-2xl font-semibold tracking-[-0.04em] text-ink">
               Pajang<span className="text-accent">in</span>
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-ink-2">
@@ -17,13 +17,13 @@ export function Footer() {
             <div className="mt-5 flex flex-wrap gap-2">
               <Link
                 href="/login"
-                className="press inline-flex whitespace-nowrap rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:opacity-90"
+                className="press inline-flex whitespace-nowrap rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink-3"
               >
                 Mulai gratis
               </Link>
               <Link
                 href="/pricing"
-                className="press inline-flex whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold text-ink transition hover:bg-paper"
+                className="press inline-flex whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold text-ink transition hover:bg-paper-3"
               >
                 Lihat harga
               </Link>

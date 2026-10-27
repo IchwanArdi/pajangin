@@ -3,8 +3,8 @@ import { CATEGORY_MARQUEE } from '../../lib/marketing-content';
 export function CategoryMarquee() {
   const items = [...CATEGORY_MARQUEE, ...CATEGORY_MARQUEE];
   return (
-    <section className="border-b border-rule bg-surface" aria-label="Kategori usaha yang didukung">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-7 sm:flex-row sm:items-center sm:gap-8 sm:px-8">
+    <section className="border-y border-rule bg-paper-2" aria-label="Kategori usaha yang didukung">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:gap-8 sm:px-8">
         <p className="shrink-0 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink-3">
           Cocok untuk
         </p>
@@ -14,7 +14,7 @@ export function CategoryMarquee() {
               <span
                 key={`${c}-${i}`}
                 aria-hidden={i >= CATEGORY_MARQUEE.length}
-                className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-1.5 text-sm text-ink-2"
+                className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2 text-sm text-ink-2"
               >
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
                 {c}
