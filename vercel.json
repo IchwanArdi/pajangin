@@ -3,7 +3,10 @@
   "services": {
     "backend": {
       "root": "apps/backend",
-      "framework": "nestjs"
+      "framework": "nestjs",
+      "buildCommand": "pnpm build",
+      "entrypoint": "src/main.ts",
+      "outputDirectory": "."
     },
     "frontend": {
       "root": "apps/frontend",
