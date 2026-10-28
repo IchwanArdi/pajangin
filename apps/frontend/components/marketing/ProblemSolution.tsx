@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Check, X } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { PAIN_POINTS } from '../../lib/marketing-content';
 import { Reveal } from '../../app/reveal';
 import { Section, SectionHead } from './primitives';
@@ -14,10 +14,7 @@ export function ProblemSolution() {
             title="Halaman yang tidak diukur sulit diperbaiki."
             desc="Tiga hal yang paling sering membuat usaha lokal kehilangan calon pelanggan sebelum sempat dihubungi — dan bagaimana Pajangin menjawabnya."
           />
-          <Link
-            href="#cara-kerja"
-            className="press group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-ink transition hover:text-accent"
-          >
+          <Link href="#cara-kerja" className="press group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-ink transition hover:text-accent">
             Lihat cara kerjanya
             <ArrowRight className="arrow-nudge h-4 w-4 text-accent" />
           </Link>
@@ -26,19 +23,12 @@ export function ProblemSolution() {
         <Reveal className="border-t border-rule" stagger={0.08}>
           {PAIN_POINTS.map((p, i) => (
             <article key={p.problem} className="grid gap-5 border-b border-rule py-8 sm:grid-cols-[auto_1fr] sm:gap-7 sm:py-10">
-              <span className="font-display text-4xl font-semibold leading-none tracking-[-0.04em] text-paper-4 sm:text-5xl">
-                0{i + 1}
-              </span>
+              <span className="font-display text-4xl font-semibold leading-none tracking-[-0.04em] text-paper-4 sm:text-5xl">0{i + 1}</span>
 
               <div>
                 <div className="flex items-start gap-2.5">
-                  <span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-negative-soft text-negative">
-                    <X className="h-3 w-3" strokeWidth={2.5} />
-                  </span>
                   <div>
-                    <h3 className="font-display text-xl font-semibold leading-snug tracking-[-0.02em] text-ink sm:text-2xl">
-                      {p.problem}
-                    </h3>
+                    <h3 className="font-display text-xl font-semibold leading-snug tracking-[-0.02em] text-ink sm:text-2xl">{p.problem}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-ink-2 sm:text-base">{p.detail}</p>
                   </div>
                 </div>
