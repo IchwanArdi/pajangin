@@ -170,7 +170,7 @@ function BookingMockup() {
 }
 
 export function Hero() {
-  const [tab, setTab] = useState<TabKey>('public');
+  const [tab, setTab] = useState<TabKey>('dashboard');
   const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
   const { loggedIn } = useAuthSession();
