@@ -24,26 +24,34 @@ const CARDS = [
 
 export function FirstUsers() {
   return (
-    <Section bordered>
-      <SectionHead
-        eyebrow="Pengguna pertama"
-        title="Baru mulai — Anda bisa jadi yang pertama."
-        desc="Kami sedang mendampingi usaha-usaha pertama di Purwokerto. Ini yang Anda dapatkan sebagai pengguna awal:"
-      />
-      <Reveal className="mt-10 grid gap-4 md:grid-cols-3" stagger={0.08}>
-        {CARDS.map((c) => {
-          const Icon = c.icon;
-          return (
-            <div key={c.title} className="lift flex h-full flex-col rounded-2xl border border-rule bg-surface p-6">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent-soft text-accent">
-                <Icon className="h-4.5 w-4.5" />
-              </span>
-              <h3 className="mt-4 text-[15px] font-semibold text-ink">{c.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{c.desc}</p>
-            </div>
-          );
-        })}
-      </Reveal>
+    <Section>
+      <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+        <SectionHead
+          eyebrow="Pengguna pertama"
+          title="Baru mulai — Anda bisa jadi yang pertama."
+          desc="Kami sedang mendampingi usaha-usaha pertama di Purwokerto. Ini yang Anda dapatkan sebagai pengguna awal:"
+        />
+
+        <Reveal className="border-t border-rule" stagger={0.08}>
+          {CARDS.map((c, i) => {
+            const Icon = c.icon;
+            return (
+              <div key={c.title} className="grid gap-5 border-b border-rule py-8 sm:grid-cols-[auto_1fr] sm:gap-7 sm:py-10">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent-soft text-accent">
+                  <Icon className="h-5 w-5" strokeWidth={1.9} />
+                </span>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3">0{i + 1}</p>
+                  <h3 className="mt-2 font-display text-xl font-semibold leading-snug tracking-[-0.02em] text-ink sm:text-2xl">
+                    {c.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-2 sm:text-base">{c.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </Reveal>
+      </div>
     </Section>
   );
 }

@@ -10,8 +10,7 @@ import { PRICING_PLANS } from '../../lib/marketing-content';
 import { DEFAULT_OG_IMAGE, SITE_NAME } from '../../lib/seo';
 
 const TITLE = 'Gratis — Pajangin';
-const DESCRIPTION =
-  'Pajangin 100% gratis untuk usaha lokal: halaman publik, analitik, booking, QR & Link in Bio, dan AI Konten. Tanpa langganan.';
+const DESCRIPTION = 'Pajangin 100% gratis untuk usaha lokal: halaman publik, analitik, booking, QR & Link in Bio, dan AI Konten. Tanpa langganan.';
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -62,28 +61,25 @@ export default function PricingPage() {
         <section className="relative border-b border-rule">
           <Container className="relative py-16 sm:py-24">
             <Eyebrow>Harga</Eyebrow>
-            <h1 className="mt-5 max-w-3xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl">
-              Gratis untuk usaha lokal. Tanpa langganan.
-            </h1>
+            <h1 className="mt-5 max-w-3xl font-display text-[clamp(2.5rem,5vw,4.75rem)] font-semibold leading-[0.99] tracking-[-0.045em] text-ink text-wrap-balance wrap-anywhere">Gratis untuk usaha lokal. Tanpa langganan.</h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-2">
-              Semua fitur inti terbuka sekarang: halaman publik, layanan, galeri, booking, QR &amp; Link in Bio, analitik, dan AI Konten.
-              Tidak ada paywall, tidak ada biaya tersembunyi.
+              Semua fitur inti terbuka sekarang: halaman publik, layanan, galeri, booking, QR &amp; Link in Bio, analitik, dan AI Konten. Tidak ada paywall, tidak ada biaya tersembunyi.
             </p>
           </Container>
         </section>
 
-        <Section bordered>
-          <div className="mx-auto max-w-3xl rounded-3xl border border-accent bg-surface p-6 shadow-sm ring-1 ring-accent/20 sm:p-8">
+        <Section>
+          <div className="mx-auto max-w-3xl rounded-[2rem] border border-accent bg-surface p-6 shadow-window sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-semibold text-ink">{plan.name}</h2>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-ink">{plan.name}</h2>
                 <p className="mt-1 text-sm leading-relaxed text-ink-2">{plan.tagline}</p>
               </div>
               <span className="rounded-full bg-positive-soft px-3 py-1 text-xs font-semibold text-positive">Aktif sekarang</span>
             </div>
 
             <div className="mt-6 flex items-baseline gap-1.5">
-              <span className="text-5xl font-semibold tracking-[-0.03em] text-ink">{plan.price}</span>
+              <span className="font-display text-6xl font-semibold tracking-tighter text-ink">{plan.price}</span>
               <span className="text-sm text-ink-2">{plan.period}</span>
             </div>
 
@@ -96,10 +92,7 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <Link
-              href="/login"
-              className="press mt-8 inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink transition hover:opacity-90 sm:w-auto"
-            >
+            <Link href="/login" className="press mt-8 inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink transition hover:opacity-90 sm:w-auto">
               {plan.cta}
             </Link>
           </div>
@@ -108,10 +101,8 @@ export default function PricingPage() {
         <Section>
           <div className="max-w-2xl">
             <Eyebrow>Batas wajar</Eyebrow>
-            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.02em] text-ink">Gratis, tapi tetap sehat untuk semua.</h2>
-            <p className="mt-3 text-sm leading-relaxed text-ink-2">
-              Batas ini menjaga biaya AI, penyimpanan foto, dan gateway WhatsApp. Tidak ada fitur yang dikunci—hanya kuota pemakaian yang wajar.
-            </p>
+            <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.03em] text-ink">Gratis, tapi tetap sehat untuk semua.</h2>
+            <p className="mt-3 text-sm leading-relaxed text-ink-2">Batas ini menjaga biaya AI, penyimpanan foto, dan gateway WhatsApp. Tidak ada fitur yang dikunci—hanya kuota pemakaian yang wajar.</p>
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">

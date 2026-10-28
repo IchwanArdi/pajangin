@@ -175,7 +175,7 @@ export default function ContohPage() {
         <section className="relative border-b border-rule">
           <Container className="relative py-16 sm:py-24">
             <Eyebrow>Contoh tampilan</Eyebrow>
-            <h1 className="mt-5 max-w-3xl text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] sm:text-5xl">
+            <h1 className="mt-5 max-w-3xl font-display text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.99] tracking-[-0.045em] text-ink [text-wrap:balance] [overflow-wrap:anywhere]">
               Lihat bagaimana halaman Anda akan terlihat.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-2">
@@ -185,7 +185,7 @@ export default function ContohPage() {
           </Container>
         </section>
 
-        <Section bordered>
+        <Section>
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-16">
             <div className="lg:sticky lg:top-24">
               <SectionHead
@@ -208,7 +208,7 @@ export default function ContohPage() {
           </div>
         </Section>
 
-        <Section bordered>
+        <Section>
           <SectionHead
             eyebrow="Galeri template"
             title="Tujuh template untuk tujuh karakter usaha."

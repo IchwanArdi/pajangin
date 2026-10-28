@@ -1,4 +1,7 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import {
   BarChart3,
   CalendarCheck,
@@ -13,44 +16,8 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { MINI_FEATURES } from '../../lib/marketing-content';
-import { Reveal } from '../../app/reveal';
 import { BarGrow } from './motion';
 import { Eyebrow, MockupFrame, Section, SectionHead } from './primitives';
-
-function Row({
-  eyebrow,
-  title,
-  desc,
-  bullets,
-  reverse = false,
-  children,
-}: {
-  eyebrow: string;
-  title: string;
-  desc: string;
-  bullets: string[];
-  reverse?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-14">
-      <div className={reverse ? 'lg:order-2' : ''}>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h3 className="mt-4 text-2xl font-semibold tracking-[-0.022em] text-ink [overflow-wrap:anywhere] sm:text-3xl">{title}</h3>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-2">{desc}</p>
-        <ul className="mt-5 space-y-2.5">
-          {bullets.map((b) => (
-            <li key={b} className="flex items-start gap-2.5 text-sm text-ink">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="min-w-0">{children}</div>
-    </div>
-  );
-}
 
 function SerpMockup() {
   return (
@@ -70,9 +37,9 @@ function SerpMockup() {
           Servis AC, ganti oli, dan tune up ringan. Buka 08.00–17.00. Hubungi langsung via WhatsApp.
         </p>
       </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className="mt-3 grid min-w-0 grid-cols-2 gap-2">
         {['Judul & deskripsi SEO', 'Schema.org LocalBusiness', 'Pratinjau saat dibagikan', 'URL publik yang rapi'].map((c) => (
-          <span key={c} className="rounded-lg border border-rule bg-paper px-3 py-2 text-[11px] text-ink-2">
+          <span key={c} className="min-w-0 break-words rounded-lg border border-rule bg-paper px-3 py-2 text-[11px] text-ink-2">
             {c}
           </span>
         ))}
@@ -211,89 +178,180 @@ const MINI_ICONS = {
   galeri: ImageIcon,
 } as const;
 
+const FEATURES = [
+  {
+    id: 'public',
+    eyebrow: 'Halaman publik + SEO',
+    title: 'Satu halaman yang mewakili bisnis Anda.',
+    desc: 'Bukan link bio seadanya. Halaman publik berisi layanan, harga, lokasi, dan jam buka — dengan struktur yang dikenali mesin pencari.',
+    bullets: [
+      'Judul & deskripsi SEO otomatis dari profil bisnis',
+      'Schema.org LocalBusiness agar muncul sebagai hasil lokal',
+      'Pratinjau rapi saat link dibagikan ke WhatsApp atau media sosial',
+    ],
+    Visual: SerpMockup,
+  },
+  {
+    id: 'whatsapp',
+    eyebrow: 'WhatsApp-first',
+    title: 'Jalur kontak yang jelas, dan tercatat.',
+    desc: 'Mayoritas pelanggan lokal memilih chat, bukan formulir. Setiap tombol kontak diarahkan ke WhatsApp, sementara setiap klik tercatat sebagai data.',
+    bullets: [
+      'Tombol WhatsApp menempel di layar ponsel pengunjung',
+      'Klik WhatsApp, telepon, dan klik kartu layanan tercatat otomatis',
+      'Klik diatribusikan ke layanan yang sedang dibuka',
+    ],
+    Visual: WhatsAppMockup,
+  },
+  {
+    id: 'analytics',
+    eyebrow: 'Analitik & funnel',
+    title: 'Tahu dari mana pelanggan datang, dan di mana berhenti.',
+    desc: 'Pengunjung, sumber trafik, dan tingkat konversi tersaji dalam satu layar — tanpa perlu memasang alat pihak ketiga.',
+    bullets: [
+      'Funnel dari kunjungan → klik kontak',
+      'Distribusi sumber: Google, Instagram, TikTok, langsung',
+      'Peringkat layanan berdasarkan klik layanan vs chat',
+    ],
+    Visual: AnalyticsMockup,
+  },
+  {
+    id: 'insight',
+    eyebrow: 'Insight engine',
+    title: 'Rekomendasi yang bisa langsung dikerjakan.',
+    desc: 'Sistem menandai layanan yang ramai diklik tetapi sepi chat, dan mengubah data menjadi langkah perbaikan yang konkret.',
+    bullets: [
+      'Deteksi layanan dengan gesekan (harga/CTA kurang jelas)',
+      'Sorot layanan dengan jumlah kontak tertinggi',
+      'Pantau ketergantungan pada satu saluran trafik',
+    ],
+    Visual: InsightMockup,
+  },
+] as const;
+
 export function ProductShowcase() {
+  const [active, setActive] = useState(0);
+  const reduce = useReducedMotion();
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    const elements = itemRefs.current.filter((el): el is HTMLDivElement => el !== null);
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const current = entries.find((entry) => entry.isIntersecting);
+        if (!current) return;
+        const index = Number((current.target as HTMLElement).dataset.index);
+        if (!Number.isNaN(index)) setActive(index);
+      },
+      { rootMargin: '-46% 0px -46% 0px', threshold: 0 },
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <Section id="fitur" bordered>
+    <Section id="fitur" tone="ink">
       <SectionHead
         eyebrow="Produk"
+        tone="ink"
         title="Tampil profesional, dihubungi, lalu diukur."
         desc="Empat bagian inti Pajangin — dibangun untuk usaha lokal yang mengandalkan WhatsApp, bukan toko online besar."
       />
 
-      <div className="mt-14 space-y-16 sm:space-y-24">
-        <Row
-          eyebrow="Halaman publik + SEO"
-          title="Satu halaman yang mewakili bisnis Anda."
-          desc="Bukan link bio seadanya. Halaman publik berisi layanan, harga, lokasi, dan jam buka — dengan struktur yang dikenali mesin pencari."
-          bullets={[
-            'Judul & deskripsi SEO otomatis dari profil bisnis',
-            'Schema.org LocalBusiness agar muncul sebagai hasil lokal',
-            'Pratinjau rapi saat link dibagikan ke WhatsApp atau media sosial',
-          ]}
-        >
-          <SerpMockup />
-        </Row>
+      <div className="mt-16 grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+        <div className="relative min-w-0">
+          <div aria-hidden className="absolute bottom-0 left-0 top-0 hidden w-px bg-ink-3 lg:block" />
 
-        <Row
-          reverse
-          eyebrow="WhatsApp-first"
-          title="Jalur kontak yang jelas, dan tercatat."
-          desc="Mayoritas pelanggan lokal memilih chat, bukan formulir. Setiap tombol kontak diarahkan ke WhatsApp, sementara setiap klik tercatat sebagai data."
-          bullets={[
-            'Tombol WhatsApp menempel di layar ponsel pengunjung',
-            'Klik WhatsApp, telepon, dan klik kartu layanan tercatat otomatis',
-            'Klik diatribusikan ke layanan yang sedang dibuka',
-          ]}
-        >
-          <WhatsAppMockup />
-        </Row>
+          {FEATURES.map((feature, i) => {
+            const Visual = feature.Visual;
 
-        <Row
-          eyebrow="Analitik & funnel"
-          title="Tahu dari mana pelanggan datang, dan di mana berhenti."
-          desc="Pengunjung, sumber trafik, dan tingkat konversi tersaji dalam satu layar — tanpa perlu memasang alat pihak ketiga."
-          bullets={[
-            'Funnel dari kunjungan → klik kontak',
-            'Distribusi sumber: Google, Instagram, TikTok, langsung',
-            'Peringkat layanan berdasarkan klik layanan vs chat',
-          ]}
-        >
-          <AnalyticsMockup />
-        </Row>
-
-        <Row
-          reverse
-          eyebrow="Insight engine"
-          title="Rekomendasi yang bisa langsung dikerjakan."
-          desc="Sistem menandai layanan yang ramai diklik tetapi sepi chat, dan mengubah data menjadi langkah perbaikan yang konkret."
-          bullets={[
-            'Deteksi layanan dengan gesekan (harga/CTA kurang jelas)',
-            'Sorot layanan dengan jumlah kontak tertinggi',
-            'Pantau ketergantungan pada satu saluran trafik',
-          ]}
-        >
-          <InsightMockup />
-        </Row>
-      </div>
-
-      <div className="mt-16 sm:mt-20">
-        <div className="flex items-center gap-3">
-          <Eyebrow>Fitur pendukung</Eyebrow>
-        </div>
-        <Reveal className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MINI_FEATURES.map((f) => {
-            const Icon = MINI_ICONS[f.key as keyof typeof MINI_ICONS];
             return (
-              <div key={f.key} className="lift h-full rounded-2xl border border-rule bg-surface p-5">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent-soft text-accent">
-                  <Icon className="h-4.5 w-4.5" />
-                </span>
-                <h4 className="mt-4 text-[15px] font-semibold text-ink">{f.title}</h4>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{f.desc}</p>
+              <div
+                key={feature.id}
+                ref={(el) => {
+                  itemRefs.current[i] = el;
+                }}
+                data-index={i}
+                className="relative flex min-w-0 flex-col justify-center border-b border-ink-3 py-10 last:border-b-0 lg:min-h-[48vh] lg:border-b-0 lg:py-16 lg:pl-8"
+              >
+                <span className={`font-mono text-xs ${active === i ? 'text-accent' : 'text-paper-5'}`}>0{i + 1}</span>
+                <p className="mt-4 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-paper-4">{feature.eyebrow}</p>
+                <h3 className="mt-4 max-w-xl font-display text-[clamp(1.8rem,3.2vw,2.9rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-paper [text-wrap:balance]">
+                  {feature.title}
+                </h3>
+                <p className="mt-4 max-w-lg text-base leading-relaxed text-paper-4">{feature.desc}</p>
+                <ul className="mt-6 space-y-2.5">
+                  {feature.bullets.map((bullet) => (
+                    <li key={bullet} className="flex items-start gap-2.5 text-sm leading-relaxed text-paper-4">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2.2} />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 min-w-0 lg:hidden">
+                  <Visual />
+                </div>
               </div>
             );
           })}
-        </Reveal>
+        </div>
+
+        <div className="hidden min-w-0 lg:block">
+          <div className="lg:sticky lg:top-28">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <span className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-paper-5">Pratinjau produk</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-paper-5">
+                0{active + 1} / 0{FEATURES.length}
+              </span>
+            </div>
+
+            <div className="relative min-h-[520px]">
+              {FEATURES.map((feature, i) => {
+                const Visual = feature.Visual;
+                const isActive = i === active;
+
+                return (
+                  <motion.div
+                    key={feature.id}
+                    className={isActive ? 'relative' : 'pointer-events-none absolute inset-0'}
+                    initial={false}
+                    animate={
+                      reduce
+                        ? { opacity: isActive ? 1 : 0 }
+                        : { opacity: isActive ? 1 : 0, y: isActive ? 0 : 14, scale: isActive ? 1 : 0.985 }
+                    }
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    aria-hidden={!isActive}
+                  >
+                    <Visual />
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-16 border-t border-ink-3 pt-10 sm:mt-20">
+        <Eyebrow tone="inverse">Fitur pendukung</Eyebrow>
+        <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {MINI_FEATURES.map((f) => {
+            const Icon = MINI_ICONS[f.key as keyof typeof MINI_ICONS];
+            return (
+              <div key={f.key} className="flex flex-col">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-soft text-accent">
+                  <Icon className="h-4.5 w-4.5" />
+                </span>
+                <h4 className="mt-4 font-display text-lg font-semibold tracking-[-0.02em] text-paper">{f.title}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-paper-4">{f.desc}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Section>
   );

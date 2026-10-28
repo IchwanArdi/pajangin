@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-// Font display untuk halaman bisnis pelanggan (judul & hero) — landing tidak memakainya.
+// Font display untuk judul produk: halaman bisnis pelanggan, marketing, dan hero.
 const bricolage = Bricolage_Grotesque({
   variable: '--font-bricolage',
   subsets: ['latin'],

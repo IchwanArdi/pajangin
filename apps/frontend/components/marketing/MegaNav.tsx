@@ -67,13 +67,13 @@ export function MegaNav() {
 
   return (
     <header ref={ref} className="sticky top-0 z-50 pt-3 sm:pt-4">
-      <div className="mx-auto w-full max-w-6xl px-3 sm:px-8">
+      <div className="mx-auto w-full max-w-7xl px-3 sm:px-8">
         <div
-          className={`flex h-14 items-center justify-between gap-2 rounded-full border border-rule px-2 pl-4 backdrop-blur transition-shadow duration-300 ${
-            scrolled ? 'bg-surface/90 shadow-pop' : 'bg-surface/80 shadow-sm'
+          className={`flex h-14 items-center justify-between gap-2 rounded-full border border-rule bg-surface px-2 pl-4 transition-shadow duration-300 ${
+            scrolled ? 'shadow-window' : 'shadow-sm'
           }`}
         >
-          <Link href="/" className="shrink-0 text-[15px] font-extrabold tracking-tight text-ink">
+          <Link href="/" className="shrink-0 font-display text-[17px] font-semibold tracking-[-0.035em] text-ink">
             Pajang<span className="text-accent">in</span>
           </Link>
 
@@ -114,14 +114,14 @@ export function MegaNav() {
             {loggedIn ? (
               <Link
                 href="/dashboard"
-                className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:opacity-90"
+                className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink-3"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:opacity-90"
+                className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink-3"
               >
                 Masuk dengan Google
               </Link>
@@ -147,10 +147,10 @@ export function MegaNav() {
               animate={{ opacity: 1, y: 0 }}
               exit={reduce ? { opacity: 1 } : { opacity: 0, y: -6 }}
               transition={{ duration: 0.18, ease }}
-              className="absolute inset-x-0 top-full mx-auto mt-2 hidden w-full max-w-6xl px-3 sm:px-8 lg:block"
+              className="absolute inset-x-0 top-full mx-auto mt-2 hidden w-full max-w-7xl px-3 sm:px-8 lg:block"
               onMouseLeave={() => setOpen(null)}
             >
-              <div className="overflow-hidden rounded-3xl border border-rule bg-surface shadow-pop">
+              <div className="overflow-hidden rounded-3xl border border-rule bg-surface shadow-window">
                 <div className="grid gap-6 p-6 md:grid-cols-[1.35fr_0.65fr]">
                   <div>
                     <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-ink-3">
@@ -193,7 +193,7 @@ export function MegaNav() {
                     <Link
                       href={loggedIn ? '/dashboard' : '/login'}
                       onClick={() => setOpen(null)}
-                      className="press group mt-4 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink transition hover:opacity-90"
+                      className="press group mt-4 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink transition hover:bg-accent-strong"
                     >
                       {loggedIn ? 'Buka dashboard' : 'Mulai sekarang'}
                       <ArrowRight className="arrow-nudge h-4 w-4" />
@@ -213,7 +213,7 @@ export function MegaNav() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={reduce ? { opacity: 1 } : { opacity: 0, height: 0 }}
               transition={{ duration: 0.26, ease }}
-              className="mt-2 overflow-hidden rounded-3xl border border-rule bg-surface shadow-pop lg:hidden"
+              className="mt-2 overflow-hidden rounded-3xl border border-rule bg-surface shadow-window lg:hidden"
             >
               <div className="space-y-1 p-3">
                 <button
