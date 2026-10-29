@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight, CalendarCheck, Check, Globe, MapPin, MessageCircle, Search, Star, TrendingUp } from 'lucide-react';
 import { useAuthSession } from '../../lib/use-auth-session';
+import { track } from '../../lib/marketing-analytics';
 import { CountUp, BarGrow, DrawSparkline } from './motion';
 
 type TabKey = 'public' | 'dashboard' | 'booking';
@@ -237,12 +238,17 @@ export function Hero() {
           <div className="hero-rise mt-9 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: '0.5s' }}>
             <Link
               href={loggedIn ? '/dashboard' : '/login'}
+              onClick={() => track('cta_clicked', { location: 'hero-primary', label: loggedIn ? 'Buka dashboard' : 'Buat halaman gratis' })}
               className="press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-7 py-4 text-sm font-semibold text-accent-ink shadow-pop transition hover:bg-accent-strong"
             >
               {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}
               <ArrowRight className="arrow-nudge h-4 w-4" />
             </Link>
-            <Link href="/contoh" className="press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-rule bg-surface px-6 py-4 text-sm font-semibold text-ink transition hover:bg-paper-2">
+            <Link
+              href="/contoh"
+              onClick={() => track('cta_clicked', { location: 'hero-secondary', label: 'Lihat contoh tampilan' })}
+              className="press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-rule bg-surface px-6 py-4 text-sm font-semibold text-ink transition hover:bg-paper-2"
+            >
               <Globe className="h-4 w-4 text-ink-2" />
               Lihat contoh tampilan
             </Link>
@@ -279,6 +285,7 @@ export function Hero() {
                     onClick={() => {
                       setTab(t.key);
                       setPaused(true);
+                      track('preview_tab_clicked', { tab: t.key });
                     }}
                     className={`relative rounded-full px-3.5 py-2 text-xs font-semibold transition sm:px-4 sm:text-sm ${tab === t.key ? 'text-paper' : 'text-ink-2 hover:text-ink'}`}
                   >

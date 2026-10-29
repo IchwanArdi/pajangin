@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, Geist, Geist_Mono } from 'next/font/google';
+import MarketingAnalytics from '../components/analytics/MarketingAnalytics';
 import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '../lib/seo';
 import './globals.css';
 
@@ -21,12 +22,14 @@ const bricolage = Bricolage_Grotesque({
 });
 
 const TITLE = 'Pajangin — Halaman Bisnis & Analitik Gratis untuk UMKM';
+const GOOGLE_SITE_VERIFICATION = (process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: 'Pajangin',
   title: TITLE,
   description: SITE_DESCRIPTION,
+  verification: GOOGLE_SITE_VERIFICATION ? { google: GOOGLE_SITE_VERIFICATION } : undefined,
   openGraph: {
     title: TITLE,
     description: SITE_DESCRIPTION,
@@ -59,7 +62,10 @@ export default function RootLayout({
       lang="id"
       className={`${geistSans.variable} ${geistMono.variable} ${bricolage.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <MarketingAnalytics />
+      </body>
     </html>
   );
 }

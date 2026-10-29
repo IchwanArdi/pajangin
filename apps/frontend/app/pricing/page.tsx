@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Check, Image as ImageIcon, MessageCircle, Sparkles } from 'lucide-react';
+import TrackedLink from '../../components/analytics/TrackedLink';
 import { MegaNav } from '../../components/marketing/MegaNav';
 import { Faq } from '../../components/marketing/Faq';
 import { FinalCta } from '../../components/marketing/FinalCta';
@@ -92,9 +92,13 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <Link href="/login" className="press mt-8 inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink transition hover:opacity-90 sm:w-auto">
+            <TrackedLink
+              href="/login"
+              eventParams={{ location: 'pricing-page', label: plan.cta }}
+              className="press mt-8 inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink transition hover:opacity-90 sm:w-auto"
+            >
               {plan.cta}
-            </Link>
+            </TrackedLink>
           </div>
         </Section>
 

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
+import TrackedLink from '../analytics/TrackedLink';
 import { PRICING_PLANS } from '../../lib/marketing-content';
 import { Section, SectionHead } from './primitives';
 
@@ -15,13 +15,14 @@ export function PricingTeaser() {
             title="Gratis untuk usaha lokal. Tanpa langganan."
             desc="Semua fitur inti terbuka sekarang. Ada batas wajar untuk AI, galeri, dan notifikasi WhatsApp agar layanan tetap gratis untuk semua."
           />
-          <Link
+          <TrackedLink
             href="/login"
+            eventParams={{ location: 'pricing-teaser-top', label: 'Buat halaman gratis' }}
             className="press group mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-paper transition hover:bg-ink-3"
           >
             Buat halaman gratis
             <ArrowRight className="arrow-nudge h-4 w-4 text-accent" />
-          </Link>
+          </TrackedLink>
         </div>
 
         <div className="rounded-[2rem] bg-accent-soft p-6 sm:p-9">
@@ -48,13 +49,14 @@ export function PricingTeaser() {
             ))}
           </ul>
 
-          <Link
+          <TrackedLink
             href="/login"
+            eventParams={{ location: 'pricing-teaser-card', label: plan.cta }}
             className="press group mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 text-sm font-semibold text-paper transition hover:bg-ink-3"
           >
             {plan.cta}
             <ArrowRight className="arrow-nudge h-4 w-4 text-accent" />
-          </Link>
+          </TrackedLink>
           <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
             Tanpa kartu kredit · Tanpa biaya tersembunyi
           </p>

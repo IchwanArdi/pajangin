@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import TrackedLink from '../analytics/TrackedLink';
 import { BUSINESS_TEMPLATES, type BusinessTemplate } from '../../lib/templates';
 import { Section, SectionHead } from './primitives';
 
@@ -204,20 +204,23 @@ export function Templates() {
           title="Tampilan yang menyesuaikan jenis usaha."
           desc="Bengkel tidak harus terlihat seperti restoran. Pilih template yang paling dekat dengan bisnis Anda, lalu sesuaikan warna aksennya."
         />
-        <Link
+        <TrackedLink
           href="/contoh"
+          eventParams={{ location: 'templates-section', label: 'Lihat galeri template' }}
           className="press group inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-rule bg-surface px-5 py-3 text-sm font-semibold text-ink transition hover:bg-paper-2"
         >
           Lihat galeri template <ArrowRight className="arrow-nudge h-4 w-4 text-accent" />
-        </Link>
+        </TrackedLink>
       </div>
 
       <div className="no-scrollbar -mx-5 mt-12 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:px-8">
         <div className="flex w-max snap-x snap-mandatory gap-5">
           {templates.map((t) => (
-            <Link
+            <TrackedLink
               key={t.id}
               href="/contoh"
+              event="template_card_clicked"
+              eventParams={{ template: t.name, category: t.badge }}
               aria-label={`Lihat contoh template ${t.name}`}
               className="group flex w-[min(82vw,360px)] shrink-0 snap-start flex-col rounded-3xl border border-rule bg-surface p-4 transition duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-window"
             >
@@ -246,7 +249,7 @@ export function Templates() {
                   <ArrowRight className="arrow-nudge h-4 w-4 text-accent" />
                 </span>
               </div>
-            </Link>
+            </TrackedLink>
           ))}
         </div>
       </div>

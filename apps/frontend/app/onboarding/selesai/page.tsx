@@ -26,6 +26,7 @@ import {
 import { primaryButtonClass, secondaryButtonClass } from '../../../components/auth/AuthShell';
 import OnboardingShell from '../../../components/onboarding/OnboardingShell';
 import SuccessPhotoUpload from '../../../components/onboarding/SuccessPhotoUpload';
+import { track } from '../../../lib/marketing-analytics';
 import { toWaNumber } from '../../../lib/whatsapp';
 import { useBrowserOrigin } from '../../../lib/useBrowserOrigin';
 
@@ -187,6 +188,7 @@ function SuccessContent() {
     try {
       await navigator.clipboard.writeText(pageUrl);
       setCopyState('copied');
+      track('share_clicked', { channel: 'copy_link' });
       window.setTimeout(() => setCopyState('idle'), 2000);
     } catch {
       setCopyState('failed');
@@ -248,6 +250,7 @@ function SuccessContent() {
             </button>
             <Link
               href={qrHref}
+              onClick={() => track('share_clicked', { channel: 'qr' })}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-2 underline-offset-2 hover:text-ink hover:underline"
             >
               <QrCode className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -266,6 +269,7 @@ function SuccessContent() {
             href={shareHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('share_clicked', { channel: 'whatsapp' })}
             className={primaryButtonClass}
           >
             <Share2 className="h-4 w-4" strokeWidth={1.75} />
@@ -275,6 +279,7 @@ function SuccessContent() {
             href={pageUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track('cta_clicked', { location: 'onboarding-success-preview', label: 'Lihat halaman' })}
             className={`${secondaryButtonClass} text-center`}
           >
             <ExternalLink className="h-4 w-4" strokeWidth={1.75} />

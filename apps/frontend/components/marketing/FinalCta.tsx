@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { useAuthSession } from '../../lib/use-auth-session';
+import { track } from '../../lib/marketing-analytics';
 import { Eyebrow, Section } from './primitives';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -46,6 +47,7 @@ export function FinalCta() {
         >
           <Link
             href={loggedIn ? '/dashboard' : '/login'}
+            onClick={() => track('cta_clicked', { location: 'final-cta-primary', label: loggedIn ? 'Buka dashboard' : 'Buat halaman gratis' })}
             className="press group inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-7 py-4 text-sm font-semibold text-accent-ink transition hover:bg-accent-strong lg:w-auto"
           >
             {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}
@@ -53,6 +55,7 @@ export function FinalCta() {
           </Link>
           <Link
             href="/contoh"
+            onClick={() => track('cta_clicked', { location: 'final-cta-secondary', label: 'Lihat contoh tampilan' })}
             className="press inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-paper-5 px-7 py-4 text-sm font-semibold text-paper transition hover:bg-ink-3 lg:w-auto"
           >
             Lihat contoh tampilan

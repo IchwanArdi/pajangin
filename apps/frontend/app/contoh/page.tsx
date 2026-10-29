@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Check, MessageCircle } from 'lucide-react';
+import TrackedLink from '../../components/analytics/TrackedLink';
 import { MegaNav } from '../../components/marketing/MegaNav';
 import { TemplateWire } from '../../components/marketing/Templates';
 import { FinalCta } from '../../components/marketing/FinalCta';
@@ -231,12 +231,13 @@ export default function ContohPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link
+                  <TrackedLink
                     href="/login"
+                    eventParams={{ location: 'contoh-template', label: t.name }}
                     className="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-paper-2 active:translate-y-px"
                   >
                     Pakai template ini
-                  </Link>
+                  </TrackedLink>
                 </figcaption>
               </figure>
             ))}
