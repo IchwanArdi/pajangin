@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import CookieSettingsLink from '../analytics/CookieSettingsLink';
+import TrackedLink from '../analytics/TrackedLink';
 import { FOOTER_GROUPS } from '../../lib/marketing-content';
 import { Container } from './primitives';
 
@@ -15,18 +17,20 @@ export function Footer() {
               Platform halaman publik, SEO lokal, dan analitik marketing untuk usaha lokal Indonesia — WhatsApp-first, dalam Rupiah.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link
+              <TrackedLink
                 href="/login"
+                eventParams={{ location: 'footer-primary', label: 'Mulai gratis' }}
                 className="press inline-flex whitespace-nowrap rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink-3"
               >
                 Mulai gratis
-              </Link>
-              <Link
+              </TrackedLink>
+              <TrackedLink
                 href="/pricing"
+                eventParams={{ location: 'footer-secondary', label: 'Lihat harga' }}
                 className="press inline-flex whitespace-nowrap rounded-full border border-rule bg-surface px-4 py-2 text-xs font-semibold text-ink transition hover:bg-paper-3"
               >
                 Lihat harga
-              </Link>
+              </TrackedLink>
             </div>
           </div>
 
@@ -55,6 +59,7 @@ export function Footer() {
             <Link href="/privasi" className="transition hover:text-ink">
               Kebijakan Privasi
             </Link>
+            <CookieSettingsLink className="transition hover:text-ink" />
           </nav>
           <span className="font-mono uppercase tracking-[0.12em]">Halaman publik · SEO lokal · Analitik</span>
         </div>

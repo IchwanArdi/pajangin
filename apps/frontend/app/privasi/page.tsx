@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import CookieSettingsLink from '../../components/analytics/CookieSettingsLink';
 import LegalPageShell, { LegalSection, type LegalSectionLink } from '../../components/legal/LegalPageShell';
 import { DEFAULT_OG_IMAGE, SITE_NAME } from '../../lib/seo';
 import { LEGAL_CONTACT_EMAIL, LEGAL_CONTACT_HREF } from '../../lib/legal';
@@ -88,10 +89,17 @@ export default function PrivacyPage() {
           yang dikirim melalui halaman bisnis. Data ini masuk ke dashboard pemilik usaha.
         </p>
         <p>
-          <strong className="font-semibold text-ink">Data analitik.</strong> Peristiwa seperti kunjungan
-          halaman, layanan yang dilihat, klik WhatsApp atau telepon, dan pengiriman pesan. Kami juga mencatat
-          sumber atau referrer, parameter UTM, jenis perangkat, dan ID sesi acak. Tabel analitik tidak
-          menyimpan nama pengunjung.
+          <strong className="font-semibold text-ink">Data analitik produk.</strong> Peristiwa seperti kunjungan
+          halaman bisnis, layanan yang dilihat, klik WhatsApp atau telepon, dan pengiriman pesan. Kami juga
+          mencatat sumber atau referrer, parameter UTM, jenis perangkat, dan ID sesi acak. Tabel analitik
+          tidak menyimpan nama pengunjung.
+        </p>
+        <p>
+          <strong className="font-semibold text-ink">Analitik marketing.</strong> Jika Anda memberi izin, kami
+          memakai Google Analytics 4 dan Microsoft Clarity pada halaman marketing untuk memahami halaman dan
+          kampanye mana yang membantu pemilik usaha. Data yang dikirim tidak memuat nama, email, nomor
+          WhatsApp, atau isi pesan. Kami memakai ID pseudonim dan parameter kampanye. Anda dapat menolak
+          analitik tanpa kehilangan fitur, dan dapat mengubah pilihan lewat pengaturan cookie.
         </p>
         <p>
           <strong className="font-semibold text-ink">Masukan.</strong> Nama, email, WhatsApp, isi masukan,
@@ -136,7 +144,8 @@ export default function PrivacyPage() {
           <li>Supabase untuk autentikasi, database, dan penyimpanan foto;</li>
           <li>penyedia hosting frontend dan backend untuk menjalankan situs;</li>
           <li>Fonnte dan WhatsApp untuk mengirim notifikasi;</li>
-          <li>Google untuk login OAuth dan, jika diaktifkan, pemrosesan konten AI;</li>
+          <li>Google untuk login OAuth, Google Analytics 4, dan, jika diaktifkan, pemrosesan konten AI;</li>
+          <li>Microsoft Clarity untuk analitik perilaku, hanya jika Anda menyetujui analitik;</li>
           <li>OpenAI jika diaktifkan untuk fitur AI Konten.</li>
         </ul>
         <p>
@@ -153,16 +162,27 @@ export default function PrivacyPage() {
             Cookie autentikasi Supabase menyimpan sesi login agar Anda tetap masuk saat berpindah halaman.
           </li>
           <li>
+            Cookie first-party <code>pajangin_acquisition</code> menyimpan parameter UTM, referrer, dan
+            halaman pertama selama 90 hari agar sumber pendaftaran tidak hilang saat login Google.
+          </li>
+          <li>
             sessionStorage menyimpan atribusi kampanye dan ID sesi analitik acak selama sesi browser.
           </li>
           <li>
-            localStorage menyimpan draft onboarding dan pilihan bisnis terakhir di perangkat Anda.
+            localStorage menyimpan draft onboarding, pilihan bisnis terakhir, dan preferensi analitik di
+            perangkat Anda.
           </li>
-          <li>Kami tidak memakai cookie iklan pihak ketiga untuk melacak Anda di situs lain.</li>
+          <li>
+            Jika Anda menyetujui analitik, Google Analytics 4 dan Microsoft Clarity dapat memasang cookie
+            analitik mereka sendiri. Kami tidak memakai cookie iklan pihak ketiga untuk melacak Anda di
+            situs lain.
+          </li>
         </ul>
         <p>
-          Anda dapat menghapus cookie dan data situs melalui pengaturan browser. Menghapus cookie login
-          akan mengeluarkan Anda dari akun.
+          Anda dapat menerima atau menolak analitik saat banner muncul, atau mengubahnya kapan saja melalui{' '}
+          <CookieSettingsLink className={linkClass}>pengaturan cookie</CookieSettingsLink>. Menolak analitik
+          tidak membatasi fitur Pajangin. Anda juga dapat menghapus cookie dan data situs melalui pengaturan
+          browser; menghapus cookie login akan mengeluarkan Anda dari akun.
         </p>
       </LegalSection>
 

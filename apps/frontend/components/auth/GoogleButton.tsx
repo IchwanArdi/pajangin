@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase/client';
 import { authErrorMessage } from '../../lib/auth-errors';
+import { captureAcquisition, track } from '../../lib/marketing-analytics';
 import { authPrimaryButtonClass } from './AuthShell';
 
 // Login / daftar dengan Google (Supabase OAuth). Setelah sukses kembali ke /auth/callback.
@@ -12,6 +13,8 @@ export default function GoogleButton({ next, label = 'Masuk dengan Google', onEr
 
   const handleClick = async () => {
     setLoading(true);
+    captureAcquisition();
+    track('login_started', { method: 'google' });
     const { error } = await createClient().auth.signInWithOAuth({
       provider: 'google',
       options: {

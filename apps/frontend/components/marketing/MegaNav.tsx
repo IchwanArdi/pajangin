@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, BarChart3, ChevronDown, Globe, Menu, MessageCircle, Sparkles, X } from 'lucide-react';
 import { useAuthSession } from '../../lib/use-auth-session';
+import { track } from '../../lib/marketing-analytics';
 
 type NavItem = {
   title: string;
@@ -114,6 +115,7 @@ export function MegaNav() {
             {loggedIn ? (
               <Link
                 href="/dashboard"
+                onClick={() => track('cta_clicked', { location: 'nav-primary', label: 'Dashboard' })}
                 className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink-3"
               >
                 Dashboard
@@ -121,6 +123,7 @@ export function MegaNav() {
             ) : (
               <Link
                 href="/login"
+                onClick={() => track('cta_clicked', { location: 'nav-primary', label: 'Masuk dengan Google' })}
                 className="press whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink-3"
               >
                 Masuk dengan Google

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { ApiError, createNewBusiness, getMyBusinesses } from '../../lib/api';
 import { createClient } from '../../lib/supabase/client';
+import { setUserProperties, track } from '../../lib/marketing-analytics';
 import { BUSINESS_CATEGORIES } from '../../lib/categories';
 import { formatWaDisplay, isValidWhatsapp, toWaNumber } from '../../lib/whatsapp';
 import { useBrowserOrigin } from '../../lib/useBrowserOrigin';
@@ -75,6 +76,11 @@ export default function OnboardingPage() {
   const origin = useBrowserOrigin();
   const [errorMessage, setErrorMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    track('onboarding_started', { flow: 'business_setup' });
+    setUserProperties({ plan_type: 'free' });
+  }, []);
 
   // langkah 1 — profil bisnis
   const [businessName, setBusinessName] = useState('');
@@ -201,6 +207,12 @@ export default function OnboardingPage() {
     services.some((service) => !service.name.trim()) || services.length < MAX_ONBOARDING_SERVICES;
 
   const goTo = (nextStep: OnboardingStep) => {
+    if (nextStep > step) {
+      track('onboarding_step_completed', {
+        step,
+        step_name: step === 1 ? 'profile' : 'content',
+      });
+    }
     setErrorMessage('');
     setStep(nextStep);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -310,6 +322,13 @@ export default function OnboardingPage() {
         description: previewDescription,
         services: payloadServices,
       });
+
+      track('business_published', {
+        category,
+        city: city.trim(),
+        service_count: payloadServices.length,
+      });
+      setUserProperties({ business_category: category, city: city.trim() });
 
       // Hentikan autosave sebelum draft dihapus agar efek simpan tidak menulis ulang data lama.
       setDraftLoaded(false);
