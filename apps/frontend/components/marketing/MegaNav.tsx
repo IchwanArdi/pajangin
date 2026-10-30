@@ -1,9 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState, type ComponentType } from 'react';
+import { useEffect, useRef, useState, type ComponentType, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, BarChart3, ChevronDown, Globe, Menu, MessageCircle, Sparkles, X } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart3,
+  ChevronDown,
+  Coffee,
+  Globe,
+  Menu,
+  MessageCircle,
+  Scissors,
+  Shirt,
+  Sparkles,
+  Wrench,
+  X,
+} from 'lucide-react';
 import { useAuthSession } from '../../lib/use-auth-session';
 import { track } from '../../lib/marketing-analytics';
 
@@ -22,10 +35,10 @@ const productLinks: NavItem[] = [
 ];
 
 const solutionLinks: NavItem[] = [
-  { title: 'Bengkel & otomotif', desc: 'Daftar servis, harga mulai, dan kontak darurat.', href: '/contoh' },
-  { title: 'Kafe & kuliner', desc: 'Menu andalan, jam buka, dan pesan cepat via WA.', href: '/contoh' },
-  { title: 'Laundry & retail', desc: 'Paket kiloan, area antar-jemput, dan rute Maps.', href: '/contoh' },
-  { title: 'Salon & klinik', desc: 'Layanan, estimasi biaya, dan booking via WhatsApp.', href: '/contoh' },
+  { title: 'Bengkel & otomotif', desc: 'Daftar servis, harga mulai, dan kontak darurat.', href: '/contoh', icon: Wrench },
+  { title: 'Kafe & kuliner', desc: 'Menu andalan, jam buka, dan pesan cepat via WA.', href: '/contoh', icon: Coffee },
+  { title: 'Laundry & retail', desc: 'Paket kiloan, area antar-jemput, dan rute Maps.', href: '/contoh', icon: Shirt },
+  { title: 'Salon & klinik', desc: 'Layanan, estimasi biaya, dan booking via WhatsApp.', href: '/contoh', icon: Scissors },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -33,11 +46,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function MegaNav() {
   const [open, setOpen] = useState<'product' | 'solution' | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileGroup, setMobileGroup] = useState<'product' | 'solution' | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const { loggedIn } = useAuthSession();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const wasMenuOpen = useRef(false);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -62,6 +78,65 @@ export function MegaNav() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Kunci scroll halaman selama menu penuh layar terbuka, lalu pulihkan.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const focusTimer = window.setTimeout(() => closeButtonRef.current?.focus(), 20);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.clearTimeout(focusTimer);
+    };
+  }, [mobileOpen]);
+
+  // Kembalikan fokus ke tombol hamburger saat menu ditutup.
+  useEffect(() => {
+    if (mobileOpen) {
+      wasMenuOpen.current = true;
+      return;
+    }
+    if (wasMenuOpen.current) {
+      wasMenuOpen.current = false;
+      menuButtonRef.current?.focus();
+    }
+  }, [mobileOpen]);
+
+  // Tutup menu jika layar diperbesar ke ukuran desktop saat menu terbuka.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const handleChange = () => {
+      if (desktop.matches) setMobileOpen(false);
+    };
+    desktop.addEventListener('change', handleChange);
+    return () => desktop.removeEventListener('change', handleChange);
+  }, [mobileOpen]);
+
+  function openMenu() {
+    setOpen(null);
+    setMobileOpen(true);
+  }
+
+  function closeMenu() {
+    setMobileOpen(false);
+  }
+
+  function handleMenuKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Tab') return;
+    const focusable = menuRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    if (!focusable || focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   const triggerClass =
     'nav-underline flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-ink-2 transition hover:text-ink';
@@ -132,11 +207,14 @@ export function MegaNav() {
           </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
-            className="press rounded-full p-2 text-ink transition hover:bg-paper-2 lg:hidden"
+            className="press grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-paper-2 lg:hidden"
             aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-controls="mobile-menu"
+            aria-haspopup="dialog"
+            onClick={openMenu}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -212,65 +290,149 @@ export function MegaNav() {
           {mobileOpen ? (
             <motion.div
               key="mobile-menu"
-              initial={reduce ? false : { opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={reduce ? { opacity: 1 } : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.26, ease }}
-              className="mt-2 overflow-hidden rounded-3xl border border-rule bg-surface shadow-window lg:hidden"
+              id="mobile-menu"
+              ref={menuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu navigasi"
+              onKeyDown={handleMenuKeyDown}
+              initial={reduce ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? { opacity: 1 } : { opacity: 0, y: 10 }}
+              transition={{ duration: 0.24, ease }}
+              className="fixed inset-0 z-[60] flex flex-col bg-paper lg:hidden"
             >
-              <div className="space-y-1 p-3">
-                <button
-                  type="button"
-                  onClick={() => setMobileGroup(mobileGroup === 'product' ? null : 'product')}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-semibold text-ink"
+              <div className="flex h-14 shrink-0 items-center justify-between border-b border-rule px-4">
+                <Link
+                  href="/"
+                  onClick={closeMenu}
+                  className="font-display text-[17px] font-semibold tracking-[-0.035em] text-ink"
                 >
-                  Produk <ChevronDown className={`h-4 w-4 transition-transform ${mobileGroup === 'product' ? 'rotate-180' : ''}`} />
-                </button>
-                {mobileGroup === 'product' ? (
-                  <div className="space-y-0.5 pb-1 pl-3">
-                    {productLinks.map((item) => (
-                      <Link key={item.title} href={item.href} className="block rounded-lg px-3 py-2 text-sm text-ink-2" onClick={() => setMobileOpen(false)}>
-                        {item.title}
-                      </Link>
-                    ))}
-                  </div>
-                ) : null}
+                  Pajang<span className="text-accent">in</span>
+                </Link>
                 <button
+                  ref={closeButtonRef}
                   type="button"
-                  onClick={() => setMobileGroup(mobileGroup === 'solution' ? null : 'solution')}
-                  className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-semibold text-ink"
+                  onClick={closeMenu}
+                  aria-label="Tutup menu"
+                  className="press grid h-11 w-11 place-items-center rounded-full border border-rule text-ink transition hover:bg-paper-2"
                 >
-                  Solusi <ChevronDown className={`h-4 w-4 transition-transform ${mobileGroup === 'solution' ? 'rotate-180' : ''}`} />
+                  <X className="h-5 w-5" />
                 </button>
-                {mobileGroup === 'solution' ? (
-                  <div className="space-y-0.5 pb-1 pl-3">
-                    {solutionLinks.map((item) => (
-                      <Link key={item.title} href={item.href} className="block rounded-lg px-3 py-2 text-sm text-ink-2" onClick={() => setMobileOpen(false)}>
-                        {item.title}
-                      </Link>
-                    ))}
-                  </div>
-                ) : null}
-                <Link href="/pricing" className="block rounded-xl px-3 py-3 text-sm font-semibold text-ink" onClick={() => setMobileOpen(false)}>
-                  Harga
-                </Link>
-                <Link href="/contoh" className="block rounded-xl px-3 py-3 text-sm font-semibold text-ink" onClick={() => setMobileOpen(false)}>
-                  Contoh
-                </Link>
-                <div className="flex flex-col gap-2 pt-2">
+              </div>
+
+              <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-8 pt-6">
+                <MobileMenuGroup
+                  label="Produk"
+                  items={productLinks}
+                  onNavigate={closeMenu}
+                  reduce={reduce}
+                  delay={0.04}
+                />
+                <MobileMenuGroup
+                  label="Solusi"
+                  items={solutionLinks}
+                  onNavigate={closeMenu}
+                  reduce={reduce}
+                  delay={0.16}
+                  className="mt-7"
+                />
+
+                <div className="mt-8 grid grid-cols-2 gap-2">
                   <Link
-                    href={loggedIn ? '/dashboard' : '/login'}
-                    className="press block whitespace-nowrap rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-paper"
-                    onClick={() => setMobileOpen(false)}
+                    href="/pricing"
+                    onClick={closeMenu}
+                    className="press flex items-center justify-between rounded-2xl border border-rule bg-surface px-4 py-3.5 text-sm font-semibold text-ink"
                   >
-                    {loggedIn ? 'Buka dashboard' : 'Masuk dengan Google'}
+                    Harga
+                    <ArrowRight className="h-4 w-4 text-ink-3" />
+                  </Link>
+                  <Link
+                    href="/contoh"
+                    onClick={closeMenu}
+                    className="press flex items-center justify-between rounded-2xl border border-rule bg-surface px-4 py-3.5 text-sm font-semibold text-ink"
+                  >
+                    Contoh
+                    <ArrowRight className="h-4 w-4 text-ink-3" />
                   </Link>
                 </div>
+              </div>
+
+              <div className="shrink-0 border-t border-rule bg-paper px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4">
+                <Link
+                  href={loggedIn ? '/dashboard' : '/login'}
+                  onClick={() => {
+                    closeMenu();
+                    track('cta_clicked', {
+                      location: 'mobile-menu-primary',
+                      label: loggedIn ? 'Buka dashboard' : 'Buat halaman gratis',
+                    });
+                  }}
+                  className="press flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-3.5 text-sm font-semibold text-accent-ink shadow-pop transition hover:bg-accent-strong"
+                >
+                  {loggedIn ? 'Buka dashboard' : 'Buat halaman gratis'}
+                  <ArrowRight className="arrow-nudge h-4 w-4" />
+                </Link>
+                <p className="mt-2.5 text-center text-xs text-ink-3">
+                  {loggedIn ? 'Anda sudah masuk dengan Google' : 'Gratis · Tanpa kartu kredit'}
+                </p>
               </div>
             </motion.div>
           ) : null}
         </AnimatePresence>
       </div>
     </header>
+  );
+}
+
+function MobileMenuGroup({
+  label,
+  items,
+  onNavigate,
+  reduce,
+  delay = 0,
+  className = '',
+}: {
+  label: string;
+  items: NavItem[];
+  onNavigate: () => void;
+  reduce: boolean | null;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <p className="px-3 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-ink-3">{label}</p>
+      <div className="mt-1.5 space-y-0.5">
+        {items.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={`${label}-${item.title}`}
+              initial={reduce ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.24, ease, delay: delay + index * 0.035 }}
+            >
+              <Link
+                href={item.href}
+                onClick={onNavigate}
+                className="group flex items-start gap-3 rounded-2xl px-3 py-3 transition active:bg-paper-2"
+              >
+                <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-paper-2 text-ink-2 transition group-hover:bg-accent-soft group-hover:text-accent">
+                  {Icon ? <Icon className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center gap-1.5 font-display text-[17px] font-semibold leading-snug tracking-[-0.01em] text-ink">
+                    {item.title}
+                    <ArrowRight className="arrow-nudge h-3.5 w-3.5 text-accent opacity-0 transition group-hover:opacity-100" />
+                  </span>
+                  <span className="mt-0.5 block text-[13px] leading-relaxed text-ink-2">{item.desc}</span>
+                </span>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
