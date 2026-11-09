@@ -81,12 +81,17 @@ export default function ServicesSection({
 
   const featuredIds = useMemo(() => new Set(featured.map((service) => service.id)), [featured]);
 
-  const gridServices = useMemo(
-    () => filteredServices.filter((service) => !featuredIds.has(service.id)),
-    [filteredServices, featuredIds],
-  );
-
   const showFeatured = selectedCategory === 'Semua' && featured.length > 0;
+
+  // Layanan unggulan hanya dipisahkan dari daftar saat section unggulan tampil.
+  // Saat kategori difilter, semua layanan kategori tersebut tetap harus muncul.
+  const gridServices = useMemo(
+    () =>
+      showFeatured
+        ? filteredServices.filter((service) => !featuredIds.has(service.id))
+        : filteredServices,
+    [filteredServices, featuredIds, showFeatured],
+  );
 
   /** Menu dikelompokkan per kategori — hanya untuk layout menu-grid. */
   const menuGroups = useMemo(() => {
@@ -196,20 +201,34 @@ export default function ServicesSection({
             <ItemReveal key={service.id} index={index}>
               <article
                 onClick={() => onServiceClick(service)}
-                className="lift group flex h-full cursor-pointer flex-col justify-between gap-5 rounded-3xl border-2 border-ink bg-paper p-6 transition hover:shadow-pop md:flex-row md:items-center"
+                className="lift group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border-2 border-ink bg-paper transition hover:shadow-pop"
               >
-                <div className="min-w-0">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
-                    Paket Andalan
-                  </span>
-                  <h3 className="font-display mt-2 text-xl font-semibold tracking-[-0.01em] text-ink">{service.name}</h3>
-                  {service.description && (
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{service.description}</p>
-                  )}
-                </div>
-                <div className="flex shrink-0 items-center justify-between gap-4 md:flex-col md:items-end md:gap-2">
-                  <span className="font-display text-2xl font-bold tracking-[-0.02em] text-ink">{priceOf(service)}</span>
-                  <ServiceLink href={buildWaLink(service.name)} label={ctaLabel} onTrack={trackWa(service)} />
+                {service.image_url && (
+                  <div className="overflow-hidden">
+                    <Image
+                      src={service.image_url}
+                      alt={service.name}
+                      width={1200}
+                      height={900}
+                      unoptimized
+                      className="h-48 w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col justify-between gap-5 p-6 md:flex-row md:items-center">
+                  <div className="min-w-0">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-accent">
+                      Paket Andalan
+                    </span>
+                    <h3 className="font-display mt-2 text-xl font-semibold tracking-[-0.01em] text-ink">{service.name}</h3>
+                    {service.description && (
+                      <p className="mt-1.5 text-sm leading-relaxed text-ink-2">{service.description}</p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center justify-between gap-4 md:flex-col md:items-end md:gap-2">
+                    <span className="font-display text-2xl font-bold tracking-[-0.02em] text-ink">{priceOf(service)}</span>
+                    <ServiceLink href={buildWaLink(service.name)} label={ctaLabel} onTrack={trackWa(service)} />
+                  </div>
                 </div>
               </article>
             </ItemReveal>
@@ -272,18 +291,34 @@ export default function ServicesSection({
               <ul className="mt-4 space-y-5">
                 {items.map((service) => (
                   <li key={service.id} onClick={() => onServiceClick(service)} className="group cursor-pointer">
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-[15px] font-semibold text-ink transition group-hover:text-accent">
-                        {service.name}
-                      </span>
-                      <span aria-hidden className="flex-1 -translate-y-1 border-b border-dotted border-rule" />
-                      <span className="whitespace-nowrap font-display text-[15px] font-semibold text-ink">
-                        {priceOf(service)}
-                      </span>
+                    <div className="flex items-center gap-3">
+                      {service.image_url && (
+                        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-rule bg-paper-2">
+                          <Image
+                            src={service.image_url}
+                            alt=""
+                            width={160}
+                            height={160}
+                            unoptimized
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                          />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-[15px] font-semibold text-ink transition group-hover:text-accent">
+                            {service.name}
+                          </span>
+                          <span aria-hidden className="flex-1 -translate-y-1 border-b border-dotted border-rule" />
+                          <span className="whitespace-nowrap font-display text-[15px] font-semibold text-ink">
+                            {priceOf(service)}
+                          </span>
+                        </div>
+                        {service.description && (
+                          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-2">{service.description}</p>
+                        )}
+                      </div>
                     </div>
-                    {service.description && (
-                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-2">{service.description}</p>
-                    )}
                   </li>
                 ))}
               </ul>
@@ -302,13 +337,27 @@ export default function ServicesSection({
                 className="group grid cursor-pointer grid-cols-[auto_1fr] items-center gap-x-5 gap-y-1 py-5 sm:grid-cols-[auto_1fr_auto]"
               >
                 <span className="font-mono text-xs font-medium text-ink-3">{String(index + 1).padStart(2, '0')}</span>
-                <div className="min-w-0">
-                  <p className="font-display text-[17px] font-semibold tracking-[-0.01em] text-ink transition group-hover:text-accent">
-                    {service.name}
-                  </p>
-                  {service.description && (
-                    <p className="mt-0.5 line-clamp-2 text-sm leading-relaxed text-ink-2">{service.description}</p>
+                <div className="flex min-w-0 items-center gap-3">
+                  {service.image_url && (
+                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-rule bg-paper-2">
+                      <Image
+                        src={service.image_url}
+                        alt=""
+                        width={160}
+                        height={160}
+                        unoptimized
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
                   )}
+                  <div className="min-w-0">
+                    <p className="font-display text-[17px] font-semibold tracking-[-0.01em] text-ink transition group-hover:text-accent">
+                      {service.name}
+                    </p>
+                    {service.description && (
+                      <p className="mt-0.5 line-clamp-2 text-sm leading-relaxed text-ink-2">{service.description}</p>
+                    )}
+                  </div>
                 </div>
                 <div className="col-start-2 flex items-center gap-4 sm:col-start-3 sm:flex-col sm:items-end sm:gap-1">
                   <span className="whitespace-nowrap font-display text-[15px] font-semibold text-ink">
