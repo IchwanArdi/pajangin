@@ -302,7 +302,7 @@ export function Hero() {
             </div>
 
             <div className="relative">
-              <div aria-hidden className="absolute -inset-4 -z-10 hidden rounded-[2.25rem] bg-paper-2 lg:block" />
+              <div aria-hidden className="absolute -inset-4 -z-10 hidden rounded-[2.25rem]  lg:block" />
               <figure className="relative z-10 overflow-hidden rounded-3xl border border-rule bg-surface shadow-window">
                 <figcaption className="flex items-center justify-between gap-3 border-b border-rule bg-paper-2 px-4 py-3 sm:px-5">
                   <span className="flex min-w-0 items-center gap-2">
