@@ -59,10 +59,10 @@ model User {
   @@map("users")
 }
 
-// satu user bisa punya 1+ bisnis (multi-tenant)
+// satu akun hanya boleh punya satu bisnis
 model Business {
   id              String           @id @default(uuid()) @db.Uuid
-  userId          String           @map("user_id") @db.Uuid
+  userId          String           @unique @map("user_id") @db.Uuid
   slug            String           @unique
   name            String
   tagline         String?
@@ -98,7 +98,6 @@ model Business {
   images          BusinessImage[]
   bookings        Booking[]
 
-  @@index([userId])
   @@map("businesses")
 }
 

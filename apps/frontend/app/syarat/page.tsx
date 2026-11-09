@@ -85,7 +85,7 @@ export default function TermsPage() {
             Anda menyatakan berwenang mewakili usaha yang didaftarkan, serta berusia minimal 18 tahun atau
             mendapat izin orang tua/wali.
           </li>
-          <li>Satu alamat email digunakan untuk satu akun. Satu akun dapat mengelola beberapa bisnis.</li>
+          <li>Satu alamat email digunakan untuk satu akun. Satu akun hanya untuk satu bisnis.</li>
         </ul>
       </LegalSection>
 

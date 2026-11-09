@@ -1,18 +1,14 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ApiError, Business, getCurrentUser, getMyBusinesses, UserProfile } from '../../lib/api';
 
-const STORAGE_KEY = 'mos_selected_business';
-
 interface BusinessContextValue {
-  businesses: Business[];
   business: Business | null;
   user: UserProfile | null;
   status: 'loading' | 'ready' | 'error';
   error: string;
-  selectBusiness: (id: string) => void;
   replaceBusiness: (biz: Business) => void;
   replaceUser: (user: UserProfile) => void;
   reload: () => void;
@@ -20,14 +16,12 @@ interface BusinessContextValue {
 
 const BusinessContext = createContext<BusinessContextValue | null>(null);
 
-// Sumber data bisnis untuk seluruh area /dashboard (sidebar, ringkasan, layanan, profil)
+// Sumber data bisnis untuk seluruh area /dashboard.
+// Aturan produk: satu akun Google hanya mengelola satu bisnis.
 export function BusinessProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const queryBizId = searchParams.get('biz');
 
-  const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [business, setBusiness] = useState<Business | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [error, setError] = useState('');
@@ -43,12 +37,7 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
           router.replace('/onboarding');
           return;
         }
-        const stored = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
-        const initial =
-          list.find((b) => b.id === queryBizId) ?? list.find((b) => b.id === stored) ?? list[0];
-        setBusinesses(list);
-        setSelectedId(initial.id);
-        localStorage.setItem(STORAGE_KEY, initial.id);
+        setBusiness(list[0]);
         setUser(profile);
         setStatus('ready');
       })
@@ -60,15 +49,10 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [queryBizId, reloadKey, router]);
-
-  const selectBusiness = useCallback((id: string) => {
-    setSelectedId(id);
-    localStorage.setItem(STORAGE_KEY, id);
-  }, []);
+  }, [reloadKey, router]);
 
   const replaceBusiness = useCallback((biz: Business) => {
-    setBusinesses((prev) => prev.map((b) => (b.id === biz.id ? biz : b)));
+    setBusiness((current) => (current?.id === biz.id ? biz : current));
   }, []);
 
   const replaceUser = useCallback((next: UserProfile) => {
@@ -82,17 +66,15 @@ export function BusinessProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<BusinessContextValue>(
     () => ({
-      businesses,
-      business: businesses.find((b) => b.id === selectedId) ?? null,
+      business,
       user,
       status,
       error,
-      selectBusiness,
       replaceBusiness,
       replaceUser,
       reload,
     }),
-    [businesses, selectedId, user, status, error, selectBusiness, replaceBusiness, replaceUser, reload],
+    [business, user, status, error, replaceBusiness, replaceUser, reload],
   );
 
   return <BusinessContext.Provider value={value}>{children}</BusinessContext.Provider>;

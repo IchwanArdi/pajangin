@@ -93,7 +93,7 @@ export default function ProfilPage() {
       </div>
     );
   }
-  // key → form direset otomatis saat pindah bisnis
+  // key → form direset otomatis saat data bisnis berganti
   return <ProfilForm key={business.id} business={business} />;
 }
 

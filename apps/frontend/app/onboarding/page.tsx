@@ -18,7 +18,7 @@ import {
   Sparkles,
   Trash2,
 } from 'lucide-react';
-import { ApiError, createNewBusiness, getMyBusinesses, getServices, updateService } from '../../lib/api';
+import { ApiError, createNewBusiness, getMyBusinesses, getServices, updateService, type Business } from '../../lib/api';
 import { createClient } from '../../lib/supabase/client';
 import { setUserProperties, track } from '../../lib/marketing-analytics';
 import { BUSINESS_CATEGORIES } from '../../lib/categories';
@@ -59,7 +59,7 @@ async function fetchAccountContext() {
     accountId = null;
   }
 
-  return { businesses, accountId };
+  return { business: businesses[0] ?? null, accountId };
 }
 
 // Upload foto layanan setelah bisnis dibuat. Path wajib diawali business ID
@@ -78,25 +78,20 @@ async function uploadServicePhoto(businessId: string, file: File, index: number)
 }
 
 // Wizard 3 langkah: profil → isi halaman → pratinjau/terbit.
-// Dipakai untuk bisnis pertama setelah login Google maupun "+ Bisnis baru".
+// Hanya untuk bisnis pertama. Satu akun Google = satu bisnis.
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<OnboardingStep>(1);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState('');
   const [loadKey, setLoadKey] = useState(0);
-  const [hasBusinesses, setHasBusinesses] = useState(false);
+  const [existingBusiness, setExistingBusiness] = useState<Business | null>(null);
   const [draftKey, setDraftKey] = useState<string | null>(null);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [draftRestored, setDraftRestored] = useState(false);
   const origin = useBrowserOrigin();
   const [errorMessage, setErrorMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    track('onboarding_started', { flow: 'business_setup' });
-    setUserProperties({ plan_type: 'free' });
-  }, []);
 
   // langkah 1 — profil bisnis
   const [businessName, setBusinessName] = useState('');
@@ -131,14 +126,23 @@ export default function OnboardingPage() {
     let cancelled = false;
 
     fetchAccountContext()
-      .then(({ businesses, accountId }) => {
+      .then(({ business, accountId }) => {
         if (cancelled) return;
 
-        const mode = businesses.length > 0 ? 'add' : 'first';
-        const key = accountId ? draftStorageKey(accountId, mode) : null;
-        const saved = readOnboardingDraft(key);
+        // Satu akun = satu bisnis. Akun yang sudah punya bisnis tidak boleh
+        // memulai wizard lagi; arahkan ke dashboard atau akun Google lain.
+        if (business) {
+          setExistingBusiness(business);
+          setDraftKey(null);
+          setDraftLoaded(false);
+          setLoadError('');
+          setLoadState('ready');
+          return;
+        }
 
-        setHasBusinesses(businesses.length > 0);
+        setExistingBusiness(null);
+        const key = accountId ? draftStorageKey(accountId) : null;
+        const saved = readOnboardingDraft(key);
         setDraftKey(key);
 
         if (saved) {
@@ -164,6 +168,8 @@ export default function OnboardingPage() {
         setDraftLoaded(true);
         setLoadError('');
         setLoadState('ready');
+        track('onboarding_started', { flow: 'business_setup' });
+        setUserProperties({ plan_type: 'free' });
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -448,7 +454,7 @@ export default function OnboardingPage() {
           <Loader2 className="h-6 w-6 animate-spin text-accent" strokeWidth={1.75} />
           <p className="text-sm font-semibold text-ink">Menyiapkan akun Anda…</p>
           <p className="max-w-xs text-xs leading-relaxed text-ink-2">
-            Kami memeriksa apakah ini bisnis pertama atau bisnis tambahan.
+            Kami memeriksa apakah akun ini sudah punya bisnis.
           </p>
         </div>
       </OnboardingShell>
@@ -481,28 +487,47 @@ export default function OnboardingPage() {
     );
   }
 
-  const topRight = hasBusinesses ? (
-    <Link href="/dashboard" className="text-sm font-semibold text-ink-2 hover:text-ink">
-      ← Kembali ke dashboard
-    </Link>
-  ) : (
+  const topRight = (
     <button type="button" onClick={() => void handleLogout()} className="text-sm font-semibold text-ink-2 hover:text-ink">
       Keluar
     </button>
   );
+
+  if (existingBusiness) {
+    return (
+      <OnboardingShell topRight={topRight}>
+        <div className="space-y-5 rounded-3xl border border-rule bg-white p-6 sm:p-8">
+          <div className="space-y-2">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">Satu akun, satu bisnis</p>
+            <h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">Akun ini sudah punya bisnis</h1>
+            <p className="text-sm leading-relaxed text-ink-2">
+              <strong className="font-semibold text-ink">{existingBusiness.name}</strong> sudah terhubung ke akun
+              Google ini.
+            </p>
+            <p className="text-sm leading-relaxed text-ink-2">
+              Pajangin hanya mengizinkan satu bisnis per akun. Ingin membuat halaman untuk bisnis lain? Keluar, lalu
+              masuk dengan akun Google lain.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/dashboard" className={primaryButtonClass}>
+              Ke dashboard
+            </Link>
+            <button type="button" onClick={() => void handleLogout()} className={secondaryButtonClass}>
+              Ganti akun
+            </button>
+          </div>
+        </div>
+      </OnboardingShell>
+    );
+  }
 
   return (
     <OnboardingShell topRight={topRight}>
       <div className="space-y-2">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">Langkah {step} dari 3</p>
         <h1 className="text-2xl font-bold tracking-[-0.03em] sm:text-4xl">
-          {step === 1
-            ? hasBusinesses
-              ? 'Tambah bisnis baru'
-              : 'Buat halaman bisnis Anda'
-            : step === 2
-              ? 'Lengkapi isi halaman'
-              : 'Cek sebelum terbit'}
+          {step === 1 ? 'Buat halaman bisnis Anda' : step === 2 ? 'Lengkapi isi halaman' : 'Cek sebelum terbit'}
         </h1>
         <p className="text-sm leading-relaxed text-ink-2">
           {step === 1

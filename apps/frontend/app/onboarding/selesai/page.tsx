@@ -136,11 +136,11 @@ function SuccessContent() {
   }
 
   const pageUrl = origin ? `${origin}/${business.slug}` : `/${business.slug}`;
-  const dashboardHref = `/dashboard?biz=${encodeURIComponent(business.id)}`;
-  const qrHref = `/dashboard/qr-bio?biz=${encodeURIComponent(business.id)}`;
-  const servicesHref = `/dashboard/layanan?biz=${encodeURIComponent(business.id)}`;
-  const profileHref = `/dashboard/profil?biz=${encodeURIComponent(business.id)}`;
-  const galleryHref = `/dashboard/galeri?biz=${encodeURIComponent(business.id)}`;
+  const dashboardHref = '/dashboard';
+  const qrHref = '/dashboard/qr-bio';
+  const servicesHref = '/dashboard/layanan';
+  const profileHref = '/dashboard/profil';
+  const galleryHref = '/dashboard/galeri';
 
   const shareHref = `https://wa.me/?text=${encodeURIComponent(`Cek halaman bisnis ${business.name}: ${pageUrl}`)}`;
   const testWhatsappHref = `https://wa.me/${toWaNumber(business.whatsapp)}?text=${encodeURIComponent(

@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { Business, Service } from '../generated/prisma/client.js';
 import { isUuid } from '../common/uuid.js';
 import { normalizeWhatsapp } from '../common/whatsapp.js';
 import { normalizeHexColor, normalizeHttpUrl, normalizeRating, normalizeReviewCount } from '../common/validation.js';
 import { toImageResponse } from '../images/images.service.js';
+
+// Aturan produk: satu akun Google hanya untuk satu bisnis.
+const ONE_BUSINESS_MESSAGE =
+  'Satu akun hanya bisa memiliki satu bisnis. Untuk membuat bisnis baru, gunakan akun Google lain.';
 
 // ===== Bentuk respons API (snake_case, kontrak dengan frontend) =====
 
@@ -205,7 +209,7 @@ export class BusinessesService {
     return 'default';
   }
 
-  // Verifikasi kepemilikan bisnis oleh user (Multi-Tenant Authorization Check)
+  // Verifikasi kepemilikan bisnis oleh user (authorization check)
   async checkOwnership(businessId: string, userId: string): Promise<Business> {
     const biz = await this.findEntityById(businessId);
     if (biz.userId !== userId) {
@@ -353,8 +357,16 @@ export class BusinessesService {
     return candidate;
   }
 
-  // Buat bisnis baru + layanan awal (Onboarding) dalam satu transaksi
+  // Buat bisnis pertama + layanan awal (Onboarding) dalam satu transaksi
   async createBusiness(userId: string, data: CreateBusinessInput): Promise<BusinessResponse> {
+    const existingBusiness = await this.prisma.business.findFirst({
+      where: { userId },
+      select: { id: true },
+    });
+    if (existingBusiness) {
+      throw new ConflictException(ONE_BUSINESS_MESSAGE);
+    }
+
     const name = data.name?.trim();
     const category = data.category?.trim();
     const city = data.city?.trim();
@@ -407,6 +419,17 @@ export class BusinessesService {
           description || `${name} di ${city}. Hubungi via WhatsApp untuk reservasi dan informasi lebih lanjut.`,
         services: { create: services },
       },
+    }).catch((error: unknown) => {
+      // Jaga-jaga jika dua request membuat bisnis hampir bersamaan.
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        (error as { code?: string }).code === 'P2002'
+      ) {
+        throw new ConflictException(ONE_BUSINESS_MESSAGE);
+      }
+      throw error;
     });
 
     return toBusinessResponse(biz);

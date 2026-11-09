@@ -84,7 +84,7 @@ function FormSkeleton() {
 }
 
 export default function FeedbackPage() {
-  const { business, businesses, status } = useBusiness();
+  const { business, status } = useBusiness();
   const [category, setCategory] = useState<FeedbackCategory>('masukan');
   const [rating, setRating] = useState<number | null>(null);
   const [businessId, setBusinessId] = useState<string | null>(null);
@@ -265,11 +265,7 @@ export default function FeedbackPage() {
                 className={field.input}
               >
                 <option value="">Umum — bukan tentang bisnis tertentu</option>
-                {businesses.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
+                {business && <option value={business.id}>{business.name}</option>}
               </select>
               <p className={field.hint}>Konteks bisnis membantu saya memahami masalahnya, tanpa perlu Anda menjelaskan ulang.</p>
             </div>

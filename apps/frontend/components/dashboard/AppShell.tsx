@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { CalendarCheck, ExternalLink, Image as ImageIcon, LayoutDashboard, LogOut, MessageSquare, MessageSquarePlus, Package, QrCode, ShieldCheck, Sparkles, Store, type LucideIcon } from 'lucide-react';
 import { createClient } from '../../lib/supabase/client';
 import { useBusiness } from './BusinessContext';
-import { BusinessSwitcher } from './BusinessSwitcher';
+import { BusinessMenu } from './BusinessMenu';
 import { ShareMenu } from './ShareMenu';
 import { NotificationBell } from './NotificationBell';
 import { Skeleton, btn } from './ui';
@@ -63,7 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <NotificationBell />
         </div>
 
-        <div className="px-3">{status === 'ready' ? <BusinessSwitcher onLogout={logout} /> : <Skeleton className="h-12 w-full" />}</div>
+        <div className="px-3">{status === 'ready' ? <BusinessMenu onLogout={logout} /> : <Skeleton className="h-12 w-full" />}</div>
 
         <nav aria-label="Navigasi dashboard" className="mt-4 flex-1 space-y-0.5 px-3">
           {NAV.map(({ href, label, icon: Icon, exact }) => {
@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* ===== Top bar (mobile) ===== */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-rule bg-paper/90 px-3 backdrop-blur lg:hidden">
         <div className="min-w-0 flex-1">
-          {status === 'ready' ? <BusinessSwitcher onLogout={logout} compact /> : <Skeleton className="h-9 w-44" />}
+          {status === 'ready' ? <BusinessMenu onLogout={logout} compact /> : <Skeleton className="h-9 w-44" />}
         </div>
         <div className="flex items-center gap-1.5">
           {user?.is_admin && (

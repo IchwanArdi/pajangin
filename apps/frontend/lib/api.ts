@@ -290,7 +290,7 @@ export interface NewBusinessPayload {
   services?: Array<{ name: string; price?: number; description?: string }>;
 }
 
-// buat bisnis baru beserta layanan pertamanya
+// buat bisnis pertama beserta layanan awalnya
 export function createNewBusiness(payload: NewBusinessPayload): Promise<Business> {
   return request<Business>('/api/v1/my/businesses', {
     method: 'POST',
