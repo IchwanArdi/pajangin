@@ -1,6 +1,6 @@
 /* Helper murni untuk wizard onboarding.
- * Isian disimpan di localStorage per akun + mode (bisnis pertama / tambah bisnis),
- * supaya user tidak kehilangan data saat refresh atau pindah tab. */
+ * Isian disimpan di localStorage per akun, supaya user tidak kehilangan data
+ * saat refresh atau pindah tab. Satu akun hanya untuk satu bisnis. */
 
 export type OnboardingStep = 1 | 2 | 3;
 
@@ -69,8 +69,8 @@ export function defaultDescription(name: string, city: string): string {
   return `${safeName} melayani pelanggan di ${safeCity}. Hubungi via WhatsApp untuk menanyakan layanan, ketersediaan, dan harga.`;
 }
 
-export function draftStorageKey(userId: string, mode: 'first' | 'add'): string {
-  return `pajangin.onboarding.v1:${userId}:${mode}`;
+export function draftStorageKey(userId: string): string {
+  return `pajangin.onboarding.v1:${userId}:first`;
 }
 
 export function hasDraftContent(draft: OnboardingDraft): boolean {

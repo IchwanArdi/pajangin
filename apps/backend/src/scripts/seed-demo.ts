@@ -1,7 +1,8 @@
 /**
  * Seeder data contoh halaman bisnis (DEV ONLY — bukan data produksi).
  *
- * - Membuat 6 bisnis contoh (satu per template kategori) milik satu user demo.
+ * - Membuat 6 bisnis contoh (satu per template kategori), masing-masing milik user demo sendiri.
+ * - Satu akun = satu bisnis, jadi setiap bisnis memakai email demo yang berbeda.
  * - Foto memakai URL eksternal picsum.photos → kebutuhan review desain, bukan produksi.
  * - Idempoten: aman dijalankan berulang. Layanan & galeri lama dihapus lalu ditulis ulang.
  *
@@ -23,8 +24,10 @@ if (!connectionString) {
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
-const DEMO_EMAIL = 'demo@pajangin.dev';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+/** Email demo deterministik: satu user untuk satu bisnis. */
+const demoEmail = (slug: string) => `demo+${slug}@pajangin.dev`;
 
 /** Foto placeholder deterministik dari picsum (seed sama → gambar sama). */
 const pic = (seed: string, width: number, height: number) => `https://picsum.photos/seed/${seed}/${width}/${height}`;
@@ -702,20 +705,21 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
 ];
 
 async function main() {
-  const user = await prisma.user.upsert({
-    where: { email: DEMO_EMAIL },
-    update: {},
-    create: {
-      id: crypto.randomUUID(),
-      name: 'Demo Pajangin',
-      email: DEMO_EMAIL,
-      whatsapp: '6281234567890',
-    },
-  });
-
   const urls: string[] = [];
 
   for (const demo of DEMO_BUSINESSES) {
+    const email = demoEmail(demo.slug);
+    const user = await prisma.user.upsert({
+      where: { email },
+      update: {},
+      create: {
+        id: crypto.randomUUID(),
+        name: `Demo ${demo.name}`,
+        email,
+        whatsapp: demo.whatsapp,
+      },
+    });
+
     const fields = {
       name: demo.name,
       tagline: demo.tagline,
@@ -743,7 +747,7 @@ async function main() {
 
     const business = await prisma.business.upsert({
       where: { slug: demo.slug },
-      update: fields,
+      update: { ...fields, userId: user.id },
       create: { ...fields, slug: demo.slug, userId: user.id },
     });
 

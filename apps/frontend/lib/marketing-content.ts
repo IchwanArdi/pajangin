@@ -127,8 +127,8 @@ export const FAQS = [
     a: 'Ya. Semua fitur inti terbuka tanpa langganan: halaman publik, layanan, galeri, booking, QR & Link in Bio, analitik, dan AI Konten. Ada batas wajar untuk AI, foto galeri, dan notifikasi WhatsApp agar biaya layanan tetap terkendali.',
   },
   {
-    q: 'Bisakah satu akun mengelola lebih dari satu bisnis?',
-    a: 'Bisa. Anda dapat memiliki beberapa bisnis dan berpindah di antaranya lewat pemilih bisnis di dashboard.',
+    q: 'Bisakah satu akun punya lebih dari satu bisnis?',
+    a: 'Tidak. Satu akun Pajangin hanya untuk satu bisnis. Jika ingin membuat halaman untuk bisnis lain, keluar lalu masuk dengan akun Google lain.',
   },
   {
     q: 'Apakah saya harus bisa menulis konten?',
@@ -168,7 +168,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Analitik pengunjung, sumber trafik, dan klik kontak',
       'Form kontak + menu Pesan di dashboard',
       'Booking, QR & Link in Bio, dan AI Konten',
-      'Beberapa bisnis dalam satu akun',
+      'Satu akun, satu bisnis, satu link',
     ],
     cta: 'Buat halaman gratis',
     featured: true,

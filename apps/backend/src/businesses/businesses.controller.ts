@@ -17,14 +17,14 @@ import type { AuthenticatedUser } from '../auth/auth.guard.js';
 export class BusinessesController {
   constructor(private readonly biz: BusinessesService) {}
 
-  // GET /api/v1/my/businesses - HANYA bisnis milik user yang sedang login (Multi-tenant isolation)
+  // GET /api/v1/my/businesses - bisnis milik user yang sedang login (satu akun = satu bisnis)
   @Get('my/businesses')
   @UseGuards(AuthGuard)
   getMyBusinesses(@CurrentUser() user: AuthenticatedUser) {
     return this.biz.findByUserId(user.id);
   }
 
-  // POST /api/v1/my/businesses - Buat bisnis baru (+ layanan awal) untuk user yang login
+  // POST /api/v1/my/businesses - Buat bisnis pertama (+ layanan awal) untuk user yang login
   @Post('my/businesses')
   @UseGuards(AuthGuard)
   createBusiness(@CurrentUser() user: AuthenticatedUser, @Body() body: CreateBusinessInput) {

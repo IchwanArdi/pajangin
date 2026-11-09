@@ -141,7 +141,7 @@ Build frontend juga memeriksa TypeScript dan seluruh route. Warning ESLint yang 
 
 ### 2. Owner Analytics Dashboard (`/dashboard`)
 - **Metric Cards**: Pengunjung Unik (Sessions), Total Page Views, WhatsApp Clicks, Phone Clicks, dan Conversion Rate (CRO %).
-- **Business Switcher**: Dropdown untuk berganti antar bisnis milik user yang login (multi-tenant).
+- **Business Menu**: Identitas bisnis aktif + akses profil, halaman publik, akun, dan keluar. Satu akun hanya untuk satu bisnis.
 - **Traffic Sources Breakdown**: Distribusi persentase akuisisi dari Google Organik (SEO), Instagram, dan Direct.
 - **Top Services Performance Table**: Menampilkan performa views vs klik kontak untuk setiap layanan.
 
