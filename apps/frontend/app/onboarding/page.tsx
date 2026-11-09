@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -18,7 +18,7 @@ import {
   Sparkles,
   Trash2,
 } from 'lucide-react';
-import { ApiError, createNewBusiness, getMyBusinesses } from '../../lib/api';
+import { ApiError, createNewBusiness, getMyBusinesses, getServices, updateService } from '../../lib/api';
 import { createClient } from '../../lib/supabase/client';
 import { setUserProperties, track } from '../../lib/marketing-analytics';
 import { BUSINESS_CATEGORIES } from '../../lib/categories';
@@ -26,6 +26,7 @@ import { formatWaDisplay, isValidWhatsapp, toWaNumber } from '../../lib/whatsapp
 import { useBrowserOrigin } from '../../lib/useBrowserOrigin';
 import { FormAlert, inputClass, labelClass, primaryButtonClass, secondaryButtonClass } from '../../components/auth/AuthShell';
 import OnboardingShell from '../../components/onboarding/OnboardingShell';
+import ServicePhotoPicker, { type PendingServicePhoto } from '../../components/onboarding/ServicePhotoPicker';
 import {
   clearOnboardingDraft,
   defaultDescription,
@@ -61,6 +62,21 @@ async function fetchAccountContext() {
   return { businesses, accountId };
 }
 
+// Upload foto layanan setelah bisnis dibuat. Path wajib diawali business ID
+// agar policy storage mengizinkan pemilik bisnis menulis ke folder tersebut.
+async function uploadServicePhoto(businessId: string, file: File, index: number): Promise<string> {
+  const supabase = createClient();
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+  const path = `${businessId}/service-${Date.now()}-${index}.${ext}`;
+  const { error } = await supabase.storage.from('business-assets').upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  });
+  if (error) throw new Error(error.message);
+  const { data } = supabase.storage.from('business-assets').getPublicUrl(path);
+  return data.publicUrl;
+}
+
 // Wizard 3 langkah: profil → isi halaman → pratinjau/terbit.
 // Dipakai untuk bisnis pertama setelah login Google maupun "+ Bisnis baru".
 export default function OnboardingPage() {
@@ -93,6 +109,23 @@ export default function OnboardingPage() {
   // langkah 2 — layanan + deskripsi
   const [services, setServices] = useState<DraftService[]>([emptyServiceDraft()]);
   const [description, setDescription] = useState('');
+  // File foto ditahan di memori karena bisnis belum dibuat. Object URL dipakai
+  // untuk pratinjau dan baru diupload saat halaman diterbitkan.
+  const [servicePhotos, setServicePhotos] = useState<Array<PendingServicePhoto | null>>([null]);
+  const photosRef = useRef<Array<PendingServicePhoto | null>>([null]);
+
+  useEffect(() => {
+    photosRef.current = servicePhotos;
+  }, [servicePhotos]);
+
+  // Bebaskan object URL saat halaman ditinggalkan.
+  useEffect(() => {
+    return () => {
+      photosRef.current.forEach((photo) => {
+        if (photo) URL.revokeObjectURL(photo.preview);
+      });
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -120,7 +153,10 @@ export default function OnboardingPage() {
           setWhatsapp(saved.whatsapp);
           setTagline(saved.tagline);
           setDescription(saved.description);
-          setServices(saved.services.length > 0 ? saved.services : [emptyServiceDraft()]);
+          const restoredServices = saved.services.length > 0 ? saved.services : [emptyServiceDraft()];
+          setServices(restoredServices);
+          // File foto tidak bisa disimpan di localStorage; mulai dari kosong.
+          setServicePhotos(restoredServices.map(() => null));
           setStep(saved.step);
           setDraftRestored(hasDraftContent(saved));
         }
@@ -188,6 +224,13 @@ export default function OnboardingPage() {
   const whatsappValid = isValidWhatsapp(whatsapp);
   const step1Valid = Boolean(businessName.trim() && city.trim() && address.trim() && whatsappValid);
   const filledServices = useMemo(() => services.filter((service) => service.name.trim()), [services]);
+  const previewServices = useMemo(
+    () =>
+      services
+        .map((service, index) => ({ service, index }))
+        .filter(({ service }) => service.name.trim()),
+    [services],
+  );
   const generatedDescription = useMemo(() => defaultDescription(businessName, city), [businessName, city]);
   const previewDescription = description.trim() || generatedDescription;
   const pagePath = `/${slugPreview(businessName)}`;
@@ -234,21 +277,7 @@ export default function OnboardingPage() {
     goTo(2);
   };
 
-  const addSuggestion = (name: string) => {
-    setServices((previous) => {
-      const next = previous.map((service) => ({ ...service }));
-      const emptyIndex = next.findIndex((service) => !service.name.trim());
-
-      if (emptyIndex >= 0) {
-        next[emptyIndex].name = name;
-        return next;
-      }
-      if (next.length >= MAX_ONBOARDING_SERVICES) return previous;
-      return [...next, { ...emptyServiceDraft(), name }];
-    });
-  };
-
-  const updateService = (index: number, field: keyof DraftService, value: string) => {
+  const updateServiceField = (index: number, field: keyof DraftService, value: string) => {
     setServices((previous) =>
       previous.map((service, serviceIndex) =>
         serviceIndex === index ? { ...service, [field]: value } : service,
@@ -256,21 +285,52 @@ export default function OnboardingPage() {
     );
   };
 
+  const setServicePhoto = (index: number, photo: PendingServicePhoto | null) => {
+    const current = servicePhotos[index];
+    if (current) URL.revokeObjectURL(current.preview);
+    setServicePhotos((previous) => {
+      const next = [...previous];
+      next[index] = photo;
+      return next;
+    });
+  };
+
+  const addSuggestion = (name: string) => {
+    const emptyIndex = services.findIndex((service) => !service.name.trim());
+    if (emptyIndex >= 0) {
+      updateServiceField(emptyIndex, 'name', name);
+      return;
+    }
+    if (services.length >= MAX_ONBOARDING_SERVICES) return;
+    setServices((previous) => [...previous, { ...emptyServiceDraft(), name }]);
+    setServicePhotos((previous) => [...previous, null]);
+  };
+
   const addServiceRow = () => {
-    setServices((previous) =>
-      previous.length >= MAX_ONBOARDING_SERVICES ? previous : [...previous, emptyServiceDraft()],
-    );
+    if (services.length >= MAX_ONBOARDING_SERVICES) return;
+    setServices((previous) => [...previous, emptyServiceDraft()]);
+    setServicePhotos((previous) => [...previous, null]);
   };
 
   const removeServiceRow = (index: number) => {
-    setServices((previous) => {
-      if (previous.length <= 1) return [emptyServiceDraft()];
-      return previous.filter((_, serviceIndex) => serviceIndex !== index);
-    });
+    const photo = servicePhotos[index];
+    if (photo) URL.revokeObjectURL(photo.preview);
+
+    if (services.length <= 1) {
+      setServices([emptyServiceDraft()]);
+      setServicePhotos([null]);
+      return;
+    }
+
+    setServices((previous) => previous.filter((_, serviceIndex) => serviceIndex !== index));
+    setServicePhotos((previous) => previous.filter((_, serviceIndex) => serviceIndex !== index));
   };
 
   const resetDraft = () => {
     clearOnboardingDraft(draftKey);
+    photosRef.current.forEach((photo) => {
+      if (photo) URL.revokeObjectURL(photo.preview);
+    });
     setStep(1);
     setBusinessName('');
     setCategory(BUSINESS_CATEGORIES[0]);
@@ -280,6 +340,7 @@ export default function OnboardingPage() {
     setTagline('');
     setDescription('');
     setServices([emptyServiceDraft()]);
+    setServicePhotos([null]);
     setDraftRestored(false);
     setErrorMessage('');
   };
@@ -301,16 +362,19 @@ export default function OnboardingPage() {
 
     setSubmitting(true);
     try {
-      const payloadServices = services
-        .filter((service) => service.name.trim())
-        .map((service) => {
-          const parsedPrice = Number.parseInt(service.price, 10);
-          return {
-            name: service.name.trim(),
-            price: Number.isFinite(parsedPrice) && parsedPrice >= 0 ? parsedPrice : undefined,
-            description: service.description.trim() || undefined,
-          };
-        });
+      const payloadEntries = services
+        .map((service, index) => ({ service, index }))
+        .filter(({ service }) => service.name.trim());
+
+      const payloadServices = payloadEntries.map(({ service }) => {
+        const parsedPrice = Number.parseInt(service.price, 10);
+        return {
+          name: service.name.trim(),
+          price: Number.isFinite(parsedPrice) && parsedPrice >= 0 ? parsedPrice : undefined,
+          description: service.description.trim() || undefined,
+        };
+      });
+      const payloadPhotos = payloadEntries.map(({ index }) => servicePhotos[index] ?? null);
 
       const business = await createNewBusiness({
         name: businessName.trim(),
@@ -323,6 +387,37 @@ export default function OnboardingPage() {
         services: payloadServices,
       });
 
+      // Foto diupload setelah bisnis dibuat karena policy storage mensyaratkan
+      // path diawali business ID. Kegagalan foto tidak membatalkan penerbitan.
+      let failedPhotoCount = 0;
+      if (payloadPhotos.some(Boolean)) {
+        try {
+          const createdServices = await getServices(business.id);
+
+          for (let index = 0; index < payloadPhotos.length; index += 1) {
+            const photo = payloadPhotos[index];
+            if (!photo) continue;
+
+            const service = createdServices[index];
+            if (!service) {
+              failedPhotoCount += 1;
+              continue;
+            }
+
+            try {
+              const url = await uploadServicePhoto(business.id, photo.file, index);
+              await updateService(business.id, service.id, { image_url: url });
+            } catch (err) {
+              console.error('Gagal mengupload foto layanan:', err);
+              failedPhotoCount += 1;
+            }
+          }
+        } catch (err) {
+          console.error('Gagal memuat layanan untuk upload foto:', err);
+          failedPhotoCount = payloadPhotos.filter(Boolean).length;
+        }
+      }
+
       track('business_published', {
         category,
         city: city.trim(),
@@ -333,7 +428,10 @@ export default function OnboardingPage() {
       // Hentikan autosave sebelum draft dihapus agar efek simpan tidak menulis ulang data lama.
       setDraftLoaded(false);
       clearOnboardingDraft(draftKey);
-      router.replace(`/onboarding/selesai?biz=${encodeURIComponent(business.id)}`);
+
+      const query = new URLSearchParams({ biz: business.id });
+      if (failedPhotoCount > 0) query.set('foto_gagal', String(failedPhotoCount));
+      router.replace(`/onboarding/selesai?${query.toString()}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Gagal membuat bisnis. Coba lagi.';
       setErrorMessage(message);
@@ -572,6 +670,14 @@ export default function OnboardingPage() {
         <form
           onSubmit={(event) => {
             event.preventDefault();
+            const photoWithoutName = services.some(
+              (service, index) => !service.name.trim() && servicePhotos[index],
+            );
+            if (photoWithoutName) {
+              setErrorMessage('Isi nama layanan yang punya foto, atau hapus fotonya.');
+              return;
+            }
+            setErrorMessage('');
             goTo(3);
           }}
           className="space-y-5 rounded-3xl border border-rule bg-white p-6 sm:p-8"
@@ -630,7 +736,7 @@ export default function OnboardingPage() {
                     id={`service-name-${index}`}
                     placeholder={index === 0 ? 'Contoh: Servis AC mobil' : 'Contoh: Ganti oli'}
                     value={service.name}
-                    onChange={(event) => updateService(index, 'name', event.target.value)}
+                    onChange={(event) => updateServiceField(index, 'name', event.target.value)}
                     className={inputClass}
                   />
                 </div>
@@ -647,7 +753,7 @@ export default function OnboardingPage() {
                       inputMode="numeric"
                       placeholder="150000"
                       value={service.price}
-                      onChange={(event) => updateService(index, 'price', event.target.value)}
+                      onChange={(event) => updateServiceField(index, 'price', event.target.value)}
                       className={inputClass}
                     />
                   </div>
@@ -659,11 +765,16 @@ export default function OnboardingPage() {
                       id={`service-desc-${index}`}
                       placeholder="Termasuk cek kebocoran"
                       value={service.description}
-                      onChange={(event) => updateService(index, 'description', event.target.value)}
+                      onChange={(event) => updateServiceField(index, 'description', event.target.value)}
                       className={inputClass}
                     />
                   </div>
                 </div>
+
+                <ServicePhotoPicker
+                  value={servicePhotos[index] ?? null}
+                  onChange={(photo) => setServicePhoto(index, photo)}
+                />
               </div>
             ))}
           </div>
@@ -715,7 +826,9 @@ export default function OnboardingPage() {
             </button>
           </div>
 
-          <p className="text-center text-xs text-ink-2">Draft tersimpan otomatis di perangkat ini.</p>
+          <p className="text-center text-xs text-ink-2">
+            Teks draft tersimpan otomatis di perangkat ini. Foto belum ikut tersimpan.
+          </p>
         </form>
       )}
 
@@ -757,18 +870,29 @@ export default function OnboardingPage() {
               <div className="space-y-4 bg-white p-5">
                 <p className="text-sm leading-relaxed text-ink-2">{previewDescription}</p>
 
-                {filledServices.length > 0 ? (
+                {previewServices.length > 0 ? (
                   <ul className="space-y-2 border-t border-rule pt-4">
-                    {filledServices.map((service, index) => {
+                    {previewServices.map(({ service, index }) => {
                       const price = Number.parseInt(service.price, 10);
                       const hasPrice = Number.isFinite(price) && price > 0;
+                      const photo = servicePhotos[index];
                       return (
                         <li key={`${service.name}-${index}`} className="flex items-start justify-between gap-3 text-sm">
-                          <div className="min-w-0">
-                            <p className="font-medium text-ink">{service.name}</p>
-                            {service.description.trim() && (
-                              <p className="mt-0.5 text-xs leading-relaxed text-ink-2">{service.description}</p>
+                          <div className="flex min-w-0 items-start gap-3">
+                            {photo && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={photo.preview}
+                                alt={`Foto ${service.name}`}
+                                className="h-11 w-11 shrink-0 rounded-lg border border-rule object-cover"
+                              />
                             )}
+                            <div className="min-w-0">
+                              <p className="font-medium text-ink">{service.name}</p>
+                              {service.description.trim() && (
+                                <p className="mt-0.5 text-xs leading-relaxed text-ink-2">{service.description}</p>
+                              )}
+                            </div>
                           </div>
                           <span className="shrink-0 font-mono text-xs text-ink-2">
                             {hasPrice ? `Rp ${price.toLocaleString('id-ID')}` : price === 0 ? 'Gratis' : 'Tanya harga'}

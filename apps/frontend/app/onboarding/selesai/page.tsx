@@ -44,6 +44,7 @@ function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const businessId = searchParams.get('biz');
+  const failedPhotoCount = Number.parseInt(searchParams.get('foto_gagal') ?? '', 10) || 0;
 
   const [state, setState] = useState<LoadState>('loading');
   const [retryKey, setRetryKey] = useState(0);
@@ -303,6 +304,22 @@ function SuccessContent() {
           </Link>
         </div>
       </div>
+
+      {failedPhotoCount > 0 && (
+        <div
+          role="status"
+          className="flex items-start gap-2.5 rounded-3xl border border-warning/30 bg-warning-soft p-5 text-sm leading-relaxed text-ink"
+        >
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-warning" strokeWidth={1.75} />
+          <p>
+            <strong>{failedPhotoCount} foto layanan gagal diupload.</strong> Halaman tetap aktif. Tambahkan ulang dari{' '}
+            <Link href={servicesHref} className="font-semibold underline underline-offset-2">
+              dashboard Layanan
+            </Link>
+            .
+          </p>
+        </div>
+      )}
 
       {showPhotoSection && (
         <SuccessPhotoUpload
