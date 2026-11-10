@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Sparkles, Bot, Copy, Check, RefreshCw, FileText, Hash, Search, HelpCircle, MessageSquare, Star, Layers, ArrowRight, ExternalLink } from 'lucide-react';
+import { Sparkles, Bot, Copy, Check, RefreshCw, FileText, Hash, Search, HelpCircle, Star, Layers, ArrowRight, ExternalLink } from 'lucide-react';
 import { useBusiness } from '../../../components/dashboard/BusinessContext';
 import { Card, CardHeader, InfoNote, PageHeader, Badge, Skeleton, btn, field } from '../../../components/dashboard/ui';
 import { generateAiContent, getAiProviders, updateBusiness, getServices, type AiContentType, type Service, type AiProvidersResponse } from '../../../lib/api';
@@ -61,13 +61,6 @@ const CONTENT_TYPES: ContentTypeConfig[] = [
     description: '5 daftar pertanyaan umum calon pelanggan beserta jawabannya.',
     category: 'marketing',
     canApplyToProfile: true,
-  },
-  {
-    type: 'ucapan_whatsapp',
-    label: 'Template Pesan WhatsApp',
-    icon: MessageSquare,
-    description: 'Template pesan sambutan, follow-up, dan promo ramah WhatsApp.',
-    category: 'komunikasi',
   },
   {
     type: 'testimonial_request',
