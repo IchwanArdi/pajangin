@@ -366,18 +366,6 @@ function ProfilForm({ business }: { business: Business }) {
                 Tambah testimoni
               </button>
             </div>
-
-            <div className="rounded-xl border border-rule bg-paper-2 p-4">
-              <p className="text-sm font-medium">Minta review via WhatsApp</p>
-              <p className="mt-1 text-xs text-ink-2">Salin pesan berikut, kirim ke pelanggan yang sudah dilayani, lalu tambahkan jawabannya sebagai testimoni jika pelanggan mengizinkan.</p>
-              <button
-                type="button"
-                onClick={() => navigator.clipboard.writeText(`Halo, terima kasih sudah menggunakan layanan ${form.name}. Bagaimana pengalaman Anda? Jika berkenan, boleh berikan ulasan singkat agar kami bisa melayani lebih baik.`)}
-                className={`${btn.ghost} mt-2`}
-              >
-                Salin pesan minta review
-              </button>
-            </div>
           </Section>
 
           <Section title="Lokasi & jam buka" description="Membantu pelanggan datang ke tempat Anda.">
