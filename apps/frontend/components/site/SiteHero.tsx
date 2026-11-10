@@ -212,6 +212,7 @@ function CtaRow({
   shape = 'round',
   onDark = false,
   center = false,
+  hidePhoneOnMobile = false,
 }: {
   business: Business;
   label: string;
@@ -221,6 +222,7 @@ function CtaRow({
   shape?: 'round' | 'sharp';
   onDark?: boolean;
   center?: boolean;
+  hidePhoneOnMobile?: boolean;
 }) {
   const radius = shape === 'round' ? 'rounded-full' : 'rounded-xl';
   const secondary = onDark
@@ -246,7 +248,12 @@ function CtaRow({
         <a
           href={`tel:${business.phone}`}
           onClick={onPhoneClick}
-          className={`press inline-flex items-center justify-center gap-2 ${radius} px-6 py-3.5 text-sm font-semibold ${secondary}`}
+          className={[
+            'press items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold',
+            radius,
+            secondary,
+            hidePhoneOnMobile ? 'hidden sm:inline-flex' : 'inline-flex',
+          ].join(' ')}
         >
           <Phone className="h-4 w-4" />
           Telepon
@@ -413,7 +420,7 @@ export default function SiteHero({
               <Monogram business={business} />
             </div>
           )}
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/55 to-black/15 md:from-black/80 md:via-black/40 md:to-black/10" />
           <div className="absolute inset-x-0 bottom-0">
             <div className="mx-auto w-full max-w-6xl px-5 pb-8 md:pb-10">
               <p className="rise rise-d1 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
@@ -427,17 +434,23 @@ export default function SiteHero({
                 <StatusChip openStatus={openStatus} onDark />
                 <RatingChip business={business} onDark />
               </div>
+              {business.opening_hours && (
+                <p className="rise rise-d3 mt-3 flex items-start gap-1.5 text-[11px] font-medium leading-snug text-white/75 sm:hidden">
+                  <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/60" />
+                  <span>{business.opening_hours}</span>
+                </p>
+              )}
               <div className="rise rise-d4 mt-6">
-                <CtaRow {...ctaBase} onDark />
+                <CtaRow {...ctaBase} onDark hidePhoneOnMobile={Boolean(business.whatsapp)} />
               </div>
             </div>
           </div>
         </div>
-        <div className="mx-auto w-full max-w-6xl px-5 pb-14 md:pb-20">
-          <div className="rise rise-d4">
+        <div className="mx-auto w-full max-w-6xl px-5 pb-0 sm:pb-14 md:pb-20">
+          <div className="rise rise-d4 hidden sm:block">
             <InfoStrip items={highlights} overlap />
           </div>
-          {note ? <div className="rise rise-d5">{note}</div> : null}
+          {note ? <div className="rise rise-d5 hidden sm:block">{note}</div> : null}
         </div>
       </section>
     );

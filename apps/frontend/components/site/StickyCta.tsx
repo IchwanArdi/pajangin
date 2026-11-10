@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { MessageCircle, Phone } from 'lucide-react';
 
 interface Props {
@@ -8,11 +9,38 @@ interface Props {
   phone?: string | null;
   onWhatsAppClick: () => void;
   onPhoneClick: () => void;
+  deferUntilScroll?: boolean;
 }
 
-export default function StickyCta({ label, waLink, phone, onWhatsAppClick, onPhoneClick }: Props) {
+export default function StickyCta({
+  label,
+  waLink,
+  phone,
+  onWhatsAppClick,
+  onPhoneClick,
+  deferUntilScroll = false,
+}: Props) {
+  const [scrolledPast, setScrolledPast] = useState(false);
+  const visible = !deferUntilScroll || scrolledPast;
+
+  useEffect(() => {
+    if (!deferUntilScroll) return;
+
+    const onScroll = () => setScrolledPast(window.scrollY > 200);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [deferUntilScroll]);
+
+  if (!visible) return null;
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper/95 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur supports-[backdrop-filter]:bg-paper/85 md:hidden">
+    <div
+      className={[
+        'fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper/95 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur supports-[backdrop-filter]:bg-paper/85 md:hidden',
+        deferUntilScroll ? 'motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4' : '',
+      ].join(' ')}
+    >
       <div className="mx-auto flex max-w-md gap-3">
         <a
           href={waLink}

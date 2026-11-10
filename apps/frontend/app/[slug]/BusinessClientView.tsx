@@ -173,6 +173,7 @@ export default function BusinessClientView({ business, services, images = [] }: 
           phone={business.phone}
           onWhatsAppClick={() => handleWhatsAppClick()}
           onPhoneClick={handlePhoneClick}
+          deferUntilScroll={business.template === 'restaurant'}
         />
       )}
     </div>
